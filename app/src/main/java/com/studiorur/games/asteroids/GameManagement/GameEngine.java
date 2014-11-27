@@ -11,8 +11,6 @@ import java.util.logging.Logger;
  */
 public class GameEngine extends Thread
 {
-    // TODO: singleton?
-
     public enum GameState
     { RUNNING, PAUSED };
     private GameState _gameState;
@@ -73,7 +71,10 @@ public class GameEngine extends Thread
             long beforeTime = System.nanoTime();
 
             //This is where we update the game engine
-            update(sleepTime);
+            synchronized (this)
+            {
+                update(sleepTime);
+            }
 
             //SLEEP
             //Sleep time. Time required to sleep to keep game consistent

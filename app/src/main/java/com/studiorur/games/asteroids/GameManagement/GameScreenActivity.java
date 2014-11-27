@@ -74,22 +74,62 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig eglConfig)
     {
-        // background color
+        // set background color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    }
 
-        // TESTING
-        _gameEngine = new GameEngine();
+    @Override
+    public void onSurfaceChanged(GL10 gl10, int width, int height)
+    {
+        int offsetX;
+        int offsetY;
+        int size;
 
-        // TODO: determine the actual width and height
+        if (width < height)
+        {
+            size = height;
+            offsetX = -(height - width) / 2;
+            offsetY = 0;
+        }
+        else
+        {
+            size = width;
+            offsetX = 0;
+            offsetY = -(width - height) / 2;
+        }
+
+        GLES20.glViewport(offsetX, offsetY, size, size);
+    }
+
+    private void init()
+    {
+        // extract the screen size
         DisplayMetrics dm = getResources().getDisplayMetrics();
         _width = dm.widthPixels;
         _height = dm.heightPixels;
 
+        if(_width < _height)
+        {
+            _displayScaleX = (float)_width/(float)_height;
+            _displayScaleY = 1.0f;
+        }
+        else
+        {
+            _displayScaleX = 1.0f;
+            _displayScaleY = (float)_height/(float)_width;
+        }
+
+        // set up the game
+        _gameEngine = new GameEngine();
+
         float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
         float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
-        //StarGenerator starGenerator = new StarGenerator(60, 2.0f, 2.0f, topBorder, bottomBorder, -0.0001f);
-        StarGenerator starGenerator = new StarGenerator(60, 2.0f, 2.0f, -1.0f, 1.0f, -0.0001f);
-        _gameEngine.addComponent(starGenerator);
+        float heightInWorld = topBorder - bottomBorder;
+        // Two layers of stars with different speeds will create a parallax effect
+        StarGenerator starGeneratorSlower = new StarGenerator(50, 2.0f, heightInWorld, 0.001f, 0.01f, -0.00003f);
+        _gameEngine.addComponent(starGeneratorSlower);
+        StarGenerator starGeneratorFaster = new StarGenerator(20, 2.0f, heightInWorld, 0.008f, 0.015f, -0.0001f);
+        _gameEngine.addComponent(starGeneratorFaster);
 
         SpaceShip ship = new SpaceShip(1.0f, this);
         ship.setTextureIdentifier(Sprite.loadTexture(getResources(), R.drawable.spaceship));
@@ -105,38 +145,12 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
     }
 
     @Override
-    public void onSurfaceChanged(GL10 gl10, int width, int height)
-    {
-        int offsetX;
-        int offsetY;
-        int size;
-        _width = width;
-        _height = height;
-
-        if (width < height)
-        {
-            size = height;
-            offsetX = -(height - width) / 2;
-            offsetY = 0;
-            _displayScaleX = (float)width/(float)height;
-            _displayScaleY = 1.0f;
-        }
-        else
-        {
-            size = width;
-            offsetX = 0;
-            offsetY = -(width - height) / 2;
-            _displayScaleX = 1.0f;
-            _displayScaleY = (float)height/(float)width;
-        }
-
-        GLES20.glViewport(offsetX, offsetY, size, size);
-    }
-
-    @Override
     public void onDrawFrame(GL10 gl10)
     {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+        if(_width <= 0 || _height <= 0)
+            init();
 
         // draw components
         _gameEngine.draw();
