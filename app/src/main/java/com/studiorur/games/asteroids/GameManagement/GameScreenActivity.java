@@ -2,15 +2,14 @@ package com.studiorur.games.asteroids.GameManagement;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 
 import com.studiorur.games.asteroids.R;
-import com.studiorur.games.asteroids.Shapes.Star;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 import com.studiorur.games.asteroids.Sprites.Sprite;
 
@@ -20,9 +19,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GameScreenActivity extends Activity implements GLSurfaceView.Renderer
 {
-    // TODO: graphics on separate thread?
-    // TODO: singleton?
-
     int _height;
     int _width;
     float _displayScaleX;
@@ -78,19 +74,22 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig eglConfig)
     {
-        // make background gray
+        // background color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         // TESTING
         _gameEngine = new GameEngine();
 
         // TODO: determine the actual width and height
-        StarGenerator starGenerator = new StarGenerator(60, 2.0f, 2.0f, 0.001f, 0.02f, -0.0001f);
-        _gameEngine.addComponent(starGenerator);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        _width = dm.widthPixels;
+        _height = dm.heightPixels;
 
-//        Sprite sprite = new Sprite();
-//        sprite.setTextureIdentifier(Sprite.loadTexture(getResources(), R.drawable.astronomy));
-//        _gameEngine.addComponent(sprite);
+        float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
+        float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
+        //StarGenerator starGenerator = new StarGenerator(60, 2.0f, 2.0f, topBorder, bottomBorder, -0.0001f);
+        StarGenerator starGenerator = new StarGenerator(60, 2.0f, 2.0f, -1.0f, 1.0f, -0.0001f);
+        _gameEngine.addComponent(starGenerator);
 
         SpaceShip ship = new SpaceShip(1.0f, this);
         ship.setTextureIdentifier(Sprite.loadTexture(getResources(), R.drawable.spaceship));
@@ -100,12 +99,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         ship.setHeight(0.25f);
         _gameEngine.addComponent(ship);
 
-//        Star star = new Star();
-//        star.setRadius(0.3f);
-//        star.setColor(Color.WHITE);
-//        star.setCenterX(-0.6f);
-//        _gameEngine.addComponent(star);
-
+        // TODO: needs some interface
         _gameEngine.setGameState(GameEngine.GameState.RUNNING);
         _gameEngine.start();
     }
