@@ -15,22 +15,12 @@ public class GameEngine extends Thread
     { RUNNING, PAUSED };
     private GameState _gameState;
 
-    public GameState getGameState()
-    {
-        return _gameState;
-    }
-
-    public void setGameState(GameState state)
-    {
-        _gameState = state;
-    }
-
     private ArrayList<Updatable> _components;
 
     //for consistent rendering
-    private long sleepTime;
+    private long _sleepTime;
     //amount of time to sleep for (in milliseconds)
-    private long delay = 50;
+    private long _delay = 50;
 
     public GameEngine()
     {
@@ -47,17 +37,16 @@ public class GameEngine extends Thread
         _components.remove(component);
     }
 
-
-    public void update(float time)
+    @Override
+    public synchronized void start()
     {
-        for (Updatable component: _components)
-            component.update(time);
+        _gameState = GameState.RUNNING;
+        super.start();
     }
 
-    public void draw()
+    public synchronized void pause()
     {
-        for (Updatable component: _components)
-            component.draw();
+        _gameState = GameState.PAUSED;
     }
 
     @Override
@@ -73,21 +62,21 @@ public class GameEngine extends Thread
             //This is where we update the game engine
             synchronized (this)
             {
-                update(sleepTime);
+                update(_sleepTime);
             }
 
             //SLEEP
             //Sleep time. Time required to sleep to keep game consistent
-            //This starts with the specified delay time (in milliseconds) then subtracts from that the
+            //This starts with the specified _delay time (in milliseconds) then subtracts from that the
             //actual time it took to update and render the game. This allows our game to render smoothly.
-            this.sleepTime = delay-((System.nanoTime()-beforeTime)/1000000L);
+            _sleepTime = _delay - ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
 
             try
             {
                 //actual sleep code
-                if(sleepTime>0)
+                if(_sleepTime >0)
                 {
-                    this.sleep(sleepTime);
+                    this.sleep(_sleepTime);
                 }
             }
             catch (InterruptedException ex)
@@ -95,7 +84,17 @@ public class GameEngine extends Thread
                 Logger.getLogger(GameEngine.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
     }
 
+    public void update(float time)
+    {
+        for (Updatable component: _components)
+            component.update(time);
+    }
+
+    public void draw()
+    {
+        for (Updatable component: _components)
+            component.draw();
+    }
 }

@@ -2,9 +2,8 @@ package com.studiorur.games.asteroids.GameManagement;
 
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.util.FloatMath;
 
-import com.studiorur.games.asteroids.DataModel.Utils;
+import com.studiorur.games.asteroids.Helpers.Utils;
 import com.studiorur.games.asteroids.Interfaces.Updatable;
 import com.studiorur.games.asteroids.Shapes.Star;
 

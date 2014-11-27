@@ -1,10 +1,7 @@
 package com.studiorur.games.asteroids.Shapes;
 
-import android.graphics.Color;
 import android.graphics.PointF;
 
-import com.studiorur.games.asteroids.DataModel.LoopTimer;
-import com.studiorur.games.asteroids.DataModel.Utils;
 import com.studiorur.games.asteroids.Interfaces.Updatable;
 
 /**

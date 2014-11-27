@@ -1,4 +1,4 @@
-package com.studiorur.games.asteroids.DataModel;
+package com.studiorur.games.asteroids.Helpers;
 
 /**
  * Created by zbynek on 11/26/2014.

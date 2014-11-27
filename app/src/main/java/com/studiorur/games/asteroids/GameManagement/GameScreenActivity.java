@@ -140,7 +140,6 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         _gameEngine.addComponent(ship);
 
         // TODO: needs some interface
-        _gameEngine.setGameState(GameEngine.GameState.RUNNING);
         _gameEngine.start();
     }
 
