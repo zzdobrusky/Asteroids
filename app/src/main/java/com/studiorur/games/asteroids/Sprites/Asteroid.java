@@ -10,7 +10,6 @@ import com.studiorur.games.asteroids.Helpers.Circle;
  */
 public class Asteroid extends PhysicsSprite implements Collidable
 {
-
     @Override
     public Circle getBoundingCircle()
     {

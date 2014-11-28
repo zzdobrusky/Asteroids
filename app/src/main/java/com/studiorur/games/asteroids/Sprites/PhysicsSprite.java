@@ -9,14 +9,27 @@ import com.studiorur.games.asteroids.Interfaces.Updatable;
  */
 public class PhysicsSprite extends Sprite implements Updatable
 {
-    PointF _velocity;
-    Float _rotationVelocity;
+    PointF _velocity = new PointF(0.0f, 0.0f);;
+    Float _rotationVelocity  = 0.0f;;
 
-
-    public PhysicsSprite()
+    public PointF getVelocity()
     {
-        _velocity = new PointF(0.0f, 0.0f);
-        _rotationVelocity = 0.0f;
+        return _velocity;
+    }
+
+    public void setVelocity(PointF velocity)
+    {
+        _velocity = velocity;
+    }
+
+    public Float getRotationVelocity()
+    {
+        return _rotationVelocity;
+    }
+
+    public void setRotationVelocity(Float rotationVelocity)
+    {
+        _rotationVelocity = rotationVelocity;
     }
 
     @Override

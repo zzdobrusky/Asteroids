@@ -7,9 +7,6 @@ import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.FloatMath;
-import android.util.Log;
-
-import com.studiorur.games.asteroids.Interfaces.Updatable;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,13 +15,14 @@ import java.nio.FloatBuffer;
 /**
  * Created by zbynek on 11/22/2014.
  */
-public class Sprite implements Updatable
+public class Sprite
 {
     static int _Program = -1;
     static final int POSITION_ATTRIBUTE_ID = 0;
     static final int TEXTURE_COORDINATE_ATTRIBUTE_ID = 1;
     static FloatBuffer _QuadPointsBuffer = null;
     static FloatBuffer _QuadTextureBuffer = null;
+    int _textureId;
 
     static void init()
     {
@@ -59,14 +57,14 @@ public class Sprite implements Updatable
         int vertexShader = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
         GLES20.glShaderSource(vertexShader, vertexShaderSource);
         GLES20.glCompileShader(vertexShader);
-        String vertexShaderCompileLog = GLES20.glGetShaderInfoLog(vertexShader);
-        Log.i("Vertex Shader Compile", vertexShaderCompileLog);
+//        String vertexShaderCompileLog = GLES20.glGetShaderInfoLog(vertexShader);
+//        Log.i("Vertex Shader Compile", vertexShaderCompileLog);
 
         int fragmentShader = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
         GLES20.glShaderSource(fragmentShader, fragmentShaderSource);
         GLES20.glCompileShader(fragmentShader);
-        String fragmentShaderCompileLog = GLES20.glGetShaderInfoLog(fragmentShader);
-        Log.i("Fragment ShaderCompile", fragmentShaderCompileLog);
+//        String fragmentShaderCompileLog = GLES20.glGetShaderInfoLog(fragmentShader);
+//        Log.i("Fragment ShaderCompile", fragmentShaderCompileLog);
 
         // set up program
         _Program = GLES20.glCreateProgram();
@@ -113,31 +111,32 @@ public class Sprite implements Updatable
         _QuadTextureBuffer.rewind();
     }
 
-    public static int loadTexture(Resources resourcers, int resourceIdentifier)
+    public void loadTexture(Resources resourcers, int resourceIdentifier)
     {
         Bitmap texture = BitmapFactory.decodeResource(resourcers, resourceIdentifier);
         int[] textureIds = new int[1];
         GLES20.glGenTextures(1, textureIds, 0);
-        int textureId = textureIds[0];
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
+        _textureId = textureIds[0];
+
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _textureId);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, texture, 0);
-
-        return textureId;
     }
 
-    PointF _center;
-    float _width;
-    float _height;
+    PointF _center = new PointF(0.0f, 0.0f);;
+    float _width = 1.0f;
+    float _height = 1.0f;
     float _rotation;
-    float _textureIdentifier;
 
-    public Sprite()
+    public PointF getCenter()
     {
-        _width = 1.0f;
-        _height = 1.0f;
-        _center = new PointF(0.0f, 0.0f);
+        return _center;
+    }
+
+    public void setCenter(PointF center)
+    {
+        _center = center;
     }
 
     public float getCenterX()
@@ -147,7 +146,7 @@ public class Sprite implements Updatable
 
     public void setCenterX(float centerX)
     {
-        _center.x = centerX;
+        _center = new PointF(centerX, _center.y);
     }
 
     public float getCenterY()
@@ -157,7 +156,7 @@ public class Sprite implements Updatable
 
     public void setCenterY(float centerY)
     {
-        _center.y = centerY;
+        _center = new PointF(_center.x, centerY);
     }
 
     public float getWidth()
@@ -191,28 +190,13 @@ public class Sprite implements Updatable
         _rotation = rotation;
     }
 
-    public float getTextureIdentifier()
-    {
-        return _textureIdentifier;
-    }
-
-    public void setTextureIdentifier(float textureIdentifier)
-    {
-        _textureIdentifier = textureIdentifier;
-    }
-
-    @Override
-    public void update(float time)
-    {
-        //
-    }
-
     public void draw()
     {
         if(_Program < 0)
             init();
 
         GLES20.glUseProgram(_Program);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _textureId);
 
         float[] modelView = new float[]
                 {

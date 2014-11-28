@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import com.studiorur.games.asteroids.Interfaces.Collidable;
 import com.studiorur.games.asteroids.Helpers.Circle;
 import com.studiorur.games.asteroids.GameManagement.GameScreenActivity;
+import com.studiorur.games.asteroids.R;
 
 /**
  * Created by zbynek on 11/25/2014.
@@ -21,7 +22,6 @@ public class SpaceShip extends PhysicsSprite implements Collidable
 
     public SpaceShip(float mass, GameScreenActivity gameScreenActivity)
     {
-        super();
         _gameScreenActivity = gameScreenActivity;
         _invertedMass = 1.0f/mass;
 

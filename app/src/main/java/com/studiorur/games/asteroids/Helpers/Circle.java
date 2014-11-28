@@ -17,11 +17,6 @@ public class Circle
         return _radius;
     }
 
-    public void setRadius(float radius)
-    {
-        _radius = radius;
-    }
-
     public PointF getCenter()
     {
         return _center;

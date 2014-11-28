@@ -127,17 +127,27 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         float heightInWorld = topBorder - bottomBorder;
         // Two layers of stars with different speeds will create a parallax effect
         StarGenerator starGeneratorSlower = new StarGenerator(50, 2.0f, heightInWorld, 0.001f, 0.01f, -0.00003f);
+        starGeneratorSlower.init();
         _gameEngine.addComponent(starGeneratorSlower);
         StarGenerator starGeneratorFaster = new StarGenerator(20, 2.0f, heightInWorld, 0.008f, 0.015f, -0.0001f);
+        starGeneratorFaster.init();
         _gameEngine.addComponent(starGeneratorFaster);
 
+        // Asteroids
+        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(10, 2.0f, heightInWorld, 0.05f, 0.5f, 0.0001f, 0.001f);
+        asteroidGenerator.init(getResources(), R.drawable.asteroid);
+        _gameEngine.addComponent(asteroidGenerator);
+
+        // You
         SpaceShip ship = new SpaceShip(1.0f, this);
-        ship.setTextureIdentifier(Sprite.loadTexture(getResources(), R.drawable.spaceship));
+        ship.loadTexture(getResources(), R.drawable.spaceship);
         ship.setCenterX(0.0f);
         ship.setCenterY(0.0f);
         ship.setWidth(0.15f);
         ship.setHeight(0.25f);
         _gameEngine.addComponent(ship);
+
+
 
         // TODO: needs some interface
         _gameEngine.start();

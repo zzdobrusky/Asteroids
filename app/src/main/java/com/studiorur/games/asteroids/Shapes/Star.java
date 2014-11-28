@@ -9,12 +9,7 @@ import com.studiorur.games.asteroids.Interfaces.Updatable;
  */
 public class Star extends CircleShape implements Updatable
 {
-    PointF _velocity;
-
-    public Star()
-    {
-        _velocity = new PointF(0.0f, 0.0f);
-    }
+    PointF _velocity = new PointF(0.0f, 0.0f);;
 
     public Star(float centerX, float centerY)
     {
