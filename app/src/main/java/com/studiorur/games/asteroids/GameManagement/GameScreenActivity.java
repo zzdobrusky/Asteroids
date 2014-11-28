@@ -129,7 +129,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         StarGenerator starGeneratorSlower = new StarGenerator(50, 2.0f, heightInWorld, 0.001f, 0.01f, -0.00003f);
         starGeneratorSlower.init();
         _gameEngine.addComponent(starGeneratorSlower);
-        StarGenerator starGeneratorFaster = new StarGenerator(20, 2.0f, heightInWorld, 0.008f, 0.015f, -0.0001f);
+        StarGenerator starGeneratorFaster = new StarGenerator(20, 2.0f, heightInWorld, 0.01f, 0.015f, -0.0001f);
         starGeneratorFaster.init();
         _gameEngine.addComponent(starGeneratorFaster);
 
