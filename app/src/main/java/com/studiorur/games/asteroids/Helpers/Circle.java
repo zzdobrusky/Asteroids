@@ -38,14 +38,37 @@ public class Circle
         return (distance < (_radius + circle.getRadius()));
     }
 
-    public boolean contains(RectF rectangle)
+    public boolean contains(RectF rect)
     {
-        float XX = (_center.x - rectangle.centerX()) * (_center.x - rectangle.centerX());
-        float YY = (_center.y - rectangle.centerY()) * (_center.y - rectangle.centerY());
+        float XX = (_center.x - rect.centerX()) * (_center.x - rect.centerX());
+        float YY = (_center.y - rect.centerY()) * (_center.y - rect.centerY());
         float distance = FloatMath.sqrt(XX - YY);
 
-        // TODO: need to figure out circle x rectangle collision
-        boolean isContaining = (distance < (_radius + rectangle.width()/2.0f));
+        float diagCornerRectCircleDistance = FloatMath.sqrt((rect.height()/2.0f)*(rect.height()/2.0f) + (rect.width()/2.0f)*(rect.width()/2.0f))
+                + _radius;
+
+        // TODO: need to figure out circle x rect collision
+        boolean isContaining = false;
+
+
+        if(_center.x > rect.left && _center.x < rect.right &&
+           rect.height()/2.0f + _radius > Math.abs(rect.centerY() - _center.y))
+        {
+            // top or bottom hit
+            isContaining = true;
+        }
+        else if(_center.y < rect.top && _center.y > rect.bottom &&
+                rect.width()/2.0f + _radius > Math.abs(rect.centerX() - _center.x))
+        {
+            // left or right hit
+            isContaining = true;
+        }
+        else if(distance < diagCornerRectCircleDistance)
+        {
+            // everything else is being approximated as corner collisions
+            // % of this kind of impacts should be low
+            isContaining = true;
+        }
 
         return isContaining;
     }

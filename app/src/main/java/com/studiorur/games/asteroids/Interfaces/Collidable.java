@@ -2,6 +2,7 @@ package com.studiorur.games.asteroids.Interfaces;
 
 import android.graphics.RectF;
 
+import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.Circle;
 
 /**
@@ -9,11 +10,7 @@ import com.studiorur.games.asteroids.Helpers.Circle;
  */
 public interface Collidable
 {
-    public Circle getBoundingCircle();
+    public Boundary getBoundery();
 
-    public RectF getBoundingRectangle();
-
-    public void onCollision(Circle circle1, Circle circle2);
-
-    public void onCollision(Circle circle, RectF rectangle);
+    public void collide(Collidable object);
 }

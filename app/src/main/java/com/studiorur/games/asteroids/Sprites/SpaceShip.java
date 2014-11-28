@@ -3,6 +3,7 @@ package com.studiorur.games.asteroids.Sprites;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Interfaces.Collidable;
 import com.studiorur.games.asteroids.Helpers.Circle;
 import com.studiorur.games.asteroids.GameManagement.GameScreenActivity;
@@ -19,11 +20,15 @@ public class SpaceShip extends PhysicsSprite implements Collidable
     GameScreenActivity _gameScreenActivity = null;
     float _forceCoefficient = 0.000019f;
     float _frictionCoefficient = 0.88f;
+    Boundary _boundary;
 
     public SpaceShip(float mass, GameScreenActivity gameScreenActivity)
     {
         _gameScreenActivity = gameScreenActivity;
         _invertedMass = 1.0f/mass;
+
+        // TODO: create boundary
+        _boundary = null; //new Boundary()
 
         resetForces();
 
@@ -70,38 +75,17 @@ public class SpaceShip extends PhysicsSprite implements Collidable
     }
 
     @Override
-    public Circle getBoundingCircle()
+    public Boundary getBoundery()
     {
-        float radius = _width > _height ? _width : _height;
-
-        return new Circle(radius, _center);
+        return _boundary;
     }
 
     @Override
-    public RectF getBoundingRectangle()
+    public void collide(Collidable object)
     {
-        return new RectF(
-                _center.x - _width/2.0f,
-                _center.y - _height/2.0f,
-                _center.x + _width/2.0f,
-                _center.y + _height/2.0f);
-    }
-
-    @Override
-    public void onCollision(Circle circle1, Circle circle2)
-    {
-        if(circle1.contains(circle2))
+        if(_boundary.contains(object.getBoundery()))
         {
-            // TODO: do some cool explosion
-        }
-    }
-
-    @Override
-    public void onCollision(Circle circle, RectF rectangle)
-    {
-        if(circle.contains(rectangle))
-        {
-            // TODO: do some cool explosion
+            // TODO: do some awesome explosion and sound effect
         }
     }
 }

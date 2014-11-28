@@ -1,5 +1,6 @@
 package com.studiorur.games.asteroids.GameManagement;
 
+import com.studiorur.games.asteroids.Interfaces.Collidable;
 import com.studiorur.games.asteroids.Interfaces.Updatable;
 
 import java.util.ArrayList;
@@ -15,26 +16,28 @@ public class GameEngine extends Thread
     { RUNNING, PAUSED };
     private GameState _gameState;
 
-    private ArrayList<Updatable> _components;
+    private ArrayList<Updatable> _updatables;
+    private ArrayList<Collidable> _collidables;
 
     //for consistent rendering
     private long _sleepTime;
     //amount of time to sleep for (in milliseconds)
-    private long _delay = 50;
+    private long _delay = 40;
 
     public GameEngine()
     {
-        _components = new ArrayList<Updatable>();
+        _updatables = new ArrayList<Updatable>();
+        _collidables = new ArrayList<Collidable>();
     }
 
-    public void addComponent(Updatable component)
+    public void addUpdateable(Updatable updatable)
     {
-        _components.add(component);
+        _updatables.add(updatable);
     }
 
-    public void removeComponent(Updatable component)
+    public void addCOllidable(Collidable collidable)
     {
-        _components.remove(component);
+        _collidables.add(collidable);
     }
 
     @Override
@@ -67,9 +70,7 @@ public class GameEngine extends Thread
 
             //SLEEP
             //Sleep time. Time required to sleep to keep game consistent
-            //This starts with the specified _delay time (in milliseconds) then subtracts from that the
-            //actual time it took to update and render the game. This allows our game to render smoothly.
-            _sleepTime = _delay - ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
+            _sleepTime = _delay + ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
 
             try
             {
@@ -88,13 +89,18 @@ public class GameEngine extends Thread
 
     public void update(float time)
     {
-        for (Updatable component: _components)
-            component.update(time);
+        for (Updatable updatable: _updatables)
+            updatable.update(time);
+
+        // do collisions
+        for(int i=0; i<_collidables.size(); i++)
+            for(int j=i+1; j<_collidables.size(); j++)
+                _collidables.get(i).collide(_collidables.get(j));
     }
 
     public void draw()
     {
-        for (Updatable component: _components)
-            component.draw();
+        for (Updatable updatable: _updatables)
+            updatable.draw();
     }
 }

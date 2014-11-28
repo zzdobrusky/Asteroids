@@ -11,7 +11,6 @@ import android.view.MotionEvent;
 
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
-import com.studiorur.games.asteroids.Sprites.Sprite;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -128,15 +127,16 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         // Two layers of stars with different speeds will create a parallax effect
         StarGenerator starGeneratorSlower = new StarGenerator(50, 2.0f, heightInWorld, 0.001f, 0.01f, -0.00003f);
         starGeneratorSlower.init();
-        _gameEngine.addComponent(starGeneratorSlower);
+        _gameEngine.addUpdateable(starGeneratorSlower);
         StarGenerator starGeneratorFaster = new StarGenerator(20, 2.0f, heightInWorld, 0.01f, 0.015f, -0.0001f);
         starGeneratorFaster.init();
-        _gameEngine.addComponent(starGeneratorFaster);
+        _gameEngine.addUpdateable(starGeneratorFaster);
 
         // Asteroids
         AsteroidGenerator asteroidGenerator = new AsteroidGenerator(10, 2.0f, heightInWorld, 0.05f, 0.5f, 0.0001f, 0.001f);
         asteroidGenerator.init(getResources(), R.drawable.asteroid);
-        _gameEngine.addComponent(asteroidGenerator);
+        _gameEngine.addUpdateable(asteroidGenerator);
+        _gameEngine.addCOllidable(asteroidGenerator);
 
         // You
         SpaceShip ship = new SpaceShip(1.0f, this);
@@ -145,9 +145,8 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         ship.setCenterY(0.0f);
         ship.setWidth(0.15f);
         ship.setHeight(0.25f);
-        _gameEngine.addComponent(ship);
-
-
+        _gameEngine.addUpdateable(ship);
+        _gameEngine.addCOllidable(ship);
 
         // TODO: needs some interface
         _gameEngine.start();

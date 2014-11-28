@@ -3,7 +3,9 @@ package com.studiorur.games.asteroids.GameManagement;
 import android.content.res.Resources;
 import android.graphics.PointF;
 
+import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.Utils;
+import com.studiorur.games.asteroids.Interfaces.Collidable;
 import com.studiorur.games.asteroids.Interfaces.Updatable;
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
@@ -12,7 +14,7 @@ import com.studiorur.games.asteroids.Sprites.Sprite;
 /**
  * Created by zbynek on 11/25/2014.
  */
-public class AsteroidGenerator implements Updatable
+public class AsteroidGenerator implements Updatable, Collidable
 {
     int _numOfAsteroids;
     Asteroid[] _asteroids;
@@ -104,5 +106,17 @@ public class AsteroidGenerator implements Updatable
     {
         for(Asteroid asteroid: _asteroids)
             asteroid.draw();
+    }
+
+    @Override
+    public Boundary getBoundery()
+    {
+        return null;
+    }
+
+    @Override
+    public void collide(Collidable object)
+    {
+
     }
 }
