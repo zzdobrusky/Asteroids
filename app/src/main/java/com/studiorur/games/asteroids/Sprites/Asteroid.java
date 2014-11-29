@@ -1,5 +1,7 @@
 package com.studiorur.games.asteroids.Sprites;
 
+import android.util.Log;
+
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Interfaces.Collidable;
 
@@ -10,13 +12,9 @@ public class Asteroid extends PhysicsSprite implements Collidable
 {
     Boundary _boundary;
 
-    public void setShape()
+    public Asteroid()
     {
-        // assuming width and height were set
-        if(_width > 0.0f && _height > 0.0f)
-        {
-
-        }
+        _boundary = new Boundary(_width, _height, _center);
     }
 
     @Override
@@ -31,6 +29,7 @@ public class Asteroid extends PhysicsSprite implements Collidable
         if(_boundary.contains(object.getBoundery()))
         {
             // TODO: do some awesome explosion and sound effect
+            Log.i("collision", "asteroid collided");
         }
     }
 }

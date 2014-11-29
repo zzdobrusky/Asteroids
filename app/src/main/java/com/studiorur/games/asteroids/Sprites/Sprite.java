@@ -124,10 +124,10 @@ public class Sprite
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, texture, 0);
     }
 
-    PointF _center = new PointF(0.0f, 0.0f);;
-    float _width = 1.0f;
-    float _height = 1.0f;
-    float _rotation;
+    protected PointF _center = new PointF(0.0f, 0.0f);;
+    protected float _width = 1.0f;
+    protected float _height = 1.0f;
+    protected float _rotation;
 
     public PointF getCenter()
     {

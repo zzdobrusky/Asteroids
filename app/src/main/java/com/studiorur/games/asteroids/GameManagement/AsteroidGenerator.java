@@ -117,6 +117,7 @@ public class AsteroidGenerator implements Updatable, Collidable
     @Override
     public void collide(Collidable object)
     {
-
+        for(Asteroid asteroid: _asteroids)
+            asteroid.collide(object);
     }
 }

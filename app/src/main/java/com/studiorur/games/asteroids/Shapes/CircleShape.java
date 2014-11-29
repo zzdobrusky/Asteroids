@@ -95,9 +95,9 @@ public class CircleShape
         _TrianglePointsBuffer.rewind();
     }
 
-    PointF _center = new PointF(0.0f, 0.0f);;
-    float _radius  = 1.0f;;
-    int _color = Color.BLUE;;
+    protected PointF _center = new PointF(0.0f, 0.0f);;
+    protected float _radius  = 1.0f;;
+    protected int _color = Color.BLUE;;
 
     public float getCenterX()
     {
