@@ -41,6 +41,7 @@ public class Circle
         return (distance < (_radius + circle.getRadius()));
     }
 
+    // this is assuming that the rectangle is not rotating!
     public boolean contains(Rectangle rect)
     {
         float XX = (_center.x - rect.getCenter().x) * (_center.x - rect.getCenter().x);

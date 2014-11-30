@@ -25,7 +25,7 @@ public class SpaceShip extends PhysicsSprite implements Collidable
         _invertedMass = 1.0f/mass;
 
         // create boundary
-        _boundary = new Boundary();
+        _boundary = new Boundary(false);
 
         resetForces();
 

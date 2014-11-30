@@ -10,7 +10,6 @@ public class Boundary
     boolean _isCircle = false;
     Rectangle _rect = null;
     Circle _circle = null;
-    float _isRectThreshold = 10; // if either width or height is bigger by this % it is a rect
     boolean _isInitialized = false;
 
 
@@ -29,9 +28,9 @@ public class Boundary
         return  _isCircle;
     }
 
-    public Boundary()
+    public Boundary(boolean isCircle)
     {
-
+        _isCircle = isCircle;
     }
 
     private void init(float objectWidth, float objectHeight, PointF center)
@@ -39,7 +38,7 @@ public class Boundary
         // assuming that if width and height differ in more then some threshold in % make it a rectangle
         // otherwise it is a circle
         float minSize = Math.min(objectWidth, objectHeight);
-        if (Math.abs(objectHeight - objectWidth)/minSize > _isRectThreshold)
+        if (_isCircle)
         {
             // make the rectangle boundary
             _isCircle = false;

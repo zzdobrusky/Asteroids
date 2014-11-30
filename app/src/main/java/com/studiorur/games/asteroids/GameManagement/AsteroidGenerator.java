@@ -62,15 +62,14 @@ public class AsteroidGenerator implements Updatable, Collidable
     {
         float randX = Utils.randomInRange(-_width / 2.0f, _width / 2.0f);
         float randY = Utils.randomInRange(_height/2.0f, _height/2.0f + _screenOffset); // do it offscreen only
-        float randWidth = Utils.randomInRange(_minSize, _maxSize);
-        float randHeight = Utils.randomInRange(_minSize, _maxSize);
+        float randSize = Utils.randomInRange(_minSize, _maxSize);
         float randVelocityX = Utils.randomInRange(-_maxVelocity, _maxVelocity);
         float randVelocityY = Utils.randomInRange(_maxVelocity/2.0f, _maxVelocity);
         float randRotationVelocity = Utils.randomInRange(0.0f, _maxRotationVelocity);
 
         asteroid.setCenter(new PointF(randX, randY));
-        asteroid.setWidth(randWidth);
-        asteroid.setHeight(randHeight);
+        asteroid.setWidth(randSize);
+        asteroid.setHeight(randSize);
         asteroid.setVelocity(new PointF(randVelocityX, -randVelocityY));
         asteroid.setRotationVelocity(randRotationVelocity);
     }
