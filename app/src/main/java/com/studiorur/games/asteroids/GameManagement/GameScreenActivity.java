@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 
+import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
@@ -120,6 +121,10 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
 
         // set up the game
         _gameEngine = new GameEngine();
+
+        // load sound fxs
+        SoundFX.getInstance().addSound(this, R.raw.shot);
+        SoundFX.getInstance().addSound(this, R.raw.explosion);
 
         float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
         float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;

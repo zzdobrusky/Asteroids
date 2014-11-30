@@ -26,9 +26,19 @@ public class Rectangle
         return _width;
     }
 
+    public void setWidth(float width)
+    {
+        _width = width;
+    }
+
     public float getHeight()
     {
         return _height;
+    }
+
+    public void setHeight(float height)
+    {
+        _height = height;
     }
 
     public float getLeft()
@@ -49,6 +59,13 @@ public class Rectangle
     public float getBottom()
     {
         return _center.y - _height/2.0f;
+    }
+
+    public Rectangle()
+    {
+        _width = 0.5f;
+        _height = 0.5f;
+        _center = new PointF(0.0f, 0.0f);
     }
 
     public Rectangle(float width, float height, PointF center)

@@ -3,8 +3,10 @@ package com.studiorur.games.asteroids.Sprites;
 import android.graphics.PointF;
 
 import com.studiorur.games.asteroids.Helpers.Boundary;
+import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.Interfaces.Collidable;
 import com.studiorur.games.asteroids.GameManagement.GameScreenActivity;
+import com.studiorur.games.asteroids.R;
 
 /**
  * Created by zbynek on 11/25/2014.
@@ -86,6 +88,7 @@ public class SpaceShip extends PhysicsSprite implements Collidable
         {
             // TODO: do some awesome explosion and sound effect
             //Log.i("collision", "ship collided");
+            SoundFX.getInstance().play(R.raw.shot, 1.0f);
         }
     }
 }

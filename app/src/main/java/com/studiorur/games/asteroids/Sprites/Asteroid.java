@@ -18,8 +18,6 @@ public class Asteroid extends PhysicsSprite implements Collidable
     public Asteroid(Context context)
     {
         _boundary = new Boundary(true);
-        // load sounds
-        SoundFX.getInstance().addSound(context, R.raw.explosion);
     }
 
     @Override

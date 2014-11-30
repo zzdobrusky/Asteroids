@@ -31,41 +31,23 @@ public class Boundary
     public Boundary(boolean isCircle)
     {
         _isCircle = isCircle;
-    }
-
-    private void init(float objectWidth, float objectHeight, PointF center)
-    {
-        // assuming that if width and height differ in more then some threshold in % make it a rectangle
-        // otherwise it is a circle
-        float minSize = Math.min(objectWidth, objectHeight);
-        if (_isCircle)
-        {
-            // make the rectangle boundary
-            _isCircle = false;
-            _rect = new Rectangle(objectWidth, objectHeight, center);
-        }
-        else
-        {
-            // make the circle boundary
-            _isCircle = true;
-            _circle = new Circle(minSize, center);
-        }
-
-        _isInitialized = true;
+        _rect = new Rectangle();
+        _circle = new Circle();
     }
 
     public void updateBoundary(float objectWidth, float objectHeight, PointF center)
     {
-        if(!_isInitialized)
-            init(objectWidth, objectHeight, center);
-
         if(_isCircle)
         {
+            float radius = Math.min(objectHeight, objectWidth);
             _circle.setCenter(center);
+            _circle.setRadius(radius);
         }
         else
         {
             _rect.setCenter(center);
+            _rect.setWidth(objectWidth);
+            _rect.setHeight(objectHeight);
         }
     }
 
