@@ -11,6 +11,8 @@ public class Boundary
     Rectangle _rect = null;
     Circle _circle = null;
     float _isRectThreshold = 10; // if either width or height is bigger by this % it is a rect
+    boolean _isInitialized = false;
+
 
     public Rectangle getRect()
     {
@@ -27,11 +29,17 @@ public class Boundary
         return  _isCircle;
     }
 
-    public Boundary(float objectWidth, float objectHeight, PointF center)
+    public Boundary()
+    {
+
+    }
+
+    private void init(float objectWidth, float objectHeight, PointF center)
     {
         // assuming that if width and height differ in more then some threshold in % make it a rectangle
         // otherwise it is a circle
-        if (Math.abs(objectHeight - objectWidth)/objectWidth > _isRectThreshold)
+        float minSize = Math.min(objectWidth, objectHeight);
+        if (Math.abs(objectHeight - objectWidth)/minSize > _isRectThreshold)
         {
             // make the rectangle boundary
             _isCircle = false;
@@ -41,13 +49,17 @@ public class Boundary
         {
             // make the circle boundary
             _isCircle = true;
-            float radius = Math.min(objectHeight, objectWidth);
-            _circle = new Circle(radius, center);
+            _circle = new Circle(minSize, center);
         }
+
+        _isInitialized = true;
     }
 
-    public void updateBoundary(PointF center)
+    public void updateBoundary(float objectWidth, float objectHeight, PointF center)
     {
+        if(!_isInitialized)
+            init(objectWidth, objectHeight, center);
+
         if(_isCircle)
         {
             _circle.setCenter(center);

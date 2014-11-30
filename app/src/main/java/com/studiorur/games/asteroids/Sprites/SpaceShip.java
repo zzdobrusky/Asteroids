@@ -1,14 +1,10 @@
 package com.studiorur.games.asteroids.Sprites;
 
 import android.graphics.PointF;
-import android.graphics.RectF;
-import android.util.Log;
 
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Interfaces.Collidable;
-import com.studiorur.games.asteroids.Helpers.Circle;
 import com.studiorur.games.asteroids.GameManagement.GameScreenActivity;
-import com.studiorur.games.asteroids.R;
 
 /**
  * Created by zbynek on 11/25/2014.
@@ -29,7 +25,7 @@ public class SpaceShip extends PhysicsSprite implements Collidable
         _invertedMass = 1.0f/mass;
 
         // create boundary
-        _boundary = new Boundary(_width, _height, _center);
+        _boundary = new Boundary();
 
         resetForces();
 
@@ -78,7 +74,7 @@ public class SpaceShip extends PhysicsSprite implements Collidable
     @Override
     public Boundary getBoundery()
     {
-        _boundary.updateBoundary(_center);
+        _boundary.updateBoundary(_width, _height, _center);
 
         return _boundary;
     }
@@ -86,7 +82,7 @@ public class SpaceShip extends PhysicsSprite implements Collidable
     @Override
     public void collide(Collidable object)
     {
-        if(_boundary.contains(object.getBoundery()))
+        if(getBoundery().contains(object.getBoundery()))
         {
             // TODO: do some awesome explosion and sound effect
             //Log.i("collision", "ship collided");
