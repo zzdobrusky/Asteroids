@@ -39,7 +39,7 @@ public class Boundary
     {
         if(_isCircle)
         {
-            float radius = Math.min(objectHeight, objectWidth);
+            float radius = Math.min(objectHeight, objectWidth)/2.0f;
             _circle.setCenter(center);
             _circle.setRadius(radius);
         }
