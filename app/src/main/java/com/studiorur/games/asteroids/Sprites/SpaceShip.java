@@ -78,6 +78,8 @@ public class SpaceShip extends PhysicsSprite implements Collidable
     @Override
     public Boundary getBoundery()
     {
+        _boundary.updateBoundary(_center);
+
         return _boundary;
     }
 
@@ -87,7 +89,7 @@ public class SpaceShip extends PhysicsSprite implements Collidable
         if(_boundary.contains(object.getBoundery()))
         {
             // TODO: do some awesome explosion and sound effect
-            Log.i("collision", "ship collided");
+            //Log.i("collision", "ship collided");
         }
     }
 }

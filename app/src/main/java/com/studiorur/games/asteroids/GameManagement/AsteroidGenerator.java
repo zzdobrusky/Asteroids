@@ -1,5 +1,6 @@
 package com.studiorur.games.asteroids.GameManagement;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
 
@@ -46,13 +47,13 @@ public class AsteroidGenerator implements Updatable, Collidable
         _screenOffset = 0.2f;
     }
 
-    public void init(Resources resourcers, int textureIdentifier)
+    public void init(Context context, int textureIdentifier)
     {
         // randomly throw asteroids with random velocity, rotation, size and shape
         for(int i=0; i<_numOfAsteroids; i++)
         {
-            _asteroids[i] = new Asteroid();
-            _asteroids[i].loadTexture(resourcers, textureIdentifier);
+            _asteroids[i] = new Asteroid(context);
+            _asteroids[i].loadTexture(context.getResources(), textureIdentifier);
             randomizeAsteroid(_asteroids[i]);
         }
     }
@@ -111,6 +112,7 @@ public class AsteroidGenerator implements Updatable, Collidable
     @Override
     public Boundary getBoundery()
     {
+        // not used
         return null;
     }
 

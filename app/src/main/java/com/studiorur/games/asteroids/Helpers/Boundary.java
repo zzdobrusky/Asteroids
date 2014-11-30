@@ -1,7 +1,6 @@
 package com.studiorur.games.asteroids.Helpers;
 
 import android.graphics.PointF;
-import android.graphics.RectF;
 
 /**
  * Created by zbynek on 11/28/2014.
@@ -9,11 +8,11 @@ import android.graphics.RectF;
 public class Boundary
 {
     boolean _isCircle = false;
-    RectF _rect = null;
+    Rectangle _rect = null;
     Circle _circle = null;
     float _isRectThreshold = 10; // if either width or height is bigger by this % it is a rect
 
-    public RectF getRect()
+    public Rectangle getRect()
     {
         return _rect;
     }
@@ -34,20 +33,28 @@ public class Boundary
         // otherwise it is a circle
         if (Math.abs(objectHeight - objectWidth)/objectWidth > _isRectThreshold)
         {
-            // make a rectangle the boundary
+            // make the rectangle boundary
             _isCircle = false;
-            _rect = new RectF(
-                    center.x - objectWidth/2.0f,
-                    center.y + objectHeight/2.0f,
-                    center.x + objectWidth/2.0f,
-                    center.y - objectHeight/2.0f);
+            _rect = new Rectangle(objectWidth, objectHeight, center);
         }
         else
         {
-            // make a circle the boundary
+            // make the circle boundary
             _isCircle = true;
             float radius = Math.min(objectHeight, objectWidth);
             _circle = new Circle(radius, center);
+        }
+    }
+
+    public void updateBoundary(PointF center)
+    {
+        if(_isCircle)
+        {
+            _circle.setCenter(center);
+        }
+        else
+        {
+            _rect.setCenter(center);
         }
     }
 

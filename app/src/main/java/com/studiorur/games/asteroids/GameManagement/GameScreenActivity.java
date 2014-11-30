@@ -125,18 +125,18 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
         float heightInWorld = topBorder - bottomBorder;
         // Two layers of stars with different speeds will create a parallax effect
-        StarGenerator starGeneratorSlower = new StarGenerator(50, 2.0f, heightInWorld, 0.001f, 0.01f, -0.00003f);
+        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
         starGeneratorSlower.init();
         _gameEngine.addUpdateable(starGeneratorSlower);
-        StarGenerator starGeneratorFaster = new StarGenerator(20, 2.0f, heightInWorld, 0.01f, 0.015f, -0.0001f);
+        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
         starGeneratorFaster.init();
         _gameEngine.addUpdateable(starGeneratorFaster);
 
         // Asteroids
         AsteroidGenerator asteroidGenerator = new AsteroidGenerator(10, 2.0f, heightInWorld, 0.05f, 0.5f, 0.0001f, 0.001f);
-        asteroidGenerator.init(getResources(), R.drawable.asteroid);
+        asteroidGenerator.init(this, R.drawable.asteroid);
         _gameEngine.addUpdateable(asteroidGenerator);
-        _gameEngine.addCOllidable(asteroidGenerator);
+        _gameEngine.addCollidable(asteroidGenerator);
 
         // You
         SpaceShip ship = new SpaceShip(1.0f, this);
@@ -146,7 +146,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         ship.setWidth(0.15f);
         ship.setHeight(0.25f);
         _gameEngine.addUpdateable(ship);
-        _gameEngine.addCOllidable(ship);
+        _gameEngine.addCollidable(ship);
 
         // TODO: needs some interface
         _gameEngine.start();

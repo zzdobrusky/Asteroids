@@ -22,7 +22,7 @@ public class GameEngine extends Thread
     //for consistent rendering
     private long _sleepTime;
     //amount of time to sleep for (in milliseconds)
-    private long _delay = 40;
+    private long _delay = 50;
 
     public GameEngine()
     {
@@ -35,7 +35,7 @@ public class GameEngine extends Thread
         _updatables.add(updatable);
     }
 
-    public void addCOllidable(Collidable collidable)
+    public void addCollidable(Collidable collidable)
     {
         _collidables.add(collidable);
     }

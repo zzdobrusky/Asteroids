@@ -9,5 +9,7 @@ public interface Collidable
 {
     public Boundary getBoundery();
 
+    public String toString();
+
     public void collide(Collidable object);
 }

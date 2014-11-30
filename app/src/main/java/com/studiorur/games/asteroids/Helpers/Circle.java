@@ -1,7 +1,6 @@
 package com.studiorur.games.asteroids.Helpers;
 
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.util.FloatMath;
 
 /**
@@ -9,8 +8,8 @@ import android.util.FloatMath;
  */
 public class Circle
 {
-    float _radius;
-    PointF _center;
+    protected float _radius;
+    protected PointF _center;
 
     public float getRadius()
     {
@@ -22,6 +21,10 @@ public class Circle
         return _center;
     }
 
+    public void setCenter(PointF center)
+    {
+        _center = center;
+    }
 
     public Circle(float radius, PointF center)
     {
@@ -33,32 +36,31 @@ public class Circle
     {
         float XX = (_center.x - circle.getCenter().x) * (_center.x - circle.getCenter().x);
         float YY = (_center.y - circle.getCenter().y) * (_center.y - circle.getCenter().y);
-        float distance = FloatMath.sqrt(XX - YY);
+        float distance = FloatMath.sqrt(XX + YY);
 
         return (distance < (_radius + circle.getRadius()));
     }
 
-    public boolean contains(RectF rect)
+    public boolean contains(Rectangle rect)
     {
-        float XX = (_center.x - rect.centerX()) * (_center.x - rect.centerX());
-        float YY = (_center.y - rect.centerY()) * (_center.y - rect.centerY());
-        float distance = FloatMath.sqrt(XX - YY);
+        float XX = (_center.x - rect.getCenter().x) * (_center.x - rect.getCenter().x);
+        float YY = (_center.y - rect.getCenter().y) * (_center.y - rect.getCenter().y);
+        float distance = FloatMath.sqrt(XX + YY);
 
-        float diagCornerRectCircleDistance = FloatMath.sqrt((rect.height()/2.0f)*(rect.height()/2.0f) + (rect.width()/2.0f)*(rect.width()/2.0f))
+        float diagCornerRectCircleDistance = FloatMath.sqrt((rect.getHeight()/2.0f)*(rect.getHeight()/2.0f) +
+                (rect.getWidth()/2.0f)*(rect.getWidth()/2.0f))
                 + _radius;
 
-        // TODO: need to figure out circle x rect collision
         boolean isContaining = false;
 
-
-        if(_center.x > rect.left && _center.x < rect.right &&
-           rect.height()/2.0f + _radius > Math.abs(rect.centerY() - _center.y))
+        if(_center.x > rect.getLeft() && _center.x < rect.getRight() &&
+           rect.getHeight()/2.0f + _radius > Math.abs(rect.getCenter().y - _center.y))
         {
             // top or bottom hit
             isContaining = true;
         }
-        else if(_center.y < rect.top && _center.y > rect.bottom &&
-                rect.width()/2.0f + _radius > Math.abs(rect.centerX() - _center.x))
+        else if(_center.y < rect.getTop() && _center.y > rect.getBottom() &&
+                rect.getWidth()/2.0f + _radius > Math.abs(rect.getCenter().x - _center.x))
         {
             // left or right hit
             isContaining = true;
