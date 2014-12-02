@@ -5,7 +5,7 @@ import android.graphics.PointF;
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.Interfaces.Collidable;
-import com.studiorur.games.asteroids.GameManagement.GameScreenActivity;
+import com.studiorur.games.asteroids.Adapters.GameScreenActivity;
 import com.studiorur.games.asteroids.R;
 
 /**

@@ -1,4 +1,4 @@
-package com.studiorur.games.asteroids.GameManagement;
+package com.studiorur.games.asteroids.Adapters;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 
+import com.studiorur.games.asteroids.GameManagement.AsteroidGenerator;
+import com.studiorur.games.asteroids.GameManagement.GameEngine;
+import com.studiorur.games.asteroids.GameManagement.StarGenerator;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
