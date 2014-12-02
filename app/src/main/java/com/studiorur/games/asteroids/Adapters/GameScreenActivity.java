@@ -122,17 +122,17 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
             _displayScaleY = (float)_height/(float)_width;
         }
 
-        // set up the game
+        // *********************** GAME SETUP ***********************
         _gameEngine = new GameEngine();
 
-        // load sound fxs
+        // Load sound fxs
         SoundFX.getInstance().addSound(this, R.raw.shot);
         SoundFX.getInstance().addSound(this, R.raw.explosion);
 
+        // Background stars - two layers of stars with different speeds will create a parallax effect
         float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
         float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
         float heightInWorld = topBorder - bottomBorder;
-        // Two layers of stars with different speeds will create a parallax effect
         StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
         starGeneratorSlower.init();
         _gameEngine.addUpdateable(starGeneratorSlower);
@@ -141,14 +141,14 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         _gameEngine.addUpdateable(starGeneratorFaster);
 
         // Asteroids
-        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(10, 2.0f, heightInWorld, 0.05f, 0.5f, 0.0001f, 0.001f);
+        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(10, 2.0f, heightInWorld, 0.08f, 0.5f, 0.0001f, 0.001f);
         asteroidGenerator.init(this, R.drawable.asteroid);
         _gameEngine.addUpdateable(asteroidGenerator);
         _gameEngine.addCollidable(asteroidGenerator);
 
-        // You
+        // Your spaceship
         SpaceShip ship = new SpaceShip(1.0f, this);
-        ship.loadTexture(getResources(), R.drawable.spaceship);
+        ship.loadSpritesheet(getResources(), R.drawable.spaceship);
         ship.setCenterX(0.0f);
         ship.setCenterY(0.0f);
         ship.setWidth(0.15f);

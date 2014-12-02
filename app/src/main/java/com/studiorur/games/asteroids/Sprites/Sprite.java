@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.FloatMath;
@@ -17,14 +18,95 @@ import java.nio.FloatBuffer;
  */
 public class Sprite
 {
+    // Shared
     static int _Program = -1;
     static final int POSITION_ATTRIBUTE_ID = 0;
     static final int TEXTURE_COORDINATE_ATTRIBUTE_ID = 1;
     static FloatBuffer _QuadPointsBuffer = null;
     static FloatBuffer _QuadTextureBuffer = null;
-    int _textureId;
 
-    static void init()
+    // Unique for each sprite
+    // Texture related
+    private int _textureId;
+    private RectF _textureRect = new RectF(0.0f, 0.0f, 1.0f, 1.0f); // default is the whole texture
+    // Sprite related
+    protected PointF _center = new PointF(0.0f, 0.0f);;
+    protected float _width = 1.0f;
+    protected float _height = 1.0f;
+    protected float _rotation;
+
+    public RectF getTextureRect()
+    {
+        return _textureRect;
+    }
+
+    public void setTextureRect(RectF textureRect)
+    {
+        _textureRect = textureRect;
+    }
+
+    public PointF getCenter()
+    {
+        return _center;
+    }
+
+    public void setCenter(PointF center)
+    {
+        _center = center;
+    }
+
+    public float getCenterX()
+    {
+        return _center.x;
+    }
+
+    public void setCenterX(float centerX)
+    {
+        _center = new PointF(centerX, _center.y);
+    }
+
+    public float getCenterY()
+    {
+        return _center.y;
+    }
+
+    public void setCenterY(float centerY)
+    {
+        _center = new PointF(_center.x, centerY);
+    }
+
+    public float getWidth()
+    {
+        return _width;
+    }
+
+    public void setWidth(float width)
+    {
+        _width = width;
+        //updateModelViewMatrix();
+    }
+
+    public float getHeight()
+    {
+        return _height;
+    }
+
+    public void setHeight(float height)
+    {
+        _height = height;
+    }
+
+    public float getRotation()
+    {
+        return _rotation;
+    }
+
+    public void setRotation(float rotation)
+    {
+        _rotation = rotation;
+    }
+
+    private void init()
     {
         String vertexShaderSource = "" +
                 "attribute vec4 position; \n" +
@@ -98,10 +180,10 @@ public class Sprite
         // quad texture coordinates
         float[] quadTextureCoordinates =
                 {
-                        0.0f, 1.0f,
-                        1.0f, 1.0f,
-                        0.0f, 0.0f,
-                        1.0f, 0.0f,
+                        _textureRect.left, _textureRect.bottom,
+                        _textureRect.right, _textureRect.bottom,
+                        _textureRect.left, _textureRect.top,
+                        _textureRect.right, _textureRect.top,
                 };
 
         ByteBuffer quadTextureByteBuffer = ByteBuffer.allocateDirect(quadTextureCoordinates.length * 4);
@@ -111,7 +193,7 @@ public class Sprite
         _QuadTextureBuffer.rewind();
     }
 
-    public void loadTexture(Resources resourcers, int resourceIdentifier)
+    protected void loadTexture(Resources resourcers, int resourceIdentifier)
     {
         Bitmap texture = BitmapFactory.decodeResource(resourcers, resourceIdentifier);
         int[] textureIds = new int[1];
@@ -122,72 +204,6 @@ public class Sprite
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, texture, 0);
-    }
-
-    protected PointF _center = new PointF(0.0f, 0.0f);;
-    protected float _width = 1.0f;
-    protected float _height = 1.0f;
-    protected float _rotation;
-
-    public PointF getCenter()
-    {
-        return _center;
-    }
-
-    public void setCenter(PointF center)
-    {
-        _center = center;
-    }
-
-    public float getCenterX()
-    {
-        return _center.x;
-    }
-
-    public void setCenterX(float centerX)
-    {
-        _center = new PointF(centerX, _center.y);
-    }
-
-    public float getCenterY()
-    {
-        return _center.y;
-    }
-
-    public void setCenterY(float centerY)
-    {
-        _center = new PointF(_center.x, centerY);
-    }
-
-    public float getWidth()
-    {
-        return _width;
-    }
-
-    public void setWidth(float width)
-    {
-        _width = width;
-        //updateModelViewMatrix();
-    }
-
-    public float getHeight()
-    {
-        return _height;
-    }
-
-    public void setHeight(float height)
-    {
-        _height = height;
-    }
-
-    public float getRotation()
-    {
-        return _rotation;
-    }
-
-    public void setRotation(float rotation)
-    {
-        _rotation = rotation;
     }
 
     public void draw()

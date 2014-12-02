@@ -7,7 +7,7 @@ import com.studiorur.games.asteroids.Interfaces.Updatable;
 /**
  * Created by zbynek on 11/24/2014.
  */
-public class PhysicsSprite extends Sprite implements Updatable
+public class PhysicsSprite extends AnimatedSprite implements Updatable
 {
     PointF _velocity = new PointF(0.0f, 0.0f);;
     Float _rotationVelocity  = 0.0f;;

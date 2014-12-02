@@ -53,7 +53,7 @@ public class AsteroidGenerator implements Updatable, Collidable
         for(int i=0; i<_numOfAsteroids; i++)
         {
             _asteroids[i] = new Asteroid(context);
-            _asteroids[i].loadTexture(context.getResources(), textureIdentifier);
+            _asteroids[i].loadSpritesheet(context.getResources(), textureIdentifier);
             randomizeAsteroid(_asteroids[i]);
         }
     }
