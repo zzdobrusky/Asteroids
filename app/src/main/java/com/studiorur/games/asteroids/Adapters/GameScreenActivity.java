@@ -148,7 +148,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
 
         // Your spaceship
         SpaceShip ship = new SpaceShip(1.0f, this);
-        ship.loadSpritesheet(getResources(), R.drawable.spaceship);
+        ship.loadSpritesheet(getResources(), R.drawable.spaceship_spreadsheet, 1, 4, 50.0f);
         ship.setCenterX(0.0f);
         ship.setCenterY(0.0f);
         ship.setWidth(0.15f);

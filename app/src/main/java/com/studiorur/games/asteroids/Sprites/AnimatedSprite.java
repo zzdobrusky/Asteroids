@@ -28,13 +28,14 @@ public class AnimatedSprite extends Sprite
     private int _startCol = 0;
     private int _endCol = _numOfCols - 1;
     private int _animatedRow;
-    // Default is no repetitions, -1 means repeats endlessly till stop animation called
-    private int _numOfRepetitions = 0;
+    private int _currentCol = _startCol;
+    // Default is 1 repetition, 0 means repeats endlessly till stop animation called
+    private int _numOfRepetitions = 1;
     private int _count = _numOfRepetitions;
 
     public void loadSpritesheet(Resources resources, int resourceIdentifier)
     {
-        loadSpritesheet(resources, resourceIdentifier, _numOfRows, _numOfCols, _animationInterval);
+        loadSpritesheet(resources, resourceIdentifier, 1, 1, _animationInterval);
     }
 
     public void loadSpritesheet(
@@ -50,26 +51,57 @@ public class AnimatedSprite extends Sprite
         _frameWidth = 1.0f/_numOfCols;
         _frameHeight = 1.0f/_numOfRows;
         _animationInterval = animationInterval;
+
+        // move to the first frame as default
+        setFrame(0, 0);
     }
 
     public void startAnimation(int animatedRow, int numOfRepetitions)
     {
-        startAnimation(animatedRow, _startCol, _endCol, numOfRepetitions);
+        // mostly default
+        startAnimation(animatedRow, _startCol, _endCol, _animationInterval, numOfRepetitions);
     }
 
-    public void startAnimation(int animatedRow, int startCol, int endCol, int numOfRepetions)
+    public void startAnimation(int animatedRow, int startCol, int endCol, float animationInterval, int numOfRepetitions)
     {
         _animatedRow = animatedRow;
         _startCol = startCol;
         _endCol = endCol;
+        _animationInterval = animationInterval;
 
-        // TODO: start timer and call each frame with animation interval till the end
-        // and repeat if required
+        int numOfFrames = endCol - startCol;
+
+
+        // Start timer and call each frame with animation interval till the end and repeat if required
+        _currentCol = _startCol;
+        _timer = new LoopTimer(_animationInterval, (numOfFrames + 1) * numOfRepetitions);
+        _timer.setOnTimePassedListener(new LoopTimer.OnTimePassedListener()
+        {
+            @Override
+            public void onTimePassed()
+            {
+                setFrame(_animatedRow, _currentCol);
+                _currentCol++;
+
+                if(_currentCol > _endCol)
+                    _currentCol = _startCol;
+            }
+        });
     }
 
-    public void stopAnimation(int stopCol)
+    public void stopAnimation()
     {
-        // TODO: stop and destroy timer
+        stopAnimation(_startCol);
+    }
+
+    public void stopAnimation(int stopFrame)
+    {
+        // Stop and destroy timer
+        _timer.stop();
+        _timer = null;
+
+        // set frame
+        setFrame(_animatedRow, stopFrame);
     }
 
 

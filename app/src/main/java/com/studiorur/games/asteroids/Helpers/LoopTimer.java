@@ -49,4 +49,9 @@ public class LoopTimer
                 _count--;
         }
     }
+
+    public void stop()
+    {
+        _count = -1;
+    }
 }
