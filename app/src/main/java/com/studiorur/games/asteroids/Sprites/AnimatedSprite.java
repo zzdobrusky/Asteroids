@@ -57,25 +57,28 @@ public class AnimatedSprite extends Sprite implements IUpdatable
         setFrame(0, 0);
     }
 
-    public void startAnimation(int animatedRow, int numOfRepetitions)
+    public void initAnimation(int animatedRow, int numOfRepetitions)
     {
         // mostly default
-        startAnimation(animatedRow, _startCol, _endCol, _animationInterval, numOfRepetitions);
+        initAnimation(animatedRow, 0, 0, _animationInterval, numOfRepetitions);
     }
 
-    public void startAnimation(int animatedRow, int startCol, int endCol, float animationInterval, int numOfRepetitions)
+    public void initAnimation(int animatedRow, int startCol, int endCol, float animationInterval, int numOfRepetitions)
     {
         _animatedRow = animatedRow;
         _startCol = startCol;
         _endCol = endCol;
         _animationInterval = animationInterval;
 
-        int numOfFrames = endCol - startCol;
-
 
         // Start timer and call each frame with animation interval till the end and repeat if required
         _currentCol = _startCol;
+        int numOfFrames = _endCol - _startCol;
         _timer = new LoopTimer(_animationInterval, (numOfFrames + 1) * numOfRepetitions);
+    }
+
+    public void startAnimation()
+    {
         _timer.setOnTimePassedListener(new LoopTimer.OnTimePassedListener()
         {
             @Override
@@ -123,6 +126,7 @@ public class AnimatedSprite extends Sprite implements IUpdatable
     @Override
     public void update(float time)
     {
-        _timer.update(time);
+        if(_timer != null)
+            _timer.update(time);
     }
 }

@@ -52,7 +52,8 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         // create boundary
         _boundary = new Boundary(false);
 
-        startAnimation(0, 1, 3, 25.0f, 0);
+        initAnimation(0, 1, 3, 25.0f, 0);
+        startAnimation();
 
         resetForces();
 
