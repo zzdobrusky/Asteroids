@@ -73,8 +73,8 @@ public class AnimatedSprite extends Sprite implements IUpdatable
 
         // Start timer and call each frame with animation interval till the end and repeat if required
         _currentCol = _startCol;
-        int numOfFrames = _endCol - _startCol;
-        _timer = new LoopTimer(_animationInterval, (numOfFrames + 1) * numOfRepetitions);
+        int numOfFrames = _endCol - _startCol + 1;
+        _timer = new LoopTimer(_animationInterval, numOfFrames * numOfRepetitions);
     }
 
     public void startAnimation()
