@@ -2,12 +2,12 @@ package com.studiorur.games.asteroids.Shapes;
 
 import android.graphics.PointF;
 
-import com.studiorur.games.asteroids.Interfaces.Updatable;
+import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 
 /**
  * Created by zbynek on 11/25/2014.
  */
-public class Star extends CircleShape implements Updatable
+public class Star extends CircleShape implements IUpdatable
 {
     PointF _velocity = new PointF(0.0f, 0.0f);;
 

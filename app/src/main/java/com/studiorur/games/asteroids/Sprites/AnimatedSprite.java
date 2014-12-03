@@ -4,11 +4,12 @@ import android.content.res.Resources;
 import android.graphics.RectF;
 
 import com.studiorur.games.asteroids.Helpers.LoopTimer;
+import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 
 /**
  * Created by zbynek on 12/2/2014.
  */
-public class AnimatedSprite extends Sprite
+public class AnimatedSprite extends Sprite implements IUpdatable
 {
     private float _animationInterval = 40.0f; // in milliseconds
     private LoopTimer _timer = null;
@@ -116,5 +117,12 @@ public class AnimatedSprite extends Sprite
                 (col + 1) * _frameWidth,
                 (row + 1) * _frameHeight);
         setTextureRect(newFrameRect);
+    }
+
+
+    @Override
+    public void update(float time)
+    {
+        _timer.update(time);
     }
 }

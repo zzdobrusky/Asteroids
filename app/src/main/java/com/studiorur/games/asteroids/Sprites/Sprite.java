@@ -31,7 +31,7 @@ public class Sprite
     private RectF _textureRect = new RectF(0.0f, 0.0f, 1.0f, 1.0f); // default is the whole texture
 
     // Sprite related
-    protected PointF _center = new PointF(0.0f, 0.0f);;
+    protected PointF _center = new PointF(0.0f, 0.0f);
     protected float _width = 1.0f;
     protected float _height = 1.0f;
     protected float _rotation;
@@ -84,7 +84,6 @@ public class Sprite
     public void setWidth(float width)
     {
         _width = width;
-        //updateModelViewMatrix();
     }
 
     public float getHeight()
@@ -178,20 +177,39 @@ public class Sprite
         _QuadPointsBuffer.put(quadPoints);
         _QuadPointsBuffer.rewind();
 
+        setTextureCoordinates();
+    }
+
+    protected void setTextureCoordinates()
+    {
         // quad texture coordinates
-        float[] quadTextureCoordinates =
-                {
-                        _textureRect.left, _textureRect.bottom,
-                        _textureRect.right, _textureRect.bottom,
-                        _textureRect.left, _textureRect.top,
-                        _textureRect.right, _textureRect.top,
-                };
+        float[] quadTextureCoordinates = {
+                _textureRect.left, _textureRect.bottom,
+                _textureRect.right, _textureRect.bottom,
+                _textureRect.left, _textureRect.top,
+                _textureRect.right, _textureRect.top,
+        };
 
         ByteBuffer quadTextureByteBuffer = ByteBuffer.allocateDirect(quadTextureCoordinates.length * 4);
         quadTextureByteBuffer.order(ByteOrder.nativeOrder());
         _quadTextureBuffer = quadTextureByteBuffer.asFloatBuffer();
         _quadTextureBuffer.put(quadTextureCoordinates);
         _quadTextureBuffer.rewind();
+    }
+
+    protected void setModelView()
+    {
+        float[] modelView = new float[]
+                {
+                        _width * FloatMath.cos(_rotation), _width * FloatMath.sin(_rotation), 0.0f, 0.0f,
+                        -_height * FloatMath.sin(_rotation), _height * FloatMath.cos(_rotation), 0.0f, 0.0f,
+                        0.0f, 0.0f, 1.0f, 0.0f,
+                        _center.x, _center.y, 0.0f, 1.0f,
+                };
+
+        int modelViewLocation = GLES20.glGetUniformLocation(_Program, "modelView");
+        GLES20.glUniformMatrix4fv(modelViewLocation, 1, false, modelView, 0);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
     }
 
     protected void loadTexture(Resources resourcers, int resourceIdentifier)
@@ -214,18 +232,8 @@ public class Sprite
 
         GLES20.glUseProgram(_Program);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _textureId);
-
-        float[] modelView = new float[]
-                {
-                        _width * FloatMath.cos(_rotation), _width * FloatMath.sin(_rotation), 0.0f, 0.0f,
-                        -_height * FloatMath.sin(_rotation), _height * FloatMath.cos(_rotation), 0.0f, 0.0f,
-                        0.0f, 0.0f, 1.0f, 0.0f,
-                        _center.x, _center.y, 0.0f, 1.0f,
-                };
-
-        int modelViewLocation = GLES20.glGetUniformLocation(_Program, "modelView");
-        GLES20.glUniformMatrix4fv(modelViewLocation, 1, false, modelView, 0);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        setTextureCoordinates();
+        setModelView();
 
         GLES20.glEnableVertexAttribArray(POSITION_ATTRIBUTE_ID);
         GLES20.glVertexAttribPointer(POSITION_ATTRIBUTE_ID, 4, GLES20.GL_FLOAT, false, 4 * 4, _QuadPointsBuffer);

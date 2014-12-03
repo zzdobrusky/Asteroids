@@ -1,7 +1,7 @@
 package com.studiorur.games.asteroids.GameManagement;
 
-import com.studiorur.games.asteroids.Interfaces.Collidable;
-import com.studiorur.games.asteroids.Interfaces.Updatable;
+import com.studiorur.games.asteroids.Interfaces.ICollidable;
+import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -16,8 +16,8 @@ public class GameEngine extends Thread
     { RUNNING, PAUSED };
     private GameState _gameState;
 
-    private ArrayList<Updatable> _updatables;
-    private ArrayList<Collidable> _collidables;
+    private ArrayList<IUpdatable> _IUpdatables;
+    private ArrayList<ICollidable> _ICollidables;
 
     //for consistent rendering
     private long _sleepTime;
@@ -26,18 +26,18 @@ public class GameEngine extends Thread
 
     public GameEngine()
     {
-        _updatables = new ArrayList<Updatable>();
-        _collidables = new ArrayList<Collidable>();
+        _IUpdatables = new ArrayList<IUpdatable>();
+        _ICollidables = new ArrayList<ICollidable>();
     }
 
-    public void addUpdateable(Updatable updatable)
+    public void addUpdateable(IUpdatable IUpdatable)
     {
-        _updatables.add(updatable);
+        _IUpdatables.add(IUpdatable);
     }
 
-    public void addCollidable(Collidable collidable)
+    public void addCollidable(ICollidable ICollidable)
     {
-        _collidables.add(collidable);
+        _ICollidables.add(ICollidable);
     }
 
     @Override
@@ -89,18 +89,18 @@ public class GameEngine extends Thread
 
     public void update(float time)
     {
-        for (Updatable updatable: _updatables)
-            updatable.update(time);
+        for (IUpdatable IUpdatable : _IUpdatables)
+            IUpdatable.update(time);
 
         // do collisions
-        for(int i=0; i<_collidables.size(); i++)
-            for(int j=i+1; j<_collidables.size(); j++)
-                _collidables.get(i).collide(_collidables.get(j));
+        for(int i=0; i< _ICollidables.size(); i++)
+            for(int j=i+1; j< _ICollidables.size(); j++)
+                _ICollidables.get(i).collide(_ICollidables.get(j));
     }
 
     public void draw()
     {
-        for (Updatable updatable: _updatables)
-            updatable.draw();
+        for (IUpdatable IUpdatable : _IUpdatables)
+            IUpdatable.draw();
     }
 }

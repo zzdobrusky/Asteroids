@@ -1,21 +1,18 @@
 package com.studiorur.games.asteroids.GameManagement;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.PointF;
 
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.Utils;
-import com.studiorur.games.asteroids.Interfaces.Collidable;
-import com.studiorur.games.asteroids.Interfaces.Updatable;
-import com.studiorur.games.asteroids.R;
+import com.studiorur.games.asteroids.Interfaces.ICollidable;
+import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
-import com.studiorur.games.asteroids.Sprites.Sprite;
 
 /**
  * Created by zbynek on 11/25/2014.
  */
-public class AsteroidGenerator implements Updatable, Collidable
+public class AsteroidGenerator implements IUpdatable, ICollidable
 {
     int _numOfAsteroids;
     Asteroid[] _asteroids;
@@ -116,7 +113,7 @@ public class AsteroidGenerator implements Updatable, Collidable
     }
 
     @Override
-    public void collide(Collidable object)
+    public void collide(ICollidable object)
     {
         for(Asteroid asteroid: _asteroids)
             asteroid.collide(object);

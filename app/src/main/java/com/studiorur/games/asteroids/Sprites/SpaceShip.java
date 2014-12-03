@@ -4,15 +4,17 @@ import android.graphics.PointF;
 
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
-import com.studiorur.games.asteroids.Interfaces.Collidable;
+import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.Adapters.GameScreenActivity;
 import com.studiorur.games.asteroids.R;
 
 /**
  * Created by zbynek on 11/25/2014.
  */
-public class SpaceShip extends PhysicsSprite implements Collidable
+public class SpaceShip extends AnimatedSprite implements ICollidable
 {
+    PointF _velocity = new PointF(0.0f, 0.0f);;
+    Float _rotationVelocity  = 0.0f;;
     float _invertedMass;
     PointF _externalForce;
     PointF _rocketForce;
@@ -21,6 +23,27 @@ public class SpaceShip extends PhysicsSprite implements Collidable
     float _frictionCoefficient = 0.88f;
     Boundary _boundary;
 
+
+    public PointF getVelocity()
+    {
+        return _velocity;
+    }
+
+    public void setVelocity(PointF velocity)
+    {
+        _velocity = velocity;
+    }
+
+    public Float getRotationVelocity()
+    {
+        return _rotationVelocity;
+    }
+
+    public void setRotationVelocity(Float rotationVelocity)
+    {
+        _rotationVelocity = rotationVelocity;
+    }
+
     public SpaceShip(float mass, GameScreenActivity gameScreenActivity)
     {
         _gameScreenActivity = gameScreenActivity;
@@ -28,6 +51,8 @@ public class SpaceShip extends PhysicsSprite implements Collidable
 
         // create boundary
         _boundary = new Boundary(false);
+
+        startAnimation(0, 1, 3, 25.0f, 0);
 
         resetForces();
 
@@ -48,6 +73,8 @@ public class SpaceShip extends PhysicsSprite implements Collidable
     @Override
     public void update(float time)
     {
+        super.update(time);
+
         PointF force = new PointF(_rocketForce.x + _externalForce.x, _rocketForce.y + _externalForce.y);
 
         _velocity.x = _frictionCoefficient * _velocity.x + force.x * _invertedMass * time;
@@ -82,7 +109,7 @@ public class SpaceShip extends PhysicsSprite implements Collidable
     }
 
     @Override
-    public void collide(Collidable object)
+    public void collide(ICollidable object)
     {
         if(getBoundery().contains(object.getBoundery()))
         {
