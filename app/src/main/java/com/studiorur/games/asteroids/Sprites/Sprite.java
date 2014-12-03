@@ -23,12 +23,13 @@ public class Sprite
     static final int POSITION_ATTRIBUTE_ID = 0;
     static final int TEXTURE_COORDINATE_ATTRIBUTE_ID = 1;
     static FloatBuffer _QuadPointsBuffer = null;
-    static FloatBuffer _QuadTextureBuffer = null;
 
     // Unique for each sprite
     // Texture related
+    private FloatBuffer _quadTextureBuffer = null;
     private int _textureId;
     private RectF _textureRect = new RectF(0.0f, 0.0f, 1.0f, 1.0f); // default is the whole texture
+
     // Sprite related
     protected PointF _center = new PointF(0.0f, 0.0f);;
     protected float _width = 1.0f;
@@ -188,9 +189,9 @@ public class Sprite
 
         ByteBuffer quadTextureByteBuffer = ByteBuffer.allocateDirect(quadTextureCoordinates.length * 4);
         quadTextureByteBuffer.order(ByteOrder.nativeOrder());
-        _QuadTextureBuffer = quadTextureByteBuffer.asFloatBuffer();
-        _QuadTextureBuffer.put(quadTextureCoordinates);
-        _QuadTextureBuffer.rewind();
+        _quadTextureBuffer = quadTextureByteBuffer.asFloatBuffer();
+        _quadTextureBuffer.put(quadTextureCoordinates);
+        _quadTextureBuffer.rewind();
     }
 
     protected void loadTexture(Resources resourcers, int resourceIdentifier)
@@ -229,6 +230,6 @@ public class Sprite
         GLES20.glEnableVertexAttribArray(POSITION_ATTRIBUTE_ID);
         GLES20.glVertexAttribPointer(POSITION_ATTRIBUTE_ID, 4, GLES20.GL_FLOAT, false, 4 * 4, _QuadPointsBuffer);
         GLES20.glEnableVertexAttribArray(TEXTURE_COORDINATE_ATTRIBUTE_ID);
-        GLES20.glVertexAttribPointer(TEXTURE_COORDINATE_ATTRIBUTE_ID, 2, GLES20.GL_FLOAT, false, 2 * 4, _QuadTextureBuffer);
+        GLES20.glVertexAttribPointer(TEXTURE_COORDINATE_ATTRIBUTE_ID, 2, GLES20.GL_FLOAT, false, 2 * 4, _quadTextureBuffer);
     }
 }

@@ -45,7 +45,6 @@ public class AnimatedSprite extends Sprite
             int numOfCols,
             float animationInterval)
     {
-        loadTexture(resources, resourceIdentifier);
         _numOfRows = numOfRows;
         _numOfCols = numOfCols;
         _frameWidth = 1.0f/_numOfCols;
@@ -53,6 +52,7 @@ public class AnimatedSprite extends Sprite
         _animationInterval = animationInterval;
 
         // move to the first frame as default
+        loadTexture(resources, resourceIdentifier);
         setFrame(0, 0);
     }
 
@@ -111,10 +111,10 @@ public class AnimatedSprite extends Sprite
             return;
 
         RectF newFrameRect = new RectF(
-                row * _frameWidth,
-                col * _frameHeight,
-                (row + 1) * _frameWidth,
-                (col + 1) * _frameWidth);
+                col * _frameWidth,
+                row * _frameHeight,
+                (col + 1) * _frameWidth,
+                (row + 1) * _frameHeight);
         setTextureRect(newFrameRect);
     }
 }

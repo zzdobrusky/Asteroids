@@ -18,6 +18,7 @@ public class Asteroid extends PhysicsSprite implements Collidable
     public Asteroid(Context context)
     {
         _boundary = new Boundary(true);
+        //startAnimation(0, 1, 3, 100.0f, 0);
     }
 
     @Override
