@@ -147,14 +147,14 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         _gameEngine.addCollidable(asteroidGenerator);
 
         // Your spaceship
-        SpaceShip ship = new SpaceShip(1.0f, this);
-        ship.loadSpritesheet(getResources(), R.drawable.spaceship_spreadsheet, 1, 4, 50.0f);
-        ship.setCenterX(0.0f);
-        ship.setCenterY(0.0f);
-        ship.setWidth(0.15f);
-        ship.setHeight(0.25f);
-        _gameEngine.addUpdateable(ship);
-        _gameEngine.addCollidable(ship);
+//        SpaceShip ship = new SpaceShip(1.0f, this);
+//        ship.loadSpritesheet(getResources(), R.drawable.spaceship_spreadsheet, 1, 4, 50.0f);
+//        ship.setCenterX(0.0f);
+//        ship.setCenterY(0.0f);
+//        ship.setWidth(0.15f);
+//        ship.setHeight(0.25f);
+//        _gameEngine.addUpdateable(ship);
+//        _gameEngine.addCollidable(ship);
 
         // TODO: needs some interface
         _gameEngine.start();
