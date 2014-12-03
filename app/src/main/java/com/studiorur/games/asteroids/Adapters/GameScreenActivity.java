@@ -14,6 +14,7 @@ import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.GameManagement.StarGenerator;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.R;
+import com.studiorur.games.asteroids.Sprites.Asteroid;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -141,20 +142,31 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         _gameEngine.addUpdateable(starGeneratorFaster);
 
         // Asteroids
-        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(10, 2.0f, heightInWorld, 0.08f, 0.5f, 0.0001f, 0.001f);
-        asteroidGenerator.init(this, R.drawable.asteroid);
-        _gameEngine.addUpdateable(asteroidGenerator);
-        _gameEngine.addCollidable(asteroidGenerator);
+//        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(10, 2.0f, heightInWorld, 0.08f, 0.5f, 0.0001f, 0.001f);
+//        asteroidGenerator.init(this, R.drawable.asteroid);
+//        _gameEngine.addUpdateable(asteroidGenerator);
+//        _gameEngine.addCollidable(asteroidGenerator);
+
+        // testing
+        Asteroid asteroid = new Asteroid(this);
+        asteroid.loadSpritesheet(getResources(), R.drawable.asteroid);
+        asteroid.setVelocity(new PointF(0.0f, -0.0001f));
+        asteroid.setCenterX(0.0f);
+        asteroid.setCenterY(0.5f);
+        asteroid.setWidth(0.1f);
+        asteroid.setHeight(0.1f);
+        _gameEngine.addUpdateable(asteroid);
+        _gameEngine.addCollidable(asteroid);
 
         // Your spaceship
-//        SpaceShip ship = new SpaceShip(1.0f, this);
-//        ship.loadSpritesheet(getResources(), R.drawable.spaceship_spreadsheet, 1, 4, 50.0f);
-//        ship.setCenterX(0.0f);
-//        ship.setCenterY(0.0f);
-//        ship.setWidth(0.15f);
-//        ship.setHeight(0.25f);
-//        _gameEngine.addUpdateable(ship);
-//        _gameEngine.addCollidable(ship);
+        SpaceShip ship = new SpaceShip(1.0f, this);
+        ship.loadSpritesheet(getResources(), R.drawable.spaceship_spreadsheet, 1, 4, 50.0f);
+        ship.setCenterX(0.0f);
+        ship.setCenterY(0.0f);
+        ship.setWidth(0.15f);
+        ship.setHeight(0.25f);
+        _gameEngine.addUpdateable(ship);
+        _gameEngine.addCollidable(ship);
 
         // TODO: needs some interface
         _gameEngine.start();
