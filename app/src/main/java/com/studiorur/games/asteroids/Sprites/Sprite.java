@@ -208,7 +208,6 @@ public class Sprite
 
         int modelViewLocation = GLES20.glGetUniformLocation(_Program, "modelView");
         GLES20.glUniformMatrix4fv(modelViewLocation, 1, false, modelView, 0);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
     }
 
     protected void loadTexture(Resources resourcers, int resourceIdentifier)

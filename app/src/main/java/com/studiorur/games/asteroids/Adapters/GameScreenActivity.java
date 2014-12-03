@@ -142,21 +142,21 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         _gameEngine.addUpdateable(starGeneratorFaster);
 
         // Asteroids
-//        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(10, 2.0f, heightInWorld, 0.08f, 0.5f, 0.0001f, 0.001f);
-//        asteroidGenerator.init(this, R.drawable.asteroid);
-//        _gameEngine.addUpdateable(asteroidGenerator);
-//        _gameEngine.addCollidable(asteroidGenerator);
+        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(10, 2.0f, heightInWorld, 0.08f, 0.5f, 0.0001f, 0.001f);
+        asteroidGenerator.init(this, R.drawable.asteroid);
+        _gameEngine.addUpdateable(asteroidGenerator);
+        _gameEngine.addCollidable(asteroidGenerator);
 
         // testing
-        Asteroid asteroid = new Asteroid(this);
-        asteroid.loadSpritesheet(getResources(), R.drawable.asteroid);
-        asteroid.setVelocity(new PointF(0.0f, -0.0001f));
-        asteroid.setCenterX(0.0f);
-        asteroid.setCenterY(0.5f);
-        asteroid.setWidth(0.1f);
-        asteroid.setHeight(0.1f);
-        _gameEngine.addUpdateable(asteroid);
-        _gameEngine.addCollidable(asteroid);
+//        Asteroid asteroid = new Asteroid(this);
+//        asteroid.loadSpritesheet(getResources(), R.drawable.asteroid);
+//        asteroid.setVelocity(new PointF(0.0f, -0.0001f));
+//        asteroid.setCenterX(0.0f);
+//        asteroid.setCenterY(0.5f);
+//        asteroid.setWidth(0.1f);
+//        asteroid.setHeight(0.1f);
+//        _gameEngine.addUpdateable(asteroid);
+//        _gameEngine.addCollidable(asteroid);
 
         // Your spaceship
         SpaceShip ship = new SpaceShip(1.0f, this);
