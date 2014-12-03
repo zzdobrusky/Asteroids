@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.FloatMath;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -176,8 +177,6 @@ public class Sprite
         _QuadPointsBuffer = quadPointsByteBuffer.asFloatBuffer();
         _QuadPointsBuffer.put(quadPoints);
         _QuadPointsBuffer.rewind();
-
-        setTextureCoordinates();
     }
 
     protected void setTextureCoordinates()
@@ -233,11 +232,14 @@ public class Sprite
         GLES20.glUseProgram(_Program);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _textureId);
         setTextureCoordinates();
+        Log.i("text_coord", _textureRect.toString());
         setModelView();
 
         GLES20.glEnableVertexAttribArray(POSITION_ATTRIBUTE_ID);
         GLES20.glVertexAttribPointer(POSITION_ATTRIBUTE_ID, 4, GLES20.GL_FLOAT, false, 4 * 4, _QuadPointsBuffer);
         GLES20.glEnableVertexAttribArray(TEXTURE_COORDINATE_ATTRIBUTE_ID);
         GLES20.glVertexAttribPointer(TEXTURE_COORDINATE_ATTRIBUTE_ID, 2, GLES20.GL_FLOAT, false, 2 * 4, _quadTextureBuffer);
+
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
     }
 }
