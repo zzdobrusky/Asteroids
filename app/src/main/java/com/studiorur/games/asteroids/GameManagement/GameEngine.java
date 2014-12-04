@@ -44,6 +44,11 @@ public class GameEngine extends Thread
             _updatables.add(updatable);
     }
 
+    public void removeUpdateable(IUpdatable updatable)
+    {
+        _updatables.remove(updatable);
+    }
+
     public void addCollidable(ICollidable ICollidable)
     {
         _collidables.add(ICollidable);
@@ -53,6 +58,11 @@ public class GameEngine extends Thread
     {
         for(ICollidable collidable: collidables)
             _collidables.add(collidable);
+    }
+
+    public void removeCollidable(ICollidable collidable)
+    {
+        _collidables.remove(collidable);
     }
 
     @Override

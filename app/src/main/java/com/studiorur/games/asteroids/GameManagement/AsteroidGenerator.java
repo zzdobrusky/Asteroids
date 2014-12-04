@@ -24,6 +24,8 @@ public class AsteroidGenerator implements IUpdatable
     float _maxVelocity;
     float _maxRotationVelocity;
     float _screenOffset;
+    float _timeInterval = 1000.0f; // testing frequency of creating asteroids
+    float _passedTime;
 
     public AsteroidGenerator(
             int numOfAsteroids,
@@ -58,7 +60,6 @@ public class AsteroidGenerator implements IUpdatable
             Asteroid newAsteroid = new Asteroid(context);
             newAsteroid.loadSpritesheet(context.getResources(), textureIdentifier);
             randomizeAsteroid(newAsteroid);
-            _asteroids.add(newAsteroid);
             _asteroids.add(newAsteroid);
         }
     }

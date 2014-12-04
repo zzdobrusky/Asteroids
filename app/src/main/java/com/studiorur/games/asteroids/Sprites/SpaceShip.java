@@ -20,8 +20,8 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     PointF _externalForce;
     PointF _rocketForce;
     GameScreenActivity _gameScreenActivity = null;
-    float _forceCoefficient = 0.000019f;
-    float _frictionCoefficient = 0.88f;
+    float _forceCoefficient = 0.000017f;
+    float _frictionCoefficient = 0.89f;
     Boundary _boundary;
     CollidableType _collidableType = CollidableType.SPACESHIP;
 
