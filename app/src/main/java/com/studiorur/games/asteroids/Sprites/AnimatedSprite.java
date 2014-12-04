@@ -30,7 +30,7 @@ public class AnimatedSprite extends Sprite implements IUpdatable
     private int _endCol = _numOfCols - 1;
     private int _animatedRow;
     private int _currentCol = _startCol;
-    // Default is 0 repetition, 0 means repeats endlessly till stop animation called
+    // Default is 0 repetition, it means repeats endlessly till stop animation called
     private int _numOfRepetitions = 0;
     private int _countRepetitions = 0;
 

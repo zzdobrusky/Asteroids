@@ -16,8 +16,7 @@ import java.util.ArrayList;
 public class AsteroidGenerator implements IUpdatable
 {
     int _numOfAsteroids;
-    ArrayList<Asteroid> _asteroids;
-    ArrayList<ICollidable> _collidables;
+    ArrayList<ICollidable> _asteroids;
     float _width;
     float _height;
     float _minSize;
@@ -36,8 +35,7 @@ public class AsteroidGenerator implements IUpdatable
             float maxRotationVelocity)
     {
         _numOfAsteroids = numOfAsteroids;
-        _asteroids = new ArrayList<Asteroid>(_numOfAsteroids);
-        _collidables = new ArrayList<ICollidable>(_numOfAsteroids);
+        _asteroids = new ArrayList<ICollidable>(_numOfAsteroids);
         _width = width;
         _height = height;
         _minSize = minSize;
@@ -49,7 +47,7 @@ public class AsteroidGenerator implements IUpdatable
 
     public ArrayList<ICollidable> getCollidables()
     {
-        return _collidables;
+        return _asteroids;
     }
 
     public void init(Context context, int textureIdentifier)
@@ -61,7 +59,7 @@ public class AsteroidGenerator implements IUpdatable
             newAsteroid.loadSpritesheet(context.getResources(), textureIdentifier);
             randomizeAsteroid(newAsteroid);
             _asteroids.add(newAsteroid);
-            _collidables.add(newAsteroid);
+            _asteroids.add(newAsteroid);
         }
     }
 
@@ -92,25 +90,26 @@ public class AsteroidGenerator implements IUpdatable
     @Override
     public void draw()
     {
-        for (Asteroid asteroid : _asteroids)
-            asteroid.draw();
+        for (ICollidable asteroid : _asteroids)
+            ((Asteroid)asteroid).draw();
     }
 
     @Override
     public void update(float time)
     {
-        for (Asteroid asteroid : _asteroids)
+        for (ICollidable asteroid : _asteroids)
         {
+
             // if they are out of bounds destroy them
-            if (isOutOfBoundaries(asteroid))
+            if (isOutOfBoundaries(((Asteroid)asteroid)))
             {
                 // move them to the beginning
-                asteroid.setCenterY(_height / 2.0f + _screenOffset);
+                ((Asteroid)asteroid).setCenterY(_height / 2.0f + _screenOffset);
                 // and randomize
-                randomizeAsteroid(asteroid);
+                randomizeAsteroid(((Asteroid)asteroid));
             }
 
-            asteroid.update(time);
+            ((Asteroid)asteroid).update(time);
         }
     }
 }
