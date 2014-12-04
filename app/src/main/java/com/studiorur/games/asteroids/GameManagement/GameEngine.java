@@ -143,7 +143,7 @@ public class GameEngine extends Thread
                         // TODO: remove power-up, add weaponry to spaceship, start a timer
                     }
 
-                    // else do nothing, for example asteroid and power-up do nothing
+                    // else do nothing, for example asteroid and power-up collisions
 
                 }
             }

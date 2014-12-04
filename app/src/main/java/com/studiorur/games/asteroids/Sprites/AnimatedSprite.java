@@ -30,9 +30,9 @@ public class AnimatedSprite extends Sprite implements IUpdatable
     private int _endCol = _numOfCols - 1;
     private int _animatedRow;
     private int _currentCol = _startCol;
-    // Default is 1 repetition, 0 means repeats endlessly till stop animation called
-    private int _numOfRepetitions = 1;
-    private int _count = _numOfRepetitions;
+    // Default is 0 repetition, 0 means repeats endlessly till stop animation called
+    private int _numOfRepetitions = 0;
+    private int _countRepetitions = 0;
 
     public void loadSpritesheet(Resources resources, int resourceIdentifier)
     {
@@ -84,11 +84,19 @@ public class AnimatedSprite extends Sprite implements IUpdatable
             @Override
             public void onTimePassed()
             {
-                setFrame(_animatedRow, _currentCol);
                 _currentCol++;
-
                 if(_currentCol > _endCol)
                     _currentCol = _startCol;
+
+                setFrame(_animatedRow, _currentCol);
+
+                // check if to stop the animation, 0 is infinite repetitions
+                if(_numOfRepetitions != 0)
+                {
+                    _countRepetitions++;
+                    if (_countRepetitions > _numOfRepetitions)
+                        stopAnimation();
+                }
             }
         });
     }
