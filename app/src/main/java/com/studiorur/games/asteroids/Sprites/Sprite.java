@@ -140,14 +140,10 @@ public class Sprite
         int vertexShader = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
         GLES20.glShaderSource(vertexShader, vertexShaderSource);
         GLES20.glCompileShader(vertexShader);
-//        String vertexShaderCompileLog = GLES20.glGetShaderInfoLog(vertexShader);
-//        Log.i("Vertex Shader Compile", vertexShaderCompileLog);
 
         int fragmentShader = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
         GLES20.glShaderSource(fragmentShader, fragmentShaderSource);
         GLES20.glCompileShader(fragmentShader);
-//        String fragmentShaderCompileLog = GLES20.glGetShaderInfoLog(fragmentShader);
-//        Log.i("Fragment ShaderCompile", fragmentShaderCompileLog);
 
         // set up program
         _Program = GLES20.glCreateProgram();
@@ -158,10 +154,6 @@ public class Sprite
         GLES20.glBindAttribLocation(_Program, TEXTURE_COORDINATE_ATTRIBUTE_ID, "textureCoordinate");
         // link it and use it
         GLES20.glLinkProgram(_Program);
-
-        // trace linker output
-//        String programLinkLog = GLES20.glGetProgramInfoLog(_Program);
-//        Log.i("Program Link", programLinkLog);
 
         // quad vertices coordinates
         float[] quadPoints =
@@ -231,7 +223,6 @@ public class Sprite
         GLES20.glUseProgram(_Program);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _textureId);
         setTextureCoordinates();
-        Log.i("text_coord", _textureRect.toString());
         setModelView();
 
         GLES20.glEnableVertexAttribArray(POSITION_ATTRIBUTE_ID);

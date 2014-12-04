@@ -1,7 +1,10 @@
 package com.studiorur.games.asteroids.GameManagement;
 
+import com.studiorur.games.asteroids.Helpers.SoundFX;
+import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
+import com.studiorur.games.asteroids.R;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -16,8 +19,8 @@ public class GameEngine extends Thread
     { RUNNING, PAUSED };
     private GameState _gameState;
 
-    private ArrayList<IUpdatable> _IUpdatables;
-    private ArrayList<ICollidable> _ICollidables;
+    private ArrayList<IUpdatable> _updatables;
+    private ArrayList<ICollidable> _collidables;
 
     //for consistent rendering
     private long _sleepTime;
@@ -26,18 +29,30 @@ public class GameEngine extends Thread
 
     public GameEngine()
     {
-        _IUpdatables = new ArrayList<IUpdatable>();
-        _ICollidables = new ArrayList<ICollidable>();
+        _updatables = new ArrayList<IUpdatable>();
+        _collidables = new ArrayList<ICollidable>();
     }
 
     public void addUpdateable(IUpdatable IUpdatable)
     {
-        _IUpdatables.add(IUpdatable);
+        _updatables.add(IUpdatable);
+    }
+
+    public void addUpdateable(ArrayList<IUpdatable> updatables)
+    {
+        for(IUpdatable updatable: updatables)
+            _updatables.add(updatable);
     }
 
     public void addCollidable(ICollidable ICollidable)
     {
-        _ICollidables.add(ICollidable);
+        _collidables.add(ICollidable);
+    }
+
+    public void addCollidable(ArrayList<ICollidable> collidables)
+    {
+        for(ICollidable collidable: collidables)
+            _collidables.add(collidable);
     }
 
     @Override
@@ -89,18 +104,54 @@ public class GameEngine extends Thread
 
     public void update(float time)
     {
-        for (IUpdatable IUpdatable : _IUpdatables)
-            IUpdatable.update(time);
+        for (IUpdatable updatable : _updatables)
+            updatable.update(time);
 
-        // do collisions
-        for(int i=0; i< _ICollidables.size(); i++)
-            for(int j=i+1; j< _ICollidables.size(); j++)
-                _ICollidables.get(i).collide(_ICollidables.get(j));
+        // do filtered collisions
+        for(int i=0; i< _collidables.size(); i++)
+            for(int j=i+1; j< _collidables.size(); j++)
+            {
+                ICollidable object1 = _collidables.get(i);
+                ICollidable object2 = _collidables.get(j);
+                if (object1.isColliding(object2))
+                {
+                    if(object1.getCollidableType() == CollidableType.ASTEROID &&
+                       object2.getCollidableType() == CollidableType.ASTEROID)
+                    {
+                        // TODO: do random break up of two asteroids + sound effect
+                    }
+                    else if((object1.getCollidableType() == CollidableType.SPACESHIP &&
+                             object2.getCollidableType() == CollidableType.ASTEROID))
+                    {
+                        // TODO: break up asteroid make a ship more damaged + sound effect
+                        SoundFX.getInstance().play(R.raw.explosion, 1.0f);
+                    }
+                    else if((object1.getCollidableType() == CollidableType.ASTEROID &&
+                             object2.getCollidableType() == CollidableType.SPACESHIP))
+                    {
+                        // TODO: break up asteroid make a ship more damaged + sound effect
+                        SoundFX.getInstance().play(R.raw.explosion, 1.0f);
+                    }
+                    else if((object1.getCollidableType() == CollidableType.SPACESHIP &&
+                             object2.getCollidableType() == CollidableType.POWER_UP))
+                    {
+                        // TODO: remove power-up, add weaponry to spaceship, start a timer
+                    }
+                    else if((object1.getCollidableType() == CollidableType.POWER_UP &&
+                            object2.getCollidableType() == CollidableType.SPACESHIP))
+                    {
+                        // TODO: remove power-up, add weaponry to spaceship, start a timer
+                    }
+
+                    // else do nothing, for example asteroid and power-up do nothing
+
+                }
+            }
     }
 
     public void draw()
     {
-        for (IUpdatable IUpdatable : _IUpdatables)
-            IUpdatable.draw();
+        for (IUpdatable updatable : _updatables)
+            updatable.draw();
     }
 }

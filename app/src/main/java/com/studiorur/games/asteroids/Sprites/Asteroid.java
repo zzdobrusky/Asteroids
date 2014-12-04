@@ -5,6 +5,7 @@ import android.graphics.PointF;
 
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
+import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.R;
 
@@ -14,8 +15,9 @@ import com.studiorur.games.asteroids.R;
 public class Asteroid extends AnimatedSprite implements ICollidable
 {
     Boundary _boundary;
-    PointF _velocity = new PointF(0.0f, 0.0f);;
-    Float _rotationVelocity  = 0.0f;;
+    PointF _velocity = new PointF(0.0f, 0.0f);
+    Float _rotationVelocity  = 0.0f;
+    CollidableType _collidableType = CollidableType.ASTEROID;
 
     public PointF getVelocity()
     {
@@ -37,6 +39,11 @@ public class Asteroid extends AnimatedSprite implements ICollidable
         _rotationVelocity = rotationVelocity;
     }
 
+    public CollidableType getCollidableType()
+    {
+        return _collidableType;
+    }
+
     public Asteroid(Context context)
     {
         _boundary = new Boundary(true);
@@ -48,7 +55,6 @@ public class Asteroid extends AnimatedSprite implements ICollidable
         return super.toString();
     }
 
-    @Override
     public Boundary getBoundery()
     {
         _boundary.updateBoundary(_width, _height, _center);
@@ -56,15 +62,9 @@ public class Asteroid extends AnimatedSprite implements ICollidable
         return _boundary;
     }
 
-    @Override
-    public void collide(ICollidable object)
+    public boolean isColliding(ICollidable object)
     {
-        if(getBoundery().contains(object.getBoundery()))
-        {
-            // TODO: do some awesome explosion and sound effect
-            //Log.i("collision", "asteroid: " + toString() + " collided with " + object.toString());
-            SoundFX.getInstance().play(R.raw.explosion, 1.0f);
-        }
+        return getBoundery().contains(object.getBoundery());
     }
 
     @Override

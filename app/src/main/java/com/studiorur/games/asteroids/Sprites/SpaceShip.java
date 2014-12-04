@@ -4,6 +4,7 @@ import android.graphics.PointF;
 
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
+import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.Adapters.GameScreenActivity;
 import com.studiorur.games.asteroids.R;
@@ -22,6 +23,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     float _forceCoefficient = 0.000019f;
     float _frictionCoefficient = 0.88f;
     Boundary _boundary;
+    CollidableType _collidableType = CollidableType.SPACESHIP;
 
 
     public PointF getVelocity()
@@ -44,7 +46,12 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         _rotationVelocity = rotationVelocity;
     }
 
-    public SpaceShip(float mass, GameScreenActivity gameScreenActivity)
+    public CollidableType getCollidableType()
+    {
+        return _collidableType;
+    }
+
+    public SpaceShip(GameScreenActivity gameScreenActivity, float mass)
     {
         _gameScreenActivity = gameScreenActivity;
         _invertedMass = 1.0f/mass;
@@ -71,6 +78,29 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         });
     }
 
+    public void addExternalForce(PointF force)
+    {
+        _externalForce = new PointF(_externalForce.x + force.x, _externalForce.y + force.y);
+    }
+
+    public void resetForces()
+    {
+        _externalForce = new PointF(0.0f, 0.0f);
+        _rocketForce = new PointF(0.0f, 0.0f);
+    }
+
+    public Boundary getBoundery()
+    {
+        _boundary.updateBoundary(_width, _height, _center);
+
+        return _boundary;
+    }
+
+    public boolean isColliding(ICollidable object)
+    {
+        return getBoundery().contains(object.getBoundery());
+    }
+
     @Override
     public void update(float time)
     {
@@ -88,35 +118,5 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
 
         // reset forces each update
         resetForces();
-    }
-
-    public void addExternalForce(PointF force)
-    {
-        _externalForce = new PointF(_externalForce.x + force.x, _externalForce.y + force.y);
-    }
-
-    public void resetForces()
-    {
-        _externalForce = new PointF(0.0f, 0.0f);
-        _rocketForce = new PointF(0.0f, 0.0f);
-    }
-
-    @Override
-    public Boundary getBoundery()
-    {
-        _boundary.updateBoundary(_width, _height, _center);
-
-        return _boundary;
-    }
-
-    @Override
-    public void collide(ICollidable object)
-    {
-        if(getBoundery().contains(object.getBoundery()))
-        {
-            // TODO: do some awesome explosion and sound effect
-            //Log.i("collision", "ship collided");
-            SoundFX.getInstance().play(R.raw.shot, 1.0f);
-        }
     }
 }

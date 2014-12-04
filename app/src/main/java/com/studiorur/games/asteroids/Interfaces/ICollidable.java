@@ -11,5 +11,7 @@ public interface ICollidable
 
     public String toString();
 
-    public void collide(ICollidable object);
+    public CollidableType getCollidableType();
+
+    public boolean isColliding(ICollidable object);
 }
