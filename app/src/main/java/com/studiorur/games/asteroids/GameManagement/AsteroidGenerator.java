@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.PointF;
 
 import com.studiorur.games.asteroids.Helpers.Utils;
-import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
 
@@ -15,8 +14,10 @@ import java.util.ArrayList;
  */
 public class AsteroidGenerator implements IUpdatable
 {
-    int _numOfAsteroids;
-    ArrayList<ICollidable> _asteroids;
+    Context _context = null;
+    GameEngine _gameEngine = null;
+    int _textureIdentifier;
+    ArrayList<Asteroid> _asteroids;
     float _width;
     float _height;
     float _minSize;
@@ -24,44 +25,47 @@ public class AsteroidGenerator implements IUpdatable
     float _maxVelocity;
     float _maxRotationVelocity;
     float _screenOffset;
-    float _timeInterval = 1000.0f; // testing frequency of creating asteroids
-    float _passedTime;
+    float _timeInterval;
+    float _passedTime = 0.0f;
+    boolean _isRunning = false;
 
     public AsteroidGenerator(
-            int numOfAsteroids,
+            Context context,
+            GameEngine gameEngine,
+            int textureIdentifier,
             float width,
             float height,
             float minSize,
             float maxSize,
             float maxVelocity,
-            float maxRotationVelocity)
+            float maxRotationVelocity,
+            float timeInterval)
     {
-        _numOfAsteroids = numOfAsteroids;
-        _asteroids = new ArrayList<ICollidable>(_numOfAsteroids);
+        _context = context;
+        _gameEngine = gameEngine;
+        _textureIdentifier = textureIdentifier;
+        _asteroids = new ArrayList<Asteroid>();
         _width = width;
         _height = height;
         _minSize = minSize;
         _maxSize = maxSize;
         _maxVelocity = maxVelocity;
         _maxRotationVelocity = maxRotationVelocity;
+        _timeInterval = timeInterval;
         _screenOffset = 0.2f;
+
+        // add itself to a game engine
+        _gameEngine.addUpdateable(this);
     }
 
-    public ArrayList<ICollidable> getCollidables()
+    public void start()
     {
-        return _asteroids;
+        _isRunning = true;
     }
 
-    public void init(Context context, int textureIdentifier)
+    public void stop()
     {
-        // randomly throw asteroids with random velocity, rotation, size and shape
-        for (int i = 0; i < _numOfAsteroids; i++)
-        {
-            Asteroid newAsteroid = new Asteroid(context);
-            newAsteroid.loadSpritesheet(context.getResources(), textureIdentifier);
-            randomizeAsteroid(newAsteroid);
-            _asteroids.add(newAsteroid);
-        }
+        _isRunning = false;
     }
 
     private void randomizeAsteroid(Asteroid asteroid)
@@ -89,28 +93,46 @@ public class AsteroidGenerator implements IUpdatable
     }
 
     @Override
-    public void draw()
+    public void update(float time)
     {
-        for (ICollidable asteroid : _asteroids)
-            ((Asteroid)asteroid).draw();
+        // this is just for a timer and to check if any asteroids out of boundaries
+        if(_passedTime > _timeInterval && _isRunning)
+        {
+            // randomly throw asteroids with random velocity, rotation, size and shape
+            Asteroid newAsteroid = new Asteroid(_context);
+            newAsteroid.loadSpritesheet(_context.getResources(), _textureIdentifier);
+            randomizeAsteroid(newAsteroid);
+            _asteroids.add(newAsteroid);
+
+            // register with the game engine
+            _gameEngine.addUpdateable(newAsteroid);
+            _gameEngine.addCollidable(newAsteroid);
+
+            // reset time
+            _passedTime = 0.0f;
+        }
+
+        // at the same time check if any asteroids out of boundary and remove if yes
+        for(int i=_asteroids.size()-1; i>=0; i--)
+        {
+            if(isOutOfBoundaries(_asteroids.get(i)))
+            {
+                // remove from the game engine
+                Asteroid asteroid = _asteroids.get(i);
+                _gameEngine.removeCollidable(asteroid);
+                _gameEngine.removeUpdateable(asteroid);
+                // remove from the internal array - don't know better now
+                _asteroids.remove(asteroid);
+                asteroid = null; // ready it for the garbage collector - not sure if necessary
+            }
+        }
+
+        _passedTime += time;
     }
 
     @Override
-    public void update(float time)
+    public void draw()
     {
-        for (ICollidable asteroid : _asteroids)
-        {
-
-            // if they are out of bounds destroy them
-            if (isOutOfBoundaries(((Asteroid)asteroid)))
-            {
-                // move them to the beginning
-                ((Asteroid)asteroid).setCenterY(_height / 2.0f + _screenOffset);
-                // and randomize
-                randomizeAsteroid(((Asteroid)asteroid));
-            }
-
-            ((Asteroid)asteroid).update(time);
-        }
+        // nothing here - asteroids will be updated and drew from the game engine
     }
 }
