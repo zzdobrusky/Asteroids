@@ -39,7 +39,7 @@ public class AnimatedSprite extends Sprite implements IUpdatable
         loadSpritesheet(resources, resourceIdentifier, 1, 1, _animationInterval);
     }
 
-    public void loadSpritesheet(
+    protected void loadSpritesheet(
             Resources resources,
             int resourceIdentifier,
             int numOfRows,

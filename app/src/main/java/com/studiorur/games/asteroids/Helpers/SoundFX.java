@@ -52,7 +52,7 @@ public class SoundFX
 
     public void play(int soundIdentifier, float volume)
     {
-        if(_soundIds.get(soundIdentifier) > 0)
+        if(_soundIds.get(soundIdentifier) > 0 && _soundPool != null)
             _soundPool.play(_soundIds.get(soundIdentifier), volume, volume, 1, 0, 1f);
     }
 

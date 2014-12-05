@@ -1,5 +1,7 @@
 package com.studiorur.games.asteroids.Sprites;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.PointF;
 
 import com.studiorur.games.asteroids.Helpers.Boundary;
@@ -49,13 +51,22 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         return _collidableType;
     }
 
-    public SpaceShip(GameScreenActivity gameScreenActivity, float mass)
+    public SpaceShip(
+            GameScreenActivity gameScreenActivity,
+            float mass,
+            int resourceIdentifier,
+            int numOfRows,
+            int numOfCols,
+            float animationInterval)
     {
         _gameScreenActivity = gameScreenActivity;
         _invertedMass = 1.0f/mass;
 
+        // load sprite sheet
+        loadSpritesheet(gameScreenActivity.getResources(), resourceIdentifier, numOfRows, numOfCols, animationInterval);
+
         // create boundary
-        _boundary = new Boundary(false);
+        _boundary = new Boundary(false); // make it a rectangle
 
         initAnimation(0, 1, 3, 25.0f, 0);
         startAnimation();

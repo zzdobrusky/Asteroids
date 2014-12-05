@@ -5,6 +5,7 @@ import android.graphics.PointF;
 
 import com.studiorur.games.asteroids.Helpers.Utils;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
+import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
 
 import java.util.ArrayList;
@@ -98,8 +99,7 @@ public class AsteroidGenerator implements IUpdatable
         if(_passedTime > _timeInterval && _isRunning)
         {
             // randomly throw asteroids with random velocity, rotation, size and shape
-            Asteroid newAsteroid = new Asteroid();
-            newAsteroid.loadSpritesheet(_context.getResources(), _textureIdentifier);
+            Asteroid newAsteroid = new Asteroid(_context, R.drawable.asteroid, 1, 1, 50.0f);
             randomizeAsteroid(newAsteroid);
             _asteroids.add(newAsteroid);
 

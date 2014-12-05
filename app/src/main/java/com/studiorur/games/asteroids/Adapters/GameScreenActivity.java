@@ -14,6 +14,7 @@ import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.GameManagement.StarGenerator;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.R;
+import com.studiorur.games.asteroids.Sprites.Asteroid;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -134,8 +135,13 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         SoundFX.getInstance().addSound(this, R.raw.explosion);
 
         // Your spaceship
-        SpaceShip ship = new SpaceShip(this, 1.0f);
-        ship.loadSpritesheet(getResources(), R.drawable.spaceship_spreadsheet, 1, 4, 50.0f);
+        SpaceShip ship = new SpaceShip(
+                this,
+                1.0f,
+                R.drawable.spaceship_spreadsheet,
+                1,
+                4,
+                50.0f);
         ship.setCenterX(0.0f);
         ship.setCenterY(0.0f);
         ship.setWidth(0.15f);
@@ -144,18 +150,27 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         _gameEngine.addCollidable(ship);
 
         // Asteroids
-        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
-                this,
-                _gameEngine,
-                R.drawable.asteroid,
-                2.0f,
-                heightInWorld,
-                0.08f,
-                0.5f,
-                0.0001f,
-                0.001f,
-                400.0f);
-        asteroidGenerator.start();
+//        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
+//                this,
+//                _gameEngine,
+//                R.drawable.asteroid,
+//                2.0f,
+//                heightInWorld,
+//                0.08f,
+//                0.5f,
+//                0.0001f,
+//                0.001f,
+//                400.0f);
+//        asteroidGenerator.start();
+
+        // testing
+        Asteroid asteroid = new Asteroid(this, R.drawable.asteroid, 1, 1, 50.0f);
+        asteroid.setHeight(0.3f);
+        asteroid.setWidth(0.3f);
+        asteroid.setCenter(new PointF(0.0f, 1.0f));
+        asteroid.setVelocity(new PointF(0.0f, -0.0001f));
+        _gameEngine.addUpdateable(asteroid);
+        _gameEngine.addCollidable(asteroid);
 
         // Background stars - two layers of stars with different speeds will create a parallax effect
         StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
