@@ -105,7 +105,6 @@ public class AsteroidGenerator implements IUpdatable
             _asteroids.add(newAsteroid);
 
             // register with the game engine
-            _gameEngine.addUpdateable(newAsteroid);
             _gameEngine.addCollidable(newAsteroid);
 
             // reset time
@@ -120,7 +119,6 @@ public class AsteroidGenerator implements IUpdatable
                 // remove from the game engine
                 Asteroid asteroid = _asteroids.get(i);
                 _gameEngine.removeCollidable(asteroid);
-                _gameEngine.removeUpdateable(asteroid);
                 // remove from the internal array - don't know better now
                 _asteroids.remove(asteroid);
                 asteroid = null; // ready it for the garbage collector - not sure if necessary
@@ -133,6 +131,7 @@ public class AsteroidGenerator implements IUpdatable
     @Override
     public void draw()
     {
-        // nothing here - asteroids will be updated and drew from the game engine
+        for(int i=_asteroids.size()-1; i>=0; i--)
+            _asteroids.get(i).draw();
     }
 }

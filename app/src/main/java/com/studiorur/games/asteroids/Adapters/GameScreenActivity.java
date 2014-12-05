@@ -128,22 +128,25 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         }
 
         // *********************** GAME SETUP ***********************
+        float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
+        float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
+        float heightInWorld = topBorder - bottomBorder;
+
         _gameEngine = new GameEngine();
 
         // Load sound fxs
         SoundFX.getInstance().addSound(this, R.raw.shot);
         SoundFX.getInstance().addSound(this, R.raw.explosion);
 
-        // Background stars - two layers of stars with different speeds will create a parallax effect
-        float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
-        float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
-        float heightInWorld = topBorder - bottomBorder;
-        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
-        starGeneratorSlower.init();
-        _gameEngine.addUpdateable(starGeneratorSlower);
-        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
-        starGeneratorFaster.init();
-        _gameEngine.addUpdateable(starGeneratorFaster);
+        // Your spaceship
+        SpaceShip ship = new SpaceShip(this, 1.0f);
+        ship.loadSpritesheet(getResources(), R.drawable.spaceship_spreadsheet, 1, 4, 50.0f);
+        ship.setCenterX(0.0f);
+        ship.setCenterY(0.0f);
+        ship.setWidth(0.15f);
+        ship.setHeight(0.25f);
+        _gameEngine.addUpdateable(ship);
+        _gameEngine.addCollidable(ship);
 
         // Asteroids
         AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
@@ -159,15 +162,13 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
                 1000.0f);
         asteroidGenerator.start();
 
-        // Your spaceship
-        SpaceShip ship = new SpaceShip(this, 1.0f);
-        ship.loadSpritesheet(getResources(), R.drawable.spaceship_spreadsheet, 1, 4, 50.0f);
-        ship.setCenterX(0.0f);
-        ship.setCenterY(0.0f);
-        ship.setWidth(0.15f);
-        ship.setHeight(0.25f);
-        _gameEngine.addUpdateable(ship);
-        _gameEngine.addCollidable(ship);
+        // Background stars - two layers of stars with different speeds will create a parallax effect
+        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
+        starGeneratorSlower.init();
+        _gameEngine.addUpdateable(starGeneratorSlower);
+        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
+        starGeneratorFaster.init();
+        _gameEngine.addUpdateable(starGeneratorFaster);
 
         // TODO: needs some interface
         _gameEngine.start();
