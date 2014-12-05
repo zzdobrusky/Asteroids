@@ -13,13 +13,8 @@ import com.studiorur.games.asteroids.GameManagement.AsteroidGenerator;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.GameManagement.StarGenerator;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
-import com.studiorur.games.asteroids.Interfaces.ICollidable;
-import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.R;
-import com.studiorur.games.asteroids.Sprites.Asteroid;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
-
-import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -127,11 +122,11 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
             _displayScaleY = (float)_height/(float)_width;
         }
 
-        // *********************** GAME SETUP ***********************
         float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
         float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
         float heightInWorld = topBorder - bottomBorder;
 
+        // *********************** GAME SETUP ***********************
         _gameEngine = new GameEngine();
 
         // Load sound fxs

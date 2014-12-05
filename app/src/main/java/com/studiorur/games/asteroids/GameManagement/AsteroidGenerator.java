@@ -98,12 +98,13 @@ public class AsteroidGenerator implements IUpdatable
         if(_passedTime > _timeInterval && _isRunning)
         {
             // randomly throw asteroids with random velocity, rotation, size and shape
-            Asteroid newAsteroid = new Asteroid(_context);
+            Asteroid newAsteroid = new Asteroid();
             newAsteroid.loadSpritesheet(_context.getResources(), _textureIdentifier);
             randomizeAsteroid(newAsteroid);
             _asteroids.add(newAsteroid);
 
             // register with the game engine
+            _gameEngine.addUpdateable(newAsteroid);
             _gameEngine.addCollidable(newAsteroid);
 
             // reset time
@@ -117,6 +118,7 @@ public class AsteroidGenerator implements IUpdatable
             {
                 // remove from the game engine
                 Asteroid asteroid = _asteroids.get(i);
+                _gameEngine.removeUpdateable(asteroid);
                 _gameEngine.removeCollidable(asteroid);
                 // remove from the internal array - don't know better now
                 _asteroids.remove(asteroid);
@@ -130,7 +132,6 @@ public class AsteroidGenerator implements IUpdatable
     @Override
     public void draw()
     {
-        for(int i=_asteroids.size()-1; i>=0; i--)
-            _asteroids.get(i).draw();
+        // not used
     }
 }

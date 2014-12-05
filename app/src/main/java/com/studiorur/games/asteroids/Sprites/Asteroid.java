@@ -44,7 +44,7 @@ public class Asteroid extends AnimatedSprite implements ICollidable
         return _collidableType;
     }
 
-    public Asteroid(Context context)
+    public Asteroid()
     {
         _boundary = new Boundary(true);
     }
