@@ -159,7 +159,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
                 0.5f,
                 0.0001f,
                 0.001f,
-                1000.0f);
+                400.0f);
         asteroidGenerator.start();
 
         // Background stars - two layers of stars with different speeds will create a parallax effect

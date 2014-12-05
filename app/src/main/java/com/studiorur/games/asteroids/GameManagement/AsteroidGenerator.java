@@ -95,7 +95,6 @@ public class AsteroidGenerator implements IUpdatable
     @Override
     public void update(float time)
     {
-        // this is just for a timer and to check if any asteroids out of boundaries
         if(_passedTime > _timeInterval && _isRunning)
         {
             // randomly throw asteroids with random velocity, rotation, size and shape
