@@ -1,4 +1,4 @@
-package com.studiorur.games.asteroids;
+package com.studiorur.games.asteroids.GameManagement;
 
 /**
  * Created by zbynek on 11/27/2014.

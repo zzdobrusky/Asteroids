@@ -1,13 +1,11 @@
 package com.studiorur.games.asteroids.Sprites;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.PointF;
 
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
-import com.studiorur.games.asteroids.Adapters.GameScreenActivity;
+import com.studiorur.games.asteroids.AdaptersViews.GameScreenActivity;
 
 /**
  * Created by zbynek on 11/25/2014.

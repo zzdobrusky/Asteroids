@@ -1,4 +1,4 @@
-package com.studiorur.games.asteroids.Adapters;
+package com.studiorur.games.asteroids.AdaptersViews;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -14,7 +14,6 @@ import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.GameManagement.StarGenerator;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.R;
-import com.studiorur.games.asteroids.Sprites.Asteroid;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
 import javax.microedition.khronos.egl.EGLConfig;

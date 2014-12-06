@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Asteroids</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="main_menu_name">Main Menu</string>
     <string name="action_settings">Settings</string>
 
 </resources>
