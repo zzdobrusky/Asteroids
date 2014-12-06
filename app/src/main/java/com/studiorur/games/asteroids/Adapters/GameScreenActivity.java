@@ -23,12 +23,10 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GameScreenActivity extends Activity implements GLSurfaceView.Renderer
 {
-    int _height;
-    int _width;
+    int _height = -1;
+    int _width = -1;
     float _displayScaleX;
     float _displayScaleY;
-
-    GameEngine _gameEngine;
 
     public interface OnTouchScreenListener
     {
@@ -128,7 +126,6 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         float heightInWorld = topBorder - bottomBorder;
 
         // *********************** GAME SETUP ***********************
-        _gameEngine = new GameEngine();
 
         // Load sound fxs
         SoundFX.getInstance().addSound(this, R.raw.shot);
@@ -146,42 +143,41 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         ship.setCenterY(0.0f);
         ship.setWidth(0.15f);
         ship.setHeight(0.25f);
-        _gameEngine.addUpdateable(ship);
-        _gameEngine.addCollidable(ship);
+        GameEngine.getInstance().addUpdateable(ship);
+        GameEngine.getInstance().addCollidable(ship);
 
         // Asteroids
-//        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
-//                this,
-//                _gameEngine,
-//                R.drawable.asteroid,
-//                2.0f,
-//                heightInWorld,
-//                0.08f,
-//                0.5f,
-//                0.0001f,
-//                0.001f,
-//                400.0f);
-//        asteroidGenerator.start();
+        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
+                this,
+                R.drawable.asteroid,
+                2.0f,
+                heightInWorld,
+                0.08f,
+                0.5f,
+                0.0001f,
+                0.001f,
+                4000.0f);
+        asteroidGenerator.start();
 
         // testing
-        Asteroid asteroid = new Asteroid(this, R.drawable.asteroid, 1, 1, 50.0f);
-        asteroid.setHeight(0.3f);
-        asteroid.setWidth(0.3f);
-        asteroid.setCenter(new PointF(0.0f, 1.0f));
-        asteroid.setVelocity(new PointF(0.0f, -0.0001f));
-        _gameEngine.addUpdateable(asteroid);
-        _gameEngine.addCollidable(asteroid);
+//        Asteroid asteroid = new Asteroid(this, R.drawable.asteroid);
+//        asteroid.setHeight(0.3f);
+//        asteroid.setWidth(0.3f);
+//        asteroid.setCenter(new PointF(0.0f, 1.0f));
+//        asteroid.setVelocity(new PointF(0.0f, -0.0001f));
+//        _gameEngine.addUpdateable(asteroid);
+//        _gameEngine.addCollidable(asteroid);
 
         // Background stars - two layers of stars with different speeds will create a parallax effect
         StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
         starGeneratorSlower.init();
-        _gameEngine.addUpdateable(starGeneratorSlower);
+        GameEngine.getInstance().addUpdateable(starGeneratorSlower);
         StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
         starGeneratorFaster.init();
-        _gameEngine.addUpdateable(starGeneratorFaster);
+        GameEngine.getInstance().addUpdateable(starGeneratorFaster);
 
         // TODO: needs some interface
-        _gameEngine.start();
+        GameEngine.getInstance(). start();
     }
 
     @Override
@@ -193,7 +189,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
             init();
 
         // draw components
-        _gameEngine.draw();
+        GameEngine.getInstance().draw();
     }
 
     public PointF deviceToWorldCoord(PointF devLoc)

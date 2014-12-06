@@ -31,6 +31,7 @@ public class AnimatedSprite extends Sprite implements IUpdatable
     private int _animatedRow;
     private int _currentCol = _startCol;
     // Default is 0 repetition, it means repeats endlessly till stop animation called
+    // if start column and end column are the same value means no animation at all
     private int _numOfRepetitions = 0;
     private int _countRepetitions = 0;
 
@@ -59,7 +60,7 @@ public class AnimatedSprite extends Sprite implements IUpdatable
 
     public void initAnimation(int animatedRow, int numOfRepetitions)
     {
-        // mostly default
+        // mostly default (no animation)
         initAnimation(animatedRow, 0, 0, _animationInterval, numOfRepetitions);
     }
 
@@ -74,7 +75,8 @@ public class AnimatedSprite extends Sprite implements IUpdatable
         // Start timer and call each frame with animation interval till the end and repeat if required
         _currentCol = _startCol;
         int numOfFrames = _endCol - _startCol + 1;
-        _timer = new LoopTimer(_animationInterval, numOfFrames * numOfRepetitions);
+        if(numOfFrames > 1)
+            _timer = new LoopTimer(_animationInterval, numOfFrames * numOfRepetitions);
     }
 
     public void startAnimation()

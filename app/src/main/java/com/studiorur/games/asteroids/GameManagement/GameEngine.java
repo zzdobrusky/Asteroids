@@ -27,7 +27,23 @@ public class GameEngine extends Thread
     //amount of time to sleep for (in milliseconds)
     private long _delay = 50;
 
-    public GameEngine()
+    private static GameEngine _instance = null;
+
+    public static GameEngine getInstance()
+    {
+        if(_instance == null)
+        {
+            // Thread safe
+            synchronized (GameEngine.class)
+            {
+                if (_instance == null)
+                    _instance = new GameEngine();
+            }
+        }
+        return _instance;
+    }
+
+    private GameEngine()
     {
         _updatables = new ArrayList<IUpdatable>();
         _collidables = new ArrayList<ICollidable>();
@@ -76,7 +92,7 @@ public class GameEngine extends Thread
             long beforeTime = System.nanoTime();
 
             //This is where we update the game engine
-            synchronized (this)
+            synchronized (GameEngine.class)
             {
                 update(_sleepTime);
             }
