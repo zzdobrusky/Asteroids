@@ -2,12 +2,14 @@ package com.studiorur.games.asteroids.GameManagement;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.studiorur.games.asteroids.Helpers.Utils;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by zbynek on 11/25/2014.
@@ -119,6 +121,14 @@ public class AsteroidGenerator implements IUpdatable
             if(isOutOfBoundaries(_activeAsteroids.get(i)))
                 removeAsteroid(_activeAsteroids.get(i));
 
+//        Iterator<Asteroid> asteroidIterator = _activeAsteroids.iterator();
+//        while(asteroidIterator.hasNext())
+//        {
+//            Asteroid asteroid = asteroidIterator.next();
+//            if(isOutOfBoundaries(asteroid))
+//                removeAsteroid(asteroid);
+//        }
+
         _passedTime += time;
     }
 
@@ -148,6 +158,8 @@ public class AsteroidGenerator implements IUpdatable
             randomizeAsteroid(newAsteroid, center, maxSize);
             GameEngine.getInstance().addUpdateable(newAsteroid);
             GameEngine.getInstance().addCollidable(newAsteroid);
+
+            Log.i("new_asteroid", "new asteroid, size: " + maxSize + "newAsteroid: " + newAsteroid.toString());
 
             // add to active asteroids
             _activeAsteroids.add(newAsteroid);

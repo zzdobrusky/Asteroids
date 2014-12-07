@@ -12,6 +12,7 @@ import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -151,9 +152,6 @@ public class GameEngine extends Thread
     {
         _passedTime += time;
 
-        for (int i = _updatables.size() - 1; i >= 0; i--)
-            _updatables.get(i).update(time);
-
         // do filtered collisions - we need at least 2 objects to do collisions
         if(_collidables.size() >= 2)
         {
@@ -200,6 +198,16 @@ public class GameEngine extends Thread
                 }
         }
 
+        for (int i = _updatables.size() - 1; i >= 0; i--)
+            _updatables.get(i).update(time);
+
+//        Iterator<IUpdatable> updatableIterator = _updatables.iterator();
+//        while(updatableIterator.hasNext())
+//        {
+//            IUpdatable updatable = updatableIterator.next();
+//            updatable.update(time);
+//        }
+
         if(_passedTime > _breakUpInterval)
             _isAllowedToBreak = true;
     }
@@ -214,8 +222,12 @@ public class GameEngine extends Thread
         int numOfNew = (int)Utils.randomInRange(2.0f, 6.0f);
         Circle circle = asteroid.getBoundery().getCircle();
         float newSize = 2 * circle.getRadius()/numOfNew;
+        Log.i("new_asteroid", "old asteroid: " + asteroid.toString());
         for(int i=0; i < numOfNew; i++)
+        {
             _asteroidGenerator.addAsteroid(circle.getCenter(), newSize);
+            //Log.i("new_asteroid", asteroid.toString());
+        }
 
         //Log.i("numOfNew", Integer.toString(numOfNew));
 
@@ -230,5 +242,12 @@ public class GameEngine extends Thread
             for (int i = _updatables.size() - 1; i >= 0; i--)
                 _updatables.get(i).draw();
         }
+
+//        Iterator<IUpdatable> updatableIterator = _updatables.iterator();
+//        while(updatableIterator.hasNext())
+//        {
+//            IUpdatable updatable = updatableIterator.next();
+//            updatable.draw();
+//        }
     }
 }
