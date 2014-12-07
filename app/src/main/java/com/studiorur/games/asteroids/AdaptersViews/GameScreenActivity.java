@@ -1,6 +1,8 @@
 package com.studiorur.games.asteroids.AdaptersViews;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.PointF;
 import android.opengl.GLES20;
@@ -8,6 +10,10 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.studiorur.games.asteroids.GameManagement.AsteroidGenerator;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
@@ -26,6 +32,10 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
     int _width = -1;
     float _displayScaleX;
     float _displayScaleY;
+    Context _context;
+    GLSurfaceView _surfaceView;
+    PauseMenuView _pauseMenuView;
+    RelativeLayout _rootLayout;
 
     public interface OnTouchScreenListener
     {
@@ -47,15 +57,95 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        _context = this;
 
         // lock screen orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        GLSurfaceView surfaceView = new GLSurfaceView(this);
-        surfaceView.setEGLContextClientVersion(2);
-        surfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        surfaceView.setRenderer(this);
-        setContentView(surfaceView);
+        _rootLayout = new RelativeLayout(this);
+
+        _surfaceView = new GLSurfaceView(this);
+        _surfaceView.setEGLContextClientVersion(2);
+        _surfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        _surfaceView.setRenderer(this);
+        LinearLayout.LayoutParams surfaceViewLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        _rootLayout.addView(_surfaceView, surfaceViewLP);
+
+        setContentView(_rootLayout);
+    }
+
+
+    @Override
+    public void onBackPressed()
+    {
+        if(GameEngine.getInstance().getGameState() == GameEngine.GameState.RUNNING)
+        {
+            pauseGame();
+        }
+        else if(GameEngine.getInstance().getGameState() == GameEngine.GameState.PAUSED)
+            resumeGame();
+    }
+
+    private void resumeGame()
+    {
+        _rootLayout.removeView(_pauseMenuView);
+        GameEngine.getInstance().resumeGame();
+    }
+
+    private void pauseGame()
+    {
+        GameEngine.getInstance().pauseGame();
+
+        // create pause menu
+        _pauseMenuView = new PauseMenuView(_context);
+        _pauseMenuView.getResumeButton().setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    _pauseMenuView.getResumeButton().setBackgroundResource(R.drawable.rounded_button_background_down);
+
+                }
+                else if(event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    _pauseMenuView.getResumeButton().setBackgroundResource(R.drawable.rounded_button_background_up);
+
+                    // Pause game
+                    resumeGame();
+                }
+
+                return true;
+            }
+        });
+
+        _pauseMenuView.getMainMenuButton().setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    _pauseMenuView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_down);
+
+                }
+                else if(event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    _pauseMenuView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_up);
+
+                    // Call main menu activity and destroy the current one
+                    Intent mainMenuIntent = new Intent();
+                    mainMenuIntent.setClass(_context, GameScreenActivity.class);
+                    mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(mainMenuIntent);
+                }
+
+                return true;
+            }
+        });
+
+        _rootLayout.addView(_pauseMenuView);
     }
 
     @Override
@@ -158,15 +248,6 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
                 4000.0f);
         asteroidGenerator.start();
 
-        // testing
-//        Asteroid asteroid = new Asteroid(this, R.drawable.asteroid);
-//        asteroid.setHeight(0.3f);
-//        asteroid.setWidth(0.3f);
-//        asteroid.setCenter(new PointF(0.0f, 1.0f));
-//        asteroid.setVelocity(new PointF(0.0f, -0.0001f));
-//        _gameEngine.addUpdateable(asteroid);
-//        _gameEngine.addCollidable(asteroid);
-
         // Background stars - two layers of stars with different speeds will create a parallax effect
         StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
         starGeneratorSlower.init();
@@ -176,7 +257,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         GameEngine.getInstance().addUpdateable(starGeneratorFaster);
 
         // TODO: needs some interface
-        GameEngine.getInstance(). start();
+        GameEngine.getInstance().start();
     }
 
     @Override

@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 public class GameEngine extends Thread
 {
     public enum GameState
-    { RUNNING, PAUSED };
-    private GameState _gameState;
+    { RUNNING, PAUSED, NEVER_RUN };
+    private GameState _gameState = GameState.NEVER_RUN;
 
     private ArrayList<IUpdatable> _updatables;
     private ArrayList<ICollidable> _collidables;
@@ -49,6 +49,11 @@ public class GameEngine extends Thread
         _collidables = new ArrayList<ICollidable>();
     }
 
+    public GameState getGameState()
+    {
+        return _gameState;
+    }
+
     public void addUpdateable(IUpdatable IUpdatable)
     {
         _updatables.add(IUpdatable);
@@ -72,13 +77,22 @@ public class GameEngine extends Thread
     @Override
     public synchronized void start()
     {
-        _gameState = GameState.RUNNING;
-        super.start();
+        if(_gameState == GameState.NEVER_RUN)
+        {
+            _gameState = GameState.RUNNING;
+            super.start();
+        }
     }
 
-    public synchronized void pause()
+    public synchronized void pauseGame()
     {
         _gameState = GameState.PAUSED;
+    }
+
+    public synchronized void resumeGame()
+    {
+        _gameState = GameState.RUNNING;
+
     }
 
     @Override
