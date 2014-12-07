@@ -27,7 +27,7 @@ public class GameEngine extends Thread
     private ArrayList<IUpdatable> _updatables;
     private ArrayList<ICollidable> _collidables;
     private AsteroidGenerator _asteroidGenerator;
-    private float _breakUpInterval = 5000.0f; // in milliseconds
+    private float _breakUpInterval = 500.0f; // in milliseconds
     private float _passedTime = 0.0f;
     private boolean _isAllowedToBreak = true;
 

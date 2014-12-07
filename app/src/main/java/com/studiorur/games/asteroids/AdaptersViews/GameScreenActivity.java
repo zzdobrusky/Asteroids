@@ -132,6 +132,17 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
                 {
                     _pauseMenuView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_up);
 
+//                    _surfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+//                    _surfaceView.onPause();
+//                    _surfaceView.getHolder().getSurface().release();
+//                    _surfaceView.setVisibility(View.INVISIBLE);
+//                    _surfaceView.destroyDrawingCache();
+//                    _surfaceView.invalidate();
+//                    _surfaceView.clearAnimation();
+//                    _surfaceView.postInvalidate();
+//
+//                    _rootLayout.destroyDrawingCache();
+
                     // Call main menu activity and destroy the current one
                     Intent mainMenuIntent = new Intent();
                     mainMenuIntent.setClass(_context, GameScreenActivity.class);
