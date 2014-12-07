@@ -16,8 +16,8 @@ public class PauseMenuView extends RelativeLayout
     // all in pd
     final static float BUTTON_PADDING_WIDTH = 6.0f;
     final static float BUTTON_MARGIN_Y = 10.0f;
-    final static float BUTTON_WIDTH = 200.0f;
-    final static float BUTTON_HEIGHT = 50.0f;
+    final static float BUTTON_WIDTH = 180.0f;
+    final static float BUTTON_HEIGHT = 40.0f;
     final static float BUTTON_FONT_SIZE = 10.0f;
 
     Button _resumeButton;
