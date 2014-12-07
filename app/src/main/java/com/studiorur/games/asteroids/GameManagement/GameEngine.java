@@ -209,7 +209,7 @@ public class GameEngine extends Thread
         _isAllowedToBreak = false;
         _passedTime = 0.0f;
 
-        Log.i("breakup", "asteroid break up");
+        //Log.i("breakup", "asteroid break up");
 
         int numOfNew = (int)Utils.randomInRange(2.0f, 6.0f);
         Circle circle = asteroid.getBoundery().getCircle();
@@ -217,7 +217,7 @@ public class GameEngine extends Thread
         for(int i=0; i < numOfNew; i++)
             _asteroidGenerator.addAsteroid(circle.getCenter(), newSize);
 
-        Log.i("numOfNew", Integer.toString(numOfNew));
+        //Log.i("numOfNew", Integer.toString(numOfNew));
 
         _asteroidGenerator.removeAsteroid(asteroid);
         SoundFX.getInstance().play(R.raw.explosion, 1.0f);
