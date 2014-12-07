@@ -218,14 +218,20 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         SoundFX.getInstance().addSound(this, R.raw.shot);
         SoundFX.getInstance().addSound(this, R.raw.explosion);
 
-
-        // Background stars - two layers of stars with different speeds will create a parallax effect
-        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
-        starGeneratorSlower.init();
-        GameEngine.getInstance().addUpdateable(starGeneratorSlower);
-        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
-        starGeneratorFaster.init();
-        GameEngine.getInstance().addUpdateable(starGeneratorFaster);
+        // Your spaceship
+        SpaceShip ship = new SpaceShip(
+                this,
+                1.0f,
+                R.drawable.spaceship_spreadsheet,
+                1,
+                4,
+                50.0f);
+        ship.setCenterX(0.0f);
+        ship.setCenterY(0.0f);
+        ship.setWidth(0.15f);
+        ship.setHeight(0.25f);
+        GameEngine.getInstance().addUpdateable(ship);
+        GameEngine.getInstance().addCollidable(ship);
 
         // Asteroids
         AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
@@ -243,21 +249,13 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         // register with the game engine
         GameEngine.getInstance().registerAsteroidGenerator(asteroidGenerator);
 
-
-        // Your spaceship
-        SpaceShip ship = new SpaceShip(
-                this,
-                1.0f,
-                R.drawable.spaceship_spreadsheet,
-                1,
-                4,
-                50.0f);
-        ship.setCenterX(0.0f);
-        ship.setCenterY(0.0f);
-        ship.setWidth(0.15f);
-        ship.setHeight(0.25f);
-        GameEngine.getInstance().addUpdateable(ship);
-        GameEngine.getInstance().addCollidable(ship);
+        // Background stars - two layers of stars with different speeds will create a parallax effect
+        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
+        starGeneratorSlower.init();
+        GameEngine.getInstance().addUpdateable(starGeneratorSlower);
+        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
+        starGeneratorFaster.init();
+        GameEngine.getInstance().addUpdateable(starGeneratorFaster);
 
         // TODO: needs some interface
         GameEngine.getInstance().startGame();

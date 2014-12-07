@@ -71,7 +71,7 @@ public class GameEngine extends Thread
 
     public void addUpdateable(IUpdatable IUpdatable)
     {
-        _updatables.add(0, IUpdatable);
+        _updatables.add(IUpdatable);
     }
 
     public void removeUpdateable(IUpdatable updatable)
@@ -81,7 +81,7 @@ public class GameEngine extends Thread
 
     public void addCollidable(ICollidable ICollidable)
     {
-        _collidables.add(0, ICollidable);
+        _collidables.add(ICollidable);
     }
 
     public void removeCollidable(ICollidable collidable)
@@ -151,6 +151,9 @@ public class GameEngine extends Thread
     {
         _passedTime += time;
 
+        for (int i = _updatables.size() - 1; i >= 0; i--)
+            _updatables.get(i).update(time);
+
         // do filtered collisions - we need at least 2 objects to do collisions
         if(_collidables.size() >= 2)
         {
@@ -199,9 +202,6 @@ public class GameEngine extends Thread
 
         if(_passedTime > _breakUpInterval)
             _isAllowedToBreak = true;
-
-        for (int i = _updatables.size() - 1; i >= 0; i--)
-            _updatables.get(i).update(time);
     }
 
     private void asteroidBreakup(Asteroid asteroid)
