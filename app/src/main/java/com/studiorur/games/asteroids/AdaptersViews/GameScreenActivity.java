@@ -79,9 +79,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
     public void onBackPressed()
     {
         if(GameEngine.getInstance().getGameState() == GameEngine.GameState.RUNNING)
-        {
             pauseGame();
-        }
         else if(GameEngine.getInstance().getGameState() == GameEngine.GameState.PAUSED)
             resumeGame();
     }
@@ -220,6 +218,32 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         SoundFX.getInstance().addSound(this, R.raw.shot);
         SoundFX.getInstance().addSound(this, R.raw.explosion);
 
+
+        // Background stars - two layers of stars with different speeds will create a parallax effect
+        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
+        starGeneratorSlower.init();
+        GameEngine.getInstance().addUpdateable(starGeneratorSlower);
+        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
+        starGeneratorFaster.init();
+        GameEngine.getInstance().addUpdateable(starGeneratorFaster);
+
+        // Asteroids
+        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
+                this,
+                R.drawable.asteroid,
+                50,
+                2.0f,
+                heightInWorld,
+                0.08f,
+                0.5f,
+                0.0001f,
+                0.001f,
+                4000.0f);
+        asteroidGenerator.start();
+        // register with the game engine
+        GameEngine.getInstance().registerAsteroidGenerator(asteroidGenerator);
+
+
         // Your spaceship
         SpaceShip ship = new SpaceShip(
                 this,
@@ -235,29 +259,8 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         GameEngine.getInstance().addUpdateable(ship);
         GameEngine.getInstance().addCollidable(ship);
 
-        // Asteroids
-        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
-                this,
-                R.drawable.asteroid,
-                2.0f,
-                heightInWorld,
-                0.08f,
-                0.5f,
-                0.0001f,
-                0.001f,
-                4000.0f);
-        asteroidGenerator.start();
-
-        // Background stars - two layers of stars with different speeds will create a parallax effect
-        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
-        starGeneratorSlower.init();
-        GameEngine.getInstance().addUpdateable(starGeneratorSlower);
-        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
-        starGeneratorFaster.init();
-        GameEngine.getInstance().addUpdateable(starGeneratorFaster);
-
         // TODO: needs some interface
-        GameEngine.getInstance().start();
+        GameEngine.getInstance().startGame();
     }
 
     @Override
