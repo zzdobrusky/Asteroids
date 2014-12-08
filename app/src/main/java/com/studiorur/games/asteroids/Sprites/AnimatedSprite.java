@@ -11,14 +11,15 @@ import com.studiorur.games.asteroids.Interfaces.IUpdatable;
  */
 public class AnimatedSprite extends Sprite implements IUpdatable
 {
-    private float _animationInterval = 40.0f; // in milliseconds
-    private LoopTimer _timer = null;
 
     /*
         Assuming each animation has its own row and it animates from left to right. Animates by
         changing column. Rows and columns start at 0.
     */
 
+    private float _animationInterval = 40.0f; // in milliseconds
+    private LoopTimer _timer = null;
+    private OnAnimationStopListener _onAnimationStopListener = null;
     // Default is just one frame
     private int _numOfRows = 1;
     private int _numOfCols = 1;
@@ -35,32 +36,47 @@ public class AnimatedSprite extends Sprite implements IUpdatable
     private int _numOfRepetitions = 0;
     private int _countRepetitions = 0;
 
+    public interface OnAnimationStopListener
+    {
+        public void onAnimationStop();
+    }
+
+    public OnAnimationStopListener getOnAnimationStopListener()
+    {
+        return _onAnimationStopListener;
+    }
+
+    public void setOnAnimationStopListener(OnAnimationStopListener onAnimationStopListener)
+    {
+        _onAnimationStopListener = onAnimationStopListener;
+    }
+
     public void loadSpritesheet(Resources resources, int resourceIdentifier)
     {
-        loadSpritesheet(resources, resourceIdentifier, 1, 1, _animationInterval);
+        // default assuming there is just one frame
+        loadSpritesheet(resources, resourceIdentifier, 1, 1);
     }
 
     protected void loadSpritesheet(
             Resources resources,
             int resourceIdentifier,
             int numOfRows,
-            int numOfCols,
-            float animationInterval)
+            int numOfCols)
     {
         _numOfRows = numOfRows;
         _numOfCols = numOfCols;
         _frameWidth = 1.0f/_numOfCols;
         _frameHeight = 1.0f/_numOfRows;
-        _animationInterval = animationInterval;
 
-        // move to the first frame as default
+        // move to the first frame as default (no animation)
         loadTexture(resources, resourceIdentifier);
         setFrame(0, 0);
     }
 
-    public void initAnimation(int animatedRow, int numOfRepetitions)
+    public void initAnimation(int animatedRow, int numOfRepetitions, float animationInterval)
     {
-        // mostly default (no animation)
+        // mostly default - animation starts from 0 and repeats endlessly
+        _animationInterval = animationInterval;
         initAnimation(animatedRow, 0, 0, _animationInterval, numOfRepetitions);
     }
 
@@ -70,6 +86,7 @@ public class AnimatedSprite extends Sprite implements IUpdatable
         _startCol = startCol;
         _endCol = endCol;
         _animationInterval = animationInterval;
+        _numOfRepetitions = numOfRepetitions;
 
 
         // Start timer and call each frame with animation interval till the end and repeat if required
@@ -93,14 +110,15 @@ public class AnimatedSprite extends Sprite implements IUpdatable
                 setFrame(_animatedRow, _currentCol);
 
                 // check if to stop the animation, 0 is infinite repetitions
-                if(_numOfRepetitions != 0)
+                if(_numOfRepetitions != 0 && _currentCol == _endCol)
                 {
                     _countRepetitions++;
-                    if (_countRepetitions > _numOfRepetitions)
+                    if (_countRepetitions >= _numOfRepetitions)
                         stopAnimation();
                 }
             }
         });
+        _timer.start();
     }
 
     public void stopAnimation()
@@ -111,11 +129,15 @@ public class AnimatedSprite extends Sprite implements IUpdatable
     public void stopAnimation(int stopFrame)
     {
         // Stop and destroy timer
+        _countRepetitions = 0;
         _timer.stop();
-        _timer = null;
 
         // set frame
         setFrame(_animatedRow, stopFrame);
+
+        // register with listener
+        if(_onAnimationStopListener != null)
+            _onAnimationStopListener.onAnimationStop();
     }
 
 

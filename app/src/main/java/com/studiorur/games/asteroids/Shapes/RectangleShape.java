@@ -12,15 +12,16 @@ import java.nio.FloatBuffer;
 /**
  * Created by zbynek on 11/24/2014.
  */
-public class CircleShape
+public class RectangleShape
 {
     static int _Program = -1;
-    static final int POSITION_ATTRIBUTE_ID = 2;
-    static FloatBuffer _TrianglePointsBuffer = null;
-    static int _numOfSides = 20;
+    static final int POSITION_ATTRIBUTE_ID = 3;
+    static FloatBuffer _RectanglePointsBuffer = null;
 
-    protected PointF _center = new PointF(0.0f, 0.0f);;
-    protected float _radius  = 1.0f;;
+    protected PointF _center = new PointF(0.0f, 0.0f);
+    protected float _width = 1.0f;
+    protected float _height = 1.0f;
+    protected float _rotation = 0.0f;
     protected int _color = Color.BLUE;;
 
     public float getCenterX()
@@ -43,14 +44,34 @@ public class CircleShape
         _center.y = centerY;
     }
 
-    public float getRadius()
+    public float getWidth()
     {
-        return _radius;
+        return _width;
     }
 
-    public void setRadius(float radius)
+    public void setWidth(float width)
     {
-        _radius = radius;
+        _width = width;
+    }
+
+    public float getHeight()
+    {
+        return _height;
+    }
+
+    public void setHeight(float height)
+    {
+        _height = height;
+    }
+
+    public float getRotation()
+    {
+        return _rotation;
+    }
+
+    public void setRotation(float rotation)
+    {
+        _rotation = rotation;
     }
 
     public int getColor()
@@ -102,28 +123,20 @@ public class CircleShape
         // link it and use it
         GLES20.glLinkProgram(_Program);
 
-        // circle vertices coordinates
-        float[] trianglePoints = new float[4 * (_numOfSides + 2)];
-        float angle = 2.0f * (float)Math.PI / _numOfSides;
+        // quad vertices coordinates
+        float[] rectanglePoints =
+                {
+                        -0.5f, -0.5f, 0.0f, 1.0f,
+                        0.5f, -0.5f, 0.0f, 1.0f,
+                        -0.5f, 0.5f, 0.0f, 1.0f,
+                        0.5f, 0.5f, 0.0f, 1.0f,
+                };
 
-        // starts at the center
-        trianglePoints[0] = 0.0f;
-        trianglePoints[1] = 0.0f;
-        trianglePoints[2] = 0.0f;
-        trianglePoints[3] = 1.0f;
-        for(int i=0; i < _numOfSides + 1; i++)
-        {
-            trianglePoints[4*(i + 1)] = 0.5f * FloatMath.cos(i * angle);
-            trianglePoints[4*(i + 1) + 1] = 0.5f * FloatMath.sin(i * angle);
-            trianglePoints[4*(i + 1) + 2] = 0.0f;
-            trianglePoints[4*(i + 1) + 3] = 1.0f;
-        }
-
-        ByteBuffer trianglePointsByteBuffer = ByteBuffer.allocateDirect(trianglePoints.length * 4);
-        trianglePointsByteBuffer.order(ByteOrder.nativeOrder());
-        _TrianglePointsBuffer = trianglePointsByteBuffer.asFloatBuffer();
-        _TrianglePointsBuffer.put(trianglePoints);
-        _TrianglePointsBuffer.rewind();
+        ByteBuffer rectanglePointsByteBuffer = ByteBuffer.allocateDirect(rectanglePoints.length * 4);
+        rectanglePointsByteBuffer.order(ByteOrder.nativeOrder());
+        _RectanglePointsBuffer = rectanglePointsByteBuffer.asFloatBuffer();
+        _RectanglePointsBuffer.put(rectanglePoints);
+        _RectanglePointsBuffer.rewind();
     }
 
     public void draw()
@@ -136,8 +149,8 @@ public class CircleShape
         // transform matrix
         float[] modelView = new float[]
                 {
-                        _radius, _radius, 0.0f, 0.0f,
-                        -_radius, _radius, 0.0f, 0.0f,
+                        _width * FloatMath.cos(_rotation), _width * FloatMath.sin(_rotation), 0.0f, 0.0f,
+                        -_height * FloatMath.sin(_rotation), _height * FloatMath.cos(_rotation), 0.0f, 0.0f,
                         0.0f, 0.0f, 1.0f, 0.0f,
                         _center.x, _center.y, 0.0f, 1.0f,
                 };
@@ -156,8 +169,8 @@ public class CircleShape
         GLES20.glUniform4fv(colorLocation, 1, color, 0);
 
         GLES20.glEnableVertexAttribArray(POSITION_ATTRIBUTE_ID);
-        GLES20.glVertexAttribPointer(POSITION_ATTRIBUTE_ID, 4, GLES20.GL_FLOAT, false, 4 * 4, _TrianglePointsBuffer);
+        GLES20.glVertexAttribPointer(POSITION_ATTRIBUTE_ID, 4, GLES20.GL_FLOAT, false, 4 * 4, _RectanglePointsBuffer);
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, _numOfSides + 2);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
     }
 }

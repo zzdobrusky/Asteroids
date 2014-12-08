@@ -9,6 +9,7 @@ public class LoopTimer
     float _passedTime;
     int _repeatNumber;
     int _count;
+    boolean _isRunning;
 
     public interface OnTimePassedListener
     {
@@ -27,31 +28,42 @@ public class LoopTimer
     public LoopTimer(float timeInterval, int repeatNumber)
     {
         _timeInterval = timeInterval;
-        _passedTime = timeInterval;
+        _passedTime = 0.0f;
         _repeatNumber = repeatNumber; // 0 means infinite
-        _count = repeatNumber;
+        _count = 0;
+        _isRunning = false;
     }
 
     public void update(float time)
     {
-        _passedTime -= time;
-
-        if(_passedTime <= 0.0f && _count >= 0)
+        if(_isRunning && _count <= _repeatNumber)
         {
-            // fire up the event
-            if(_onTimePassedListener != null)
-                _onTimePassedListener.onTimePassed();
+            _passedTime += time;
 
-            // reset interval to start over
-            _passedTime = _timeInterval;
+            if (_passedTime >= _timeInterval)
+            {
+                // fire up the event
+                if (_onTimePassedListener != null)
+                    _onTimePassedListener.onTimePassed();
 
-            if(_repeatNumber > 0)
-                _count--;
+                // reset interval to start over
+                _passedTime = 0.0f;
+
+                if (_repeatNumber > 0)
+                    _count++;
+            }
         }
+    }
+
+    public void start()
+    {
+        _isRunning = true;
+        _count = 0;
+        _passedTime = 0.0f;
     }
 
     public void stop()
     {
-        _count = -1;
+        _isRunning = false;
     }
 }

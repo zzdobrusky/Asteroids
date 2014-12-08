@@ -9,6 +9,7 @@ import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.R;
+import com.studiorur.games.asteroids.Sprites.AnimatedSprite;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
 
 import java.util.ArrayList;
@@ -212,26 +213,25 @@ public class GameEngine extends Thread
             _isAllowedToBreak = true;
     }
 
-    private void asteroidBreakup(Asteroid asteroid)
+    private void asteroidBreakup(final Asteroid asteroid)
     {
         _isAllowedToBreak = false;
         _passedTime = 0.0f;
 
         //Log.i("breakup", "asteroid break up");
 
-        int numOfNew = (int)Utils.randomInRange(2.0f, 6.0f);
-        Circle circle = asteroid.getBoundery().getCircle();
-        float newSize = 2 * circle.getRadius()/numOfNew;
-        Log.i("new_asteroid", "old asteroid: " + asteroid.toString());
-        for(int i=0; i < numOfNew; i++)
+        // lets do animation instead
+        asteroid.startAnimation();
+        asteroid.setOnAnimationStopListener(new AnimatedSprite.OnAnimationStopListener()
         {
-            _asteroidGenerator.addAsteroid(circle.getCenter(), newSize);
-            //Log.i("new_asteroid", asteroid.toString());
-        }
+            @Override
+            public void onAnimationStop()
+            {
+                _asteroidGenerator.removeAsteroid(asteroid);
+            }
+        });
 
         //Log.i("numOfNew", Integer.toString(numOfNew));
-
-        _asteroidGenerator.removeAsteroid(asteroid);
         SoundFX.getInstance().play(R.raw.explosion, 1.0f);
     }
 

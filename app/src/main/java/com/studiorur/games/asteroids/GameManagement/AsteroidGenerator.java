@@ -59,7 +59,7 @@ public class AsteroidGenerator implements IUpdatable
 
         // create all asteroids first, active list is empty now - couldn't figure out the other way
         for(int i=0; i<_numOfAsteroids; i++)
-            _unusedAsteroids.add(new Asteroid(_context, _textureIdentifier));
+            _unusedAsteroids.add(new Asteroid(_context, _textureIdentifier, 1, 4, 60.0f));
 
         // add itself to a game engine - this will take care of timing
         GameEngine.getInstance().addUpdateable(this);

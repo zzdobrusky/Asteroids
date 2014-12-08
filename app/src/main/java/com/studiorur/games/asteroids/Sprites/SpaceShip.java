@@ -2,10 +2,12 @@ package com.studiorur.games.asteroids.Sprites;
 
 import android.graphics.PointF;
 
+import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.AdaptersViews.GameScreenActivity;
+import com.studiorur.games.asteroids.Shapes.Projectile;
 
 /**
  * Created by zbynek on 11/25/2014.
@@ -22,6 +24,8 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     float _frictionCoefficient = 0.89f;
     Boundary _boundary;
     CollidableType _collidableType = CollidableType.SPACESHIP;
+
+    boolean _isArmed = true;
 
 
     public PointF getVelocity()
@@ -61,15 +65,21 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         _invertedMass = 1.0f/mass;
 
         // load sprite sheet
-        loadSpritesheet(gameScreenActivity.getResources(), resourceIdentifier, numOfRows, numOfCols, animationInterval);
+        loadSpritesheet(gameScreenActivity.getResources(), resourceIdentifier, numOfRows, numOfCols);
 
         // create boundary
         _boundary = new Boundary(false); // make it a rectangle
 
-        initAnimation(0, 1, 3, 25.0f, 0);
+        initAnimation(0, 1, 4, animationInterval, 0);
         startAnimation();
 
         resetForces();
+
+//        Projectile newProjectile = new Projectile(getCenter());
+//        newProjectile.setVelocity(new PointF(0.0f, 0.0001f));
+//        newProjectile.setWidth(0.1f);
+//        newProjectile.setHeight(0.1f);
+//        GameEngine.getInstance().addUpdateable(newProjectile);
 
         // start listening for touch events (will propel the spaceship)
         _gameScreenActivity.setOnTouchScreenListener(new GameScreenActivity.OnTouchScreenListener()
@@ -81,6 +91,17 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
                 float forceX = (worldLoc.x - _center.x) * _forceCoefficient;
                 float forceY = (worldLoc.y - _center.y) * _forceCoefficient;
                 _rocketForce = new PointF(forceX, forceY);
+
+                // TODO: start shooting projectiles with some frequency
+                if(_isArmed)
+                {
+                    Projectile newProjectile = new Projectile(getCenter());
+                    newProjectile.setVelocity(new PointF(0.0f, 0.0001f));
+                    newProjectile.setWidth(0.1f);
+                    newProjectile.setHeight(0.1f);
+                    GameEngine.getInstance().addUpdateable(newProjectile);
+                    _isArmed = false;
+                }
             }
         });
     }

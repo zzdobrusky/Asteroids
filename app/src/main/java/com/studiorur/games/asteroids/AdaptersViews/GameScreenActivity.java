@@ -247,7 +247,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         // Asteroids
         AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
                 this,
-                R.drawable.asteroid,
+                R.drawable.asteroid_spritesheet,
                 50,
                 2.0f,
                 heightInWorld,

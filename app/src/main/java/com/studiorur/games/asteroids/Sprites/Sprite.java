@@ -8,7 +8,6 @@ import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.FloatMath;
-import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -35,7 +34,7 @@ public class Sprite
     protected PointF _center = new PointF(0.0f, 0.0f);
     protected float _width = 1.0f;
     protected float _height = 1.0f;
-    protected float _rotation;
+    protected float _rotation = 0.0f;
 
     public RectF getTextureRect()
     {
