@@ -9,6 +9,7 @@ import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.R;
+import com.studiorur.games.asteroids.Shapes.Projectile;
 import com.studiorur.games.asteroids.Sprites.AnimatedSprite;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
 
@@ -73,7 +74,7 @@ public class GameEngine extends Thread
 
     public void addUpdateable(IUpdatable IUpdatable)
     {
-        _updatables.add(IUpdatable);
+        _updatables.add(0, IUpdatable);
     }
 
     public void removeUpdateable(IUpdatable updatable)
@@ -83,7 +84,7 @@ public class GameEngine extends Thread
 
     public void addCollidable(ICollidable ICollidable)
     {
-        _collidables.add(ICollidable);
+        _collidables.add(0, ICollidable);
     }
 
     public void removeCollidable(ICollidable collidable)
@@ -155,49 +156,7 @@ public class GameEngine extends Thread
 
         // do filtered collisions - we need at least 2 objects to do collisions
         if(_collidables.size() >= 2)
-        {
-            for (int i = _collidables.size() - 1; i >= 1; i--)
-                for (int j = _collidables.size() - 2; j >= 0; j--)
-                {
-                    ICollidable object1 = _collidables.get(i);
-                    ICollidable object2 = _collidables.get(j);
-                    if (object1.isColliding(object2))
-                    {
-                        if (object1.getCollidableType() == CollidableType.ASTEROID &&
-                                object2.getCollidableType() == CollidableType.ASTEROID)
-                        {
-                            // TODO: do random break up of two asteroids + sound effect
-                        }
-                        else if ((object1.getCollidableType() == CollidableType.SPACESHIP &&
-                                object2.getCollidableType() == CollidableType.ASTEROID))
-                        {
-                            // Break up asteroid make a ship more damaged + sound effect
-                            if(_isAllowedToBreak)
-                                asteroidBreakup((Asteroid) object2);
-                        }
-                        else if ((object1.getCollidableType() == CollidableType.ASTEROID &&
-                                object2.getCollidableType() == CollidableType.SPACESHIP))
-                        {
-                            // Break up asteroid make a ship more damaged + sound effect
-                            if(_isAllowedToBreak)
-                                asteroidBreakup((Asteroid) object1);
-                        }
-                        else if ((object1.getCollidableType() == CollidableType.SPACESHIP &&
-                                object2.getCollidableType() == CollidableType.POWER_UP))
-                        {
-                            // TODO: remove power-up, add weaponry to spaceship, start a timer
-                        }
-                        else if ((object1.getCollidableType() == CollidableType.POWER_UP &&
-                                object2.getCollidableType() == CollidableType.SPACESHIP))
-                        {
-                            // TODO: remove power-up, add weaponry to spaceship, start a timer
-                        }
-
-                        // else do nothing, for example asteroid and power-up collisions
-
-                    }
-                }
-        }
+            doFilteredCollision();
 
         for (int i = _updatables.size() - 1; i >= 0; i--)
             _updatables.get(i).update(time);
@@ -211,6 +170,83 @@ public class GameEngine extends Thread
 
         if(_passedTime > _breakUpInterval)
             _isAllowedToBreak = true;
+    }
+
+    private void doFilteredCollision()
+    {
+        for (int i = _collidables.size() - 1; i >= 1; i--)
+            for (int j = _collidables.size() - 2; j >= 0; j--)
+            {
+                ICollidable object1 = _collidables.get(i);
+                ICollidable object2 = _collidables.get(j);
+                if (object1.isColliding(object2))
+                {
+                    if (object1.getCollidableType() == CollidableType.ASTEROID &&
+                            object2.getCollidableType() == CollidableType.ASTEROID)
+                    {
+                        // TODO: do random break up of two asteroids + sound effect
+                    }
+                    else if (object1.getCollidableType() == CollidableType.SPACESHIP &&
+                            object2.getCollidableType() == CollidableType.ASTEROID)
+                    {
+                        // Break up asteroid make a ship more damaged + sound effect
+                        if(_isAllowedToBreak)
+                            asteroidBreakup((Asteroid) object2);
+
+                        return;
+                    }
+                    else if (object1.getCollidableType() == CollidableType.ASTEROID &&
+                            object2.getCollidableType() == CollidableType.SPACESHIP)
+                    {
+                        // Break up asteroid make a ship more damaged + sound effect
+                        if(_isAllowedToBreak)
+                            asteroidBreakup((Asteroid) object1);
+
+                        return;
+                    }
+                    else if (object1.getCollidableType() == CollidableType.SPACESHIP &&
+                            object2.getCollidableType() == CollidableType.POWER_UP)
+                    {
+                        // TODO: remove power-up, add weaponry to spaceship, start a timer
+                        return;
+                    }
+                    else if (object1.getCollidableType() == CollidableType.POWER_UP &&
+                            object2.getCollidableType() == CollidableType.SPACESHIP)
+                    {
+                        // TODO: remove power-up, add weaponry to spaceship, start a timer
+                        return;
+                    }
+                    else if (object1.getCollidableType() == CollidableType.PROJECTILE &&
+                            object2.getCollidableType() == CollidableType.ASTEROID)
+                    {
+                        // Break up asteroid + remove projectile + sound effect
+                        if(_isAllowedToBreak)
+                        {
+                            asteroidBreakup((Asteroid) object2);
+                            // remove projectile
+                            GameEngine.getInstance().removeUpdateable((IUpdatable)object1);
+                            GameEngine.getInstance().removeCollidable(object1);
+                        }
+                        return;
+                    }
+                    else if (object1.getCollidableType() == CollidableType.ASTEROID &&
+                            object2.getCollidableType() == CollidableType.PROJECTILE)
+                    {
+                        // Break up asteroid + remove projectile + sound effect
+                        if(_isAllowedToBreak)
+                        {
+                            asteroidBreakup((Asteroid) object1);
+                            // remove projectile
+                            GameEngine.getInstance().removeUpdateable((IUpdatable)object2);
+                            GameEngine.getInstance().removeCollidable(object2);
+                        }
+                        return;
+                    }
+
+                    // else do nothing, for example asteroid and power-up collisions
+
+                }
+            }
     }
 
     private void asteroidBreakup(final Asteroid asteroid)

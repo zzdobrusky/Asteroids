@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import com.studiorur.games.asteroids.GameManagement.AsteroidGenerator;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.GameManagement.StarGenerator;
+import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
@@ -39,7 +40,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
 
     public interface OnTouchScreenListener
     {
-        public void onTouchScreen(PointF worldLoc);
+        public void onTouchScreen(PointF worldLoc, MotionEvent motionEvent);
     }
     private OnTouchScreenListener _onTouchScreenListener = null;
 
@@ -48,9 +49,9 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         return _onTouchScreenListener;
     }
 
-    public void setOnTouchScreenListener(OnTouchScreenListener _onTouchScreenListener)
+    public void setOnTouchScreenListener(OnTouchScreenListener onTouchScreenListener)
     {
-        this._onTouchScreenListener = _onTouchScreenListener;
+        _onTouchScreenListener = onTouchScreenListener;
     }
 
     @Override
@@ -166,7 +167,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         PointF worldLoc = deviceToWorldCoord(new PointF(x, y));
 
         if (_onTouchScreenListener != null)
-            _onTouchScreenListener.onTouchScreen(worldLoc);
+            _onTouchScreenListener.onTouchScreen(worldLoc, event);
 
         return true;
     }
@@ -222,6 +223,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
         float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
         float heightInWorld = topBorder - bottomBorder;
+        Rectangle worldRect = new Rectangle(2.0f, heightInWorld, new PointF(0.0f, 0.0f));
 
         // *********************** GAME SETUP ***********************
 
@@ -229,9 +231,18 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         SoundFX.getInstance().addSound(this, R.raw.shot);
         SoundFX.getInstance().addSound(this, R.raw.explosion);
 
+        // Background stars - two layers of stars with different speeds will create a parallax effect
+        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
+        starGeneratorSlower.init();
+        GameEngine.getInstance().addUpdateable(starGeneratorSlower);
+        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
+        starGeneratorFaster.init();
+        GameEngine.getInstance().addUpdateable(starGeneratorFaster);
+
         // Your spaceship
         SpaceShip ship = new SpaceShip(
                 this,
+                worldRect,
                 1.0f,
                 R.drawable.spaceship_spreadsheet,
                 1,
@@ -259,14 +270,6 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         asteroidGenerator.start();
         // register with the game engine
         GameEngine.getInstance().registerAsteroidGenerator(asteroidGenerator);
-
-        // Background stars - two layers of stars with different speeds will create a parallax effect
-        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
-        starGeneratorSlower.init();
-        GameEngine.getInstance().addUpdateable(starGeneratorSlower);
-        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
-        starGeneratorFaster.init();
-        GameEngine.getInstance().addUpdateable(starGeneratorFaster);
 
         // TODO: needs some interface
         GameEngine.getInstance().startGame();

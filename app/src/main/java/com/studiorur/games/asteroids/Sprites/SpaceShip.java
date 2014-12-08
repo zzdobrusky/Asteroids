@@ -1,9 +1,12 @@
 package com.studiorur.games.asteroids.Sprites;
 
 import android.graphics.PointF;
+import android.graphics.Rect;
+import android.view.MotionEvent;
 
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.Helpers.Boundary;
+import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.AdaptersViews.GameScreenActivity;
@@ -20,13 +23,11 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     PointF _externalForce;
     PointF _rocketForce;
     GameScreenActivity _gameScreenActivity = null;
+    Rectangle _worldRect;
     float _forceCoefficient = 0.000017f;
     float _frictionCoefficient = 0.89f;
     Boundary _boundary;
     CollidableType _collidableType = CollidableType.SPACESHIP;
-
-    boolean _isArmed = true;
-
 
     public PointF getVelocity()
     {
@@ -55,6 +56,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
 
     public SpaceShip(
             GameScreenActivity gameScreenActivity,
+            Rectangle worldRect,
             float mass,
             int resourceIdentifier,
             int numOfRows,
@@ -63,6 +65,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     {
         _gameScreenActivity = gameScreenActivity;
         _invertedMass = 1.0f/mass;
+        _worldRect = worldRect;
 
         // load sprite sheet
         loadSpritesheet(gameScreenActivity.getResources(), resourceIdentifier, numOfRows, numOfCols);
@@ -85,7 +88,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         _gameScreenActivity.setOnTouchScreenListener(new GameScreenActivity.OnTouchScreenListener()
         {
             @Override
-            public void onTouchScreen(PointF worldLoc)
+            public void onTouchScreen(PointF worldLoc, MotionEvent motionEvent)
             {
                 // update force
                 float forceX = (worldLoc.x - _center.x) * _forceCoefficient;
@@ -93,14 +96,14 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
                 _rocketForce = new PointF(forceX, forceY);
 
                 // TODO: start shooting projectiles with some frequency
-                if(_isArmed)
+                if(motionEvent.getAction() == MotionEvent.ACTION_UP)
                 {
-                    Projectile newProjectile = new Projectile(getCenter());
-                    newProjectile.setVelocity(new PointF(0.0f, 0.0001f));
+                    Projectile newProjectile = new Projectile(getCenter(), _worldRect);
+                    newProjectile.setVelocity(new PointF(0.0f, 0.001f));
                     newProjectile.setWidth(0.1f);
                     newProjectile.setHeight(0.1f);
                     GameEngine.getInstance().addUpdateable(newProjectile);
-                    _isArmed = false;
+                    GameEngine.getInstance().addCollidable(newProjectile);
                 }
             }
         });

@@ -149,25 +149,6 @@ public class AsteroidGenerator implements IUpdatable
         }
     }
 
-    public void addAsteroid(PointF center, float maxSize)
-    {
-        // randomly throw asteroids with random velocity, rotation, size and shape
-        if(_unusedAsteroids.size() > 0)
-        {
-            Asteroid newAsteroid = _unusedAsteroids.get(_unusedAsteroids.size() - 1);
-            randomizeAsteroid(newAsteroid, center, maxSize);
-            GameEngine.getInstance().addUpdateable(newAsteroid);
-            GameEngine.getInstance().addCollidable(newAsteroid);
-
-            Log.i("new_asteroid", "new asteroid, size: " + maxSize + "newAsteroid: " + newAsteroid.toString());
-
-            // add to active asteroids
-            _activeAsteroids.add(newAsteroid);
-            // remove from unused asteroids
-            _unusedAsteroids.remove(newAsteroid);
-        }
-    }
-
     public void removeAsteroid(Asteroid asteroid)
     {
         if(_activeAsteroids.size() > 0)
