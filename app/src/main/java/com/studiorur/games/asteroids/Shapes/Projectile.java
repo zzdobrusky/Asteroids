@@ -35,7 +35,6 @@ public class Projectile extends RectangleShape implements IUpdatable, ICollidabl
     public Boundary getBoundery()
     {
         _boundary.updateBoundary(_width, _height, _center);
-
         return _boundary;
     }
 

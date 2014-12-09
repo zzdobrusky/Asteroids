@@ -2,6 +2,7 @@ package com.studiorur.games.asteroids.GameManagement;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.Helpers.Utils;
@@ -104,6 +105,8 @@ public class AsteroidGenerator implements IUpdatable
             if (_passedTime > _timeInterval)
             {
                 addRandomAsteroid();
+
+                //Log.i("asteroid_generator", "asteroid added");
 
                 // reset time
                 _passedTime = 0.0f;

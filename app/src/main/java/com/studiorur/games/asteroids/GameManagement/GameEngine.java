@@ -1,20 +1,14 @@
 package com.studiorur.games.asteroids.GameManagement;
 
-import android.util.Log;
-
-import com.studiorur.games.asteroids.Helpers.Circle;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
-import com.studiorur.games.asteroids.Helpers.Utils;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.R;
-import com.studiorur.games.asteroids.Shapes.Projectile;
 import com.studiorur.games.asteroids.Sprites.AnimatedSprite;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -161,13 +155,6 @@ public class GameEngine extends Thread
         for (int i = _updatables.size() - 1; i >= 0; i--)
             _updatables.get(i).update(time);
 
-//        Iterator<IUpdatable> updatableIterator = _updatables.iterator();
-//        while(updatableIterator.hasNext())
-//        {
-//            IUpdatable updatable = updatableIterator.next();
-//            updatable.update(time);
-//        }
-
         if(_passedTime > _breakUpInterval)
             _isAllowedToBreak = true;
     }
@@ -193,7 +180,7 @@ public class GameEngine extends Thread
                         if(_isAllowedToBreak)
                             asteroidBreakup((Asteroid) object2);
 
-                        //return;
+                        return;
                     }
                     else if (object1.getCollidableType() == CollidableType.ASTEROID &&
                             object2.getCollidableType() == CollidableType.SPACESHIP)
@@ -202,19 +189,19 @@ public class GameEngine extends Thread
                         if(_isAllowedToBreak)
                             asteroidBreakup((Asteroid) object1);
 
-                        //return;
+                        return;
                     }
                     else if (object1.getCollidableType() == CollidableType.SPACESHIP &&
                             object2.getCollidableType() == CollidableType.POWER_UP)
                     {
                         // TODO: remove power-up, add weaponry to spaceship, start a timer
-                        //return;
+                        return;
                     }
                     else if (object1.getCollidableType() == CollidableType.POWER_UP &&
                             object2.getCollidableType() == CollidableType.SPACESHIP)
                     {
                         // TODO: remove power-up, add weaponry to spaceship, start a timer
-                        //return;
+                        return;
                     }
                     else if (object1.getCollidableType() == CollidableType.PROJECTILE &&
                             object2.getCollidableType() == CollidableType.ASTEROID)
@@ -227,7 +214,7 @@ public class GameEngine extends Thread
                             GameEngine.getInstance().removeUpdateable((IUpdatable)object1);
                             GameEngine.getInstance().removeCollidable(object1);
                         }
-                        //return;
+                        return;
                     }
                     else if (object1.getCollidableType() == CollidableType.ASTEROID &&
                             object2.getCollidableType() == CollidableType.PROJECTILE)
@@ -240,7 +227,7 @@ public class GameEngine extends Thread
                             GameEngine.getInstance().removeUpdateable((IUpdatable)object2);
                             GameEngine.getInstance().removeCollidable(object2);
                         }
-                        //return;
+                        return;
                     }
 
                     // else do nothing, for example asteroid and power-up collisions
