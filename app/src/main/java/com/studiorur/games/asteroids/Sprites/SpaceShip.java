@@ -1,5 +1,6 @@
 package com.studiorur.games.asteroids.Sprites;
 
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
@@ -91,10 +92,11 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
                 // TODO: start shooting projectiles with some frequency
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP)
                 {
-                    Projectile newProjectile = new Projectile(getCenter(), _worldRect, 0.2f);
+                    Projectile newProjectile = new Projectile(new PointF(_center.x, _center.y + _height/2.0f), _worldRect, 0.2f);
                     newProjectile.setVelocity(new PointF(0.0f, 0.001f));
-                    newProjectile.setWidth(0.1f);
-                    newProjectile.setHeight(0.1f);
+                    newProjectile.setWidth(0.01f);
+                    newProjectile.setHeight(0.05f);
+                    newProjectile.setColor(Color.MAGENTA);
                     GameEngine.getInstance().addUpdateable(newProjectile);
                     GameEngine.getInstance().addCollidable(newProjectile);
                 }
