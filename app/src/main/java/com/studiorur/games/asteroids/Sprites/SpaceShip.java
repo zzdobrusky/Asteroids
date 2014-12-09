@@ -11,7 +11,6 @@ import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.AdaptersViews.GameScreenActivity;
-import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Shapes.Projectile;
 
 /**
@@ -75,7 +74,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         // create boundary
         _boundary = new Boundary(false); // make it a rectangle
 
-        initAnimation(0, 1, 3, animationInterval, 0);
+        initAnimation(0, 0, 3, animationInterval, 0);
         startAnimation();
 
         resetForces();
@@ -94,12 +93,12 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
                 // TODO: start shooting projectiles with some frequency
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP)
                 {
-                    Projectile newProjectile = new Projectile(new PointF(_center.x, _center.y + _height/2.0f), _worldRect, 0.2f);
+                    Projectile newProjectile = new Projectile(new PointF(_center.x, _center.y + _height/1.5f), _worldRect, 0.2f);
                     newProjectile.setVelocity(new PointF(0.0f, 0.001f));
                     newProjectile.setWidth(0.01f);
                     newProjectile.setHeight(0.05f);
                     newProjectile.setColor(Color.MAGENTA);
-                    SoundFX.getInstance().play(R.raw.shot, 1.0f);
+                    //SoundFX.getInstance().play(R.raw.shot, 1.0f); doesn't work
                     GameEngine.getInstance().addUpdateable(newProjectile);
                     GameEngine.getInstance().addCollidable(newProjectile);
                 }

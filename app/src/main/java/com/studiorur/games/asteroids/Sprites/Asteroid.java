@@ -63,7 +63,6 @@ public class Asteroid extends AnimatedSprite implements ICollidable
 
         // get ready animation
         initAnimation(0, 0, 3, animationInterval, 1);
-        startAnimation();
     }
 
     @Override

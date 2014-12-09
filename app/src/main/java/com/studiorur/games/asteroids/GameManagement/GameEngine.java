@@ -7,6 +7,7 @@ import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.AnimatedSprite;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
+import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -21,12 +22,14 @@ public class GameEngine extends Thread
     { RUNNING, PAUSED, NEVER_RUN };
 
     private GameState _gameState = GameState.NEVER_RUN;
+    private boolean _isGameOver = false;
     private ArrayList<IUpdatable> _updatables;
     private ArrayList<ICollidable> _collidables;
     private AsteroidGenerator _asteroidGenerator;
     private float _breakUpInterval = 500.0f; // in milliseconds
     private float _passedTime = 0.0f;
     private boolean _isAllowedToBreak = true;
+    private int _countSpaceshipCollissions = 0;
 
 
     //for consistent rendering
@@ -119,7 +122,7 @@ public class GameEngine extends Thread
             //This is where we update the game engine
             synchronized (GameEngine.class)
             {
-                if(_gameState == GameState.RUNNING)
+                if(_gameState == GameState.RUNNING && !_isGameOver)
                     update(_sleepTime);
             }
 
@@ -178,7 +181,10 @@ public class GameEngine extends Thread
                     {
                         // Break up asteroid make a ship more damaged + sound effect
                         if(_isAllowedToBreak)
+                        {
                             asteroidBreakup((Asteroid) object2);
+                            spaceshipCollision((SpaceShip) object1);
+                        }
 
                         return;
                     }
@@ -257,6 +263,38 @@ public class GameEngine extends Thread
         SoundFX.getInstance().play(R.raw.explosion, 1.0f);
     }
 
+    public boolean isGameOver()
+    {
+        return _isGameOver;
+    }
+
+    private void spaceshipCollision(SpaceShip spaceShip)
+    {
+        _countSpaceshipCollissions++;
+        if(_countSpaceshipCollissions >= 3)
+        {
+            // TODO: play awesome explosion audio
+
+            // change the number of animation from endless to 1
+            spaceShip.setNumOfRepetitions(1);
+
+            // on the last frame of explosion is Game over
+            spaceShip.setOnAnimationStopListener(new AnimatedSprite.OnAnimationStopListener()
+            {
+                @Override
+                public void onAnimationStop()
+                {
+                    // last frame of explosion - Game over!
+                    _isGameOver = true; // set game over flag
+
+                    // TODO: pop up the game over screen
+                }
+            });
+        }
+        // animate
+        spaceShip.setAnimatedRow(_countSpaceshipCollissions);
+    }
+
     public void draw()
     {
         synchronized (GameEngine.class)
@@ -264,12 +302,5 @@ public class GameEngine extends Thread
             for (int i = _updatables.size() - 1; i >= 0; i--)
                 _updatables.get(i).draw();
         }
-
-//        Iterator<IUpdatable> updatableIterator = _updatables.iterator();
-//        while(updatableIterator.hasNext())
-//        {
-//            IUpdatable updatable = updatableIterator.next();
-//            updatable.draw();
-//        }
     }
 }

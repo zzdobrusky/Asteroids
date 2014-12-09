@@ -79,10 +79,13 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
     @Override
     public void onBackPressed()
     {
-        if(GameEngine.getInstance().getGameState() == GameEngine.GameState.RUNNING)
-            pauseGame();
-        else if(GameEngine.getInstance().getGameState() == GameEngine.GameState.PAUSED)
-            resumeGame();
+        if(!GameEngine.getInstance().isGameOver())
+        {
+            if (GameEngine.getInstance().getGameState() == GameEngine.GameState.RUNNING)
+                pauseGame();
+            else if (GameEngine.getInstance().getGameState() == GameEngine.GameState.PAUSED)
+                resumeGame();
+        }
     }
 
     private void resumeGame()
@@ -153,6 +156,52 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
                 return true;
             }
         });
+
+        _rootLayout.addView(_pauseMenuView);
+    }
+
+    private void gameOver()
+    {
+        // create pause menu
+        GameOverView gameOverView = new GameOverView(_context);
+
+        gameOverView.getMainMenuButton().setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    _pauseMenuView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_down);
+
+                }
+                else if(event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    _pauseMenuView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_up);
+
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            // Call main menu activity and destroy the current one
+                            Intent mainMenuIntent = new Intent();
+                            mainMenuIntent.setClass(_context, GameScreenActivity.class);
+                            //mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                            startActivity(mainMenuIntent);
+                            finish();
+                        }
+                    });
+
+                }
+
+                return true;
+            }
+        });
+
+        // update score
+        gameOverView.getScoreTextView().setText("Your score is: 1234");
 
         _rootLayout.addView(_pauseMenuView);
     }
@@ -244,9 +293,9 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
                 worldRect,
                 1.0f,
                 R.drawable.spaceship_spreadsheet,
-                1,
                 4,
-                50.0f);
+                4,
+                70.0f);
         ship.setCenterX(0.0f);
         ship.setCenterY(0.0f);
         ship.setWidth(0.15f);

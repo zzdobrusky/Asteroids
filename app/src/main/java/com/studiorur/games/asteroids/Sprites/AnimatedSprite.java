@@ -63,7 +63,7 @@ public class AnimatedSprite extends Sprite implements IUpdatable
         _frameWidth = 1.0f/_numOfCols;
         _frameHeight = 1.0f/_numOfRows;
 
-        // move to the first frame as default (no animation)
+        // move to the first frame at top left location as default (and no animation)
         loadTexture(resources, resourceIdentifier);
         setFrame(0, 0);
     }
@@ -93,8 +93,8 @@ public class AnimatedSprite extends Sprite implements IUpdatable
         _isAnimating = false;
         _countRepetitions = 0;
 
-        // set frame to the beginning
-        setFrame(_animatedRow, _startCol);
+        // set frame to the last frame
+        setFrame(_animatedRow, _endCol);
 
         // register with listener
         if(_onAnimationStopListener != null)
@@ -113,6 +113,16 @@ public class AnimatedSprite extends Sprite implements IUpdatable
                 (col + 1) * _frameWidth,
                 (row + 1) * _frameHeight);
         setTextureRect(newFrameRect);
+    }
+
+    public void setAnimatedRow(int newAnimatedRow)
+    {
+        _animatedRow = newAnimatedRow;
+    }
+
+    public void setNumOfRepetitions(int numOfRepetitions)
+    {
+        _numOfRepetitions = numOfRepetitions;
     }
 
 

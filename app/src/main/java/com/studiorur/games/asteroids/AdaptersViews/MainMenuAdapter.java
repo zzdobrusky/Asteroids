@@ -22,9 +22,12 @@ public class MainMenuAdapter extends Activity
     {
         super.onCreate(savedInstanceState);
         _context = this;
-
         // lock screen orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        // TODO: set game over to false inside the Data Model
+
+        // TODO: set the highest score value from the Data Model
 
         final MainMenuView mainMenuView = new MainMenuView(this);
         setContentView(mainMenuView);
