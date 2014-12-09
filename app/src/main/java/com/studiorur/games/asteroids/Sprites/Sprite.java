@@ -26,6 +26,7 @@ public class Sprite
 
     // Unique for each sprite
     // Texture related
+    private Bitmap _texture;
     private FloatBuffer _quadTextureBuffer = null;
     private int _textureId;
     private RectF _textureRect = new RectF(0.0f, 0.0f, 1.0f, 1.0f); // default is the whole texture
@@ -203,15 +204,18 @@ public class Sprite
 
     protected void loadTexture(Resources resourcers, int resourceIdentifier)
     {
-        Bitmap texture = BitmapFactory.decodeResource(resourcers, resourceIdentifier);
+        _texture = BitmapFactory.decodeResource(resourcers, resourceIdentifier);
         int[] textureIds = new int[1];
         GLES20.glGenTextures(1, textureIds, 0);
         _textureId = textureIds[0];
+    }
 
+    protected void bindTexture()
+    {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _textureId);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, texture, 0);
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, _texture, 0);
     }
 
     public void draw()
@@ -220,17 +224,15 @@ public class Sprite
             init();
 
         GLES20.glUseProgram(_Program);
-
+        bindTexture();
         setTextureCoordinates();
         setModelView();
-
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
 
         GLES20.glEnableVertexAttribArray(POSITION_ATTRIBUTE_ID);
         GLES20.glVertexAttribPointer(POSITION_ATTRIBUTE_ID, 4, GLES20.GL_FLOAT, false, 4 * 4, _QuadPointsBuffer);
         GLES20.glEnableVertexAttribArray(TEXTURE_COORDINATE_ATTRIBUTE_ID);
         GLES20.glVertexAttribPointer(TEXTURE_COORDINATE_ATTRIBUTE_ID, 2, GLES20.GL_FLOAT, false, 2 * 4, _quadTextureBuffer);
 
-
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
     }
 }
