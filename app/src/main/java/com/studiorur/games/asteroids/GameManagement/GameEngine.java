@@ -193,7 +193,7 @@ public class GameEngine extends Thread
                         if(_isAllowedToBreak)
                             asteroidBreakup((Asteroid) object2);
 
-                        return;
+                        //return;
                     }
                     else if (object1.getCollidableType() == CollidableType.ASTEROID &&
                             object2.getCollidableType() == CollidableType.SPACESHIP)
@@ -202,19 +202,19 @@ public class GameEngine extends Thread
                         if(_isAllowedToBreak)
                             asteroidBreakup((Asteroid) object1);
 
-                        return;
+                        //return;
                     }
                     else if (object1.getCollidableType() == CollidableType.SPACESHIP &&
                             object2.getCollidableType() == CollidableType.POWER_UP)
                     {
                         // TODO: remove power-up, add weaponry to spaceship, start a timer
-                        return;
+                        //return;
                     }
                     else if (object1.getCollidableType() == CollidableType.POWER_UP &&
                             object2.getCollidableType() == CollidableType.SPACESHIP)
                     {
                         // TODO: remove power-up, add weaponry to spaceship, start a timer
-                        return;
+                        //return;
                     }
                     else if (object1.getCollidableType() == CollidableType.PROJECTILE &&
                             object2.getCollidableType() == CollidableType.ASTEROID)
@@ -227,7 +227,7 @@ public class GameEngine extends Thread
                             GameEngine.getInstance().removeUpdateable((IUpdatable)object1);
                             GameEngine.getInstance().removeCollidable(object1);
                         }
-                        return;
+                        //return;
                     }
                     else if (object1.getCollidableType() == CollidableType.ASTEROID &&
                             object2.getCollidableType() == CollidableType.PROJECTILE)
@@ -240,7 +240,7 @@ public class GameEngine extends Thread
                             GameEngine.getInstance().removeUpdateable((IUpdatable)object2);
                             GameEngine.getInstance().removeCollidable(object2);
                         }
-                        return;
+                        //return;
                     }
 
                     // else do nothing, for example asteroid and power-up collisions
@@ -256,7 +256,6 @@ public class GameEngine extends Thread
 
         //Log.i("breakup", "asteroid break up");
 
-        // lets do animation instead
         asteroid.startAnimation();
         asteroid.setOnAnimationStopListener(new AnimatedSprite.OnAnimationStopListener()
         {

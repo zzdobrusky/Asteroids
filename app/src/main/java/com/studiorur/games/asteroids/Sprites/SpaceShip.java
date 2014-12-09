@@ -1,7 +1,6 @@
 package com.studiorur.games.asteroids.Sprites;
 
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
@@ -73,16 +72,10 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         // create boundary
         _boundary = new Boundary(false); // make it a rectangle
 
-        initAnimation(0, 1, 4, animationInterval, 0);
+        initAnimation(0, 1, 3, animationInterval, 0);
         startAnimation();
 
         resetForces();
-
-//        Projectile newProjectile = new Projectile(getCenter());
-//        newProjectile.setVelocity(new PointF(0.0f, 0.0001f));
-//        newProjectile.setWidth(0.1f);
-//        newProjectile.setHeight(0.1f);
-//        GameEngine.getInstance().addUpdateable(newProjectile);
 
         // start listening for touch events (will propel the spaceship)
         _gameScreenActivity.setOnTouchScreenListener(new GameScreenActivity.OnTouchScreenListener()
@@ -98,7 +91,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
                 // TODO: start shooting projectiles with some frequency
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP)
                 {
-                    Projectile newProjectile = new Projectile(getCenter(), _worldRect);
+                    Projectile newProjectile = new Projectile(getCenter(), _worldRect, 0.2f);
                     newProjectile.setVelocity(new PointF(0.0f, 0.001f));
                     newProjectile.setWidth(0.1f);
                     newProjectile.setHeight(0.1f);

@@ -133,22 +133,21 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
                 {
                     _pauseMenuView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_up);
 
-//                    _surfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-//                    _surfaceView.onPause();
-//                    _surfaceView.getHolder().getSurface().release();
-//                    _surfaceView.setVisibility(View.INVISIBLE);
-//                    _surfaceView.destroyDrawingCache();
-//                    _surfaceView.invalidate();
-//                    _surfaceView.clearAnimation();
-//                    _surfaceView.postInvalidate();
-//
-//                    _rootLayout.destroyDrawingCache();
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            // Call main menu activity and destroy the current one
+                            Intent mainMenuIntent = new Intent();
+                            mainMenuIntent.setClass(_context, GameScreenActivity.class);
+                            //mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-                    // Call main menu activity and destroy the current one
-                    Intent mainMenuIntent = new Intent();
-                    mainMenuIntent.setClass(_context, GameScreenActivity.class);
-                    mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(mainMenuIntent);
+                            startActivity(mainMenuIntent);
+                            finish();
+                        }
+                    });
+
                 }
 
                 return true;
@@ -258,8 +257,8 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         // Asteroids
         AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
                 this,
+                worldRect,
                 R.drawable.asteroid_spritesheet,
-                50,
                 2.0f,
                 heightInWorld,
                 0.08f,

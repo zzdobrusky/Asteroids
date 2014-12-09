@@ -3,7 +3,6 @@ package com.studiorur.games.asteroids.Sprites;
 import android.content.res.Resources;
 import android.graphics.RectF;
 
-import com.studiorur.games.asteroids.Helpers.LoopTimer;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 
 /**
@@ -18,7 +17,13 @@ public class AnimatedSprite extends Sprite implements IUpdatable
     */
 
     private float _animationInterval = 40.0f; // in milliseconds
-    private LoopTimer _timer = null;
+    private float _passedTime = 0.0f;
+    // Default is 0 repetition, it means repeats endlessly till stop animation called
+    // if start column and end column are the same value means no animation at all
+    private int _numOfRepetitions = 0;
+    private int _countRepetitions = 0;
+    private boolean _isAnimating = false;
+
     private OnAnimationStopListener _onAnimationStopListener = null;
     // Default is just one frame
     private int _numOfRows = 1;
@@ -31,10 +36,6 @@ public class AnimatedSprite extends Sprite implements IUpdatable
     private int _endCol = _numOfCols - 1;
     private int _animatedRow;
     private int _currentCol = _startCol;
-    // Default is 0 repetition, it means repeats endlessly till stop animation called
-    // if start column and end column are the same value means no animation at all
-    private int _numOfRepetitions = 0;
-    private int _countRepetitions = 0;
 
     public interface OnAnimationStopListener
     {
@@ -49,12 +50,6 @@ public class AnimatedSprite extends Sprite implements IUpdatable
     public void setOnAnimationStopListener(OnAnimationStopListener onAnimationStopListener)
     {
         _onAnimationStopListener = onAnimationStopListener;
-    }
-
-    public void loadSpritesheet(Resources resources, int resourceIdentifier)
-    {
-        // default assuming there is just one frame
-        loadSpritesheet(resources, resourceIdentifier, 1, 1);
     }
 
     protected void loadSpritesheet(
@@ -73,13 +68,6 @@ public class AnimatedSprite extends Sprite implements IUpdatable
         setFrame(0, 0);
     }
 
-    public void initAnimation(int animatedRow, int numOfRepetitions, float animationInterval)
-    {
-        // mostly default - animation starts from 0 and repeats endlessly
-        _animationInterval = animationInterval;
-        initAnimation(animatedRow, 0, 0, _animationInterval, numOfRepetitions);
-    }
-
     public void initAnimation(int animatedRow, int startCol, int endCol, float animationInterval, int numOfRepetitions)
     {
         _animatedRow = animatedRow;
@@ -91,49 +79,22 @@ public class AnimatedSprite extends Sprite implements IUpdatable
 
         // Start timer and call each frame with animation interval till the end and repeat if required
         _currentCol = _startCol;
-        int numOfFrames = _endCol - _startCol + 1;
-        if(numOfFrames > 1)
-            _timer = new LoopTimer(_animationInterval, numOfFrames * numOfRepetitions);
+        setFrame(_animatedRow, _currentCol);
     }
 
     public void startAnimation()
     {
-        _timer.setOnTimePassedListener(new LoopTimer.OnTimePassedListener()
-        {
-            @Override
-            public void onTimePassed()
-            {
-                _currentCol++;
-                if(_currentCol > _endCol)
-                    _currentCol = _startCol;
-
-                setFrame(_animatedRow, _currentCol);
-
-                // check if to stop the animation, 0 is infinite repetitions
-                if(_numOfRepetitions != 0 && _currentCol == _endCol)
-                {
-                    _countRepetitions++;
-                    if (_countRepetitions >= _numOfRepetitions)
-                        stopAnimation();
-                }
-            }
-        });
-        _timer.start();
+        _isAnimating = true;
     }
 
     public void stopAnimation()
     {
-        stopAnimation(_startCol);
-    }
-
-    public void stopAnimation(int stopFrame)
-    {
         // Stop and destroy timer
+        _isAnimating = false;
         _countRepetitions = 0;
-        _timer.stop();
 
-        // set frame
-        setFrame(_animatedRow, stopFrame);
+        // set frame to the beginning
+        setFrame(_animatedRow, _startCol);
 
         // register with listener
         if(_onAnimationStopListener != null)
@@ -158,7 +119,27 @@ public class AnimatedSprite extends Sprite implements IUpdatable
     @Override
     public void update(float time)
     {
-        if(_timer != null)
-            _timer.update(time);
+        if(_isAnimating)
+        {
+            _passedTime += time;
+            if(_passedTime >= _animationInterval)
+            {
+                _currentCol++;
+                if (_currentCol > _endCol+1)
+                    _currentCol = _startCol;
+
+                setFrame(_animatedRow, _currentCol);
+
+                // check if to stop the animation, 0 is infinite repetitions
+                if (_numOfRepetitions != 0 && _currentCol == _endCol)
+                {
+                    _countRepetitions++;
+                    if (_countRepetitions >= _numOfRepetitions)
+                        stopAnimation();
+                }
+
+                _passedTime = 0.0f;
+            }
+        }
     }
 }
