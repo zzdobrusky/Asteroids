@@ -1,6 +1,7 @@
 package com.studiorur.games.asteroids.AdaptersViews;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -40,17 +41,18 @@ public class GameOverView extends RelativeLayout
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         RelativeLayout.LayoutParams linearLayoutLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayoutLP.addRule(CENTER_IN_PARENT);
-        linearLayout.setGravity(CENTER_HORIZONTAL);
         addView(linearLayout, linearLayoutLP);
 
         ImageView splashImageView = new ImageView(context);
         splashImageView.setImageResource(R.drawable.game_over_splash);
-        LinearLayout.LayoutParams splashImageViewLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
+        LinearLayout.LayoutParams splashImageViewLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayout.addView(splashImageView, splashImageViewLP);
 
         _mainMenuButton = new Button(context);
         _mainMenuButton.setBackgroundResource(R.drawable.rounded_button_background_up);
+        //_mainMenuButton.setGravity(Gravity.CENTER_HORIZONTAL);
         LinearLayout.LayoutParams mainMenuButtonLP = new LinearLayout.LayoutParams(Math.round(BUTTON_WIDTH * scale), Math.round(BUTTON_HEIGHT * scale));
+        mainMenuButtonLP.gravity = Gravity.CENTER_HORIZONTAL;
         mainMenuButtonLP.setMargins(0, Math.round(BUTTON_MARGIN_Y * scale), 0, Math.round(BUTTON_MARGIN_Y * scale));
         _mainMenuButton.setPadding(Math.round(BUTTON_PADDING_WIDTH * scale), 0, Math.round(BUTTON_PADDING_WIDTH * scale), 0);
         _mainMenuButton.setText(R.string.mainmenu_button_label);
@@ -59,6 +61,7 @@ public class GameOverView extends RelativeLayout
 
         _scoreTextView = new TextView(context);
         LinearLayout.LayoutParams highestScoreTextViewLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        highestScoreTextViewLP.gravity = Gravity.CENTER_HORIZONTAL;
         _scoreTextView.setPadding(Math.round(BUTTON_PADDING_WIDTH * scale), Math.round(BUTTON_PADDING_HEIGHT * scale), Math.round(BUTTON_PADDING_WIDTH * scale), Math.round(BUTTON_PADDING_HEIGHT * scale));
         _scoreTextView.setText("testing");
         _scoreTextView.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));

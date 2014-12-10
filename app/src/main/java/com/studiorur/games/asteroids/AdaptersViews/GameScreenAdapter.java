@@ -329,7 +329,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 0.5f,
                 0.0001f,
                 0.001f);
-        asteroidGenerator.setAsteroidFrequency(2000.0f);
+        asteroidGenerator.setAsteroidFrequency(1000.0f);
         asteroidGenerator.start();
         // register with the game engine
         GameEngine.getInstance().registerAsteroidGenerator(asteroidGenerator);
