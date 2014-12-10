@@ -2,7 +2,6 @@ package com.studiorur.games.asteroids.GameManagement;
 
 import android.content.Context;
 import android.graphics.PointF;
-import android.util.Log;
 
 import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.Helpers.Utils;
@@ -20,6 +19,7 @@ public class AsteroidGenerator implements IUpdatable
     float _height;
     float _minSize;
     float _maxSize;
+    float _minVelocityY;
     float _maxVelocity;
     float _maxRotationVelocity;
     float _screenOffset = 0.4f;
@@ -36,6 +36,7 @@ public class AsteroidGenerator implements IUpdatable
             float height,
             float minSize,
             float maxSize,
+            float minVelocityY,
             float maxVelocity,
             float maxRotationVelocity)
     {
@@ -46,11 +47,9 @@ public class AsteroidGenerator implements IUpdatable
         _height = height;
         _minSize = minSize;
         _maxSize = maxSize;
+        _minVelocityY = minVelocityY;
         _maxVelocity = maxVelocity;
         _maxRotationVelocity = maxRotationVelocity;
-
-        // add itself to a game engine - this will take care of timing
-        GameEngine.getInstance().addUpdateable(this);
     }
 
     public void start()
@@ -69,7 +68,7 @@ public class AsteroidGenerator implements IUpdatable
         float centerY = _height / 2.0f + _screenOffset; // do it offscreen only
         float randSize = Utils.randomInRange(_minSize, _maxSize);
         float randVelocityX = Utils.randomInRange(-_maxVelocity, _maxVelocity);
-        float randVelocityY = Utils.randomInRange(_maxVelocity / 2.0f, _maxVelocity);
+        float randVelocityY = Utils.randomInRange(_minVelocityY, _maxVelocity);
         float randRotationVelocity = Utils.randomInRange(0.0f, _maxRotationVelocity);
 
         asteroid.setCenter(new PointF(randX, centerY));

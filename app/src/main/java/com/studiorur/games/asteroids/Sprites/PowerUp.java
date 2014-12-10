@@ -36,6 +36,11 @@ public class PowerUp extends AnimatedSprite implements ICollidable
         _boundary = new Boundary(false); // make it a rectangle
     }
 
+    public void setVelocity(PointF velocity)
+    {
+        _velocity = velocity;
+    }
+
     public CollidableType getCollidableType()
     {
         return _collidableType;

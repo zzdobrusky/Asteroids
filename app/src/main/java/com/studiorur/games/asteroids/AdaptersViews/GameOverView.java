@@ -46,6 +46,7 @@ public class GameOverView extends RelativeLayout
         ImageView splashImageView = new ImageView(context);
         splashImageView.setImageResource(R.drawable.game_over_splash);
         LinearLayout.LayoutParams splashImageViewLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        splashImageViewLP.gravity = Gravity.CENTER_HORIZONTAL;
         linearLayout.addView(splashImageView, splashImageViewLP);
 
         _mainMenuButton = new Button(context);

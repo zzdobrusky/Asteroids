@@ -25,18 +25,16 @@ public class LoopTimer
         _onTimePassedListener = onTimePassedListener;
     }
 
-    public LoopTimer(float timeInterval, int repeatNumber)
+    public LoopTimer()
     {
-        _timeInterval = timeInterval;
         _passedTime = 0.0f;
-        _repeatNumber = repeatNumber; // 0 means infinite
         _count = 0;
         _isRunning = false;
     }
 
     public void update(float time)
     {
-        if(_isRunning && _count <= _repeatNumber)
+        if(_isRunning)
         {
             _passedTime += time;
 
@@ -46,24 +44,34 @@ public class LoopTimer
                 if (_onTimePassedListener != null)
                     _onTimePassedListener.onTimePassed();
 
-                // reset interval to start over
+                // reset interval
                 _passedTime = 0.0f;
 
-                if (_repeatNumber > 0)
+                // take care of repetitions
+                if(_repeatNumber > 0)
+                {
                     _count++;
+                    if (_repeatNumber >= _repeatNumber)
+                        stop(); // stop and reset timer
+                }
             }
         }
     }
 
-    public void start()
+    public void start(float timeInterval, int repeatNumber)
     {
         _isRunning = true;
         _count = 0;
         _passedTime = 0.0f;
+        _repeatNumber = repeatNumber; // 0 means infinite
+        _timeInterval = timeInterval;
     }
 
     public void stop()
     {
         _isRunning = false;
+        _count = 0;
+        _passedTime = 0.0f;
+        _repeatNumber = 0;
     }
 }

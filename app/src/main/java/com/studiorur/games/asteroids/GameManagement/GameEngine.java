@@ -7,9 +7,9 @@ import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.AnimatedSprite;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
+import com.studiorur.games.asteroids.Sprites.PowerUp;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -176,6 +176,11 @@ public class GameEngine extends Thread
         // otherwise reset time
     }
 
+    public boolean isGameOver()
+    {
+        return _isGameOver;
+    }
+
     public void update(float time)
     {
         _passedTime += time;
@@ -211,7 +216,7 @@ public class GameEngine extends Thread
                         // Break up asteroid make a ship more damaged + sound effect
                         if(_isAllowedToBreak)
                         {
-                            asteroidBreakup((Asteroid) object2);
+                            asteroidCollision((Asteroid) object2);
                             spaceshipCollision((SpaceShip) object1);
                         }
 
@@ -222,20 +227,23 @@ public class GameEngine extends Thread
                     {
                         // Break up asteroid make a ship more damaged + sound effect
                         if(_isAllowedToBreak)
-                            asteroidBreakup((Asteroid) object1);
+                            asteroidCollision((Asteroid) object1);
 
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.SPACESHIP &&
                             object2.getCollidableType() == CollidableType.POWER_UP)
                     {
-                        // TODO: remove power-up, add weaponry to spaceship, start a timer
+                        // Remove power-up add weaponry to spaceship, start a timer
+                        powerupCollision((PowerUp)object2, (SpaceShip)object1);
+                        // add extra points
+                        _score += 5;
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.POWER_UP &&
                             object2.getCollidableType() == CollidableType.SPACESHIP)
                     {
-                        // TODO: remove power-up, add weaponry to spaceship, start a timer
+                        // TODO: remove power-up, do sound effect, add weaponry to spaceship, start a timer
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.PROJECTILE &&
@@ -244,7 +252,7 @@ public class GameEngine extends Thread
                         // Break up asteroid + remove projectile + sound effect
                         if(_isAllowedToBreak)
                         {
-                            asteroidBreakup((Asteroid) object2);
+                            asteroidCollision((Asteroid) object2);
                             // remove projectile
                             GameEngine.getInstance().removeUpdateable((IUpdatable)object1);
                             GameEngine.getInstance().removeCollidable(object1);
@@ -262,7 +270,7 @@ public class GameEngine extends Thread
                         // Break up asteroid + remove projectile + sound effect
                         if(_isAllowedToBreak)
                         {
-                            asteroidBreakup((Asteroid) object1);
+                            asteroidCollision((Asteroid) object1);
                             // remove projectile
                             GameEngine.getInstance().removeUpdateable((IUpdatable)object2);
                             GameEngine.getInstance().removeCollidable(object2);
@@ -281,7 +289,7 @@ public class GameEngine extends Thread
             }
     }
 
-    private void asteroidBreakup(final Asteroid asteroid)
+    private void asteroidCollision(final Asteroid asteroid)
     {
         _isAllowedToBreak = false;
         _passedTime = 0.0f;
@@ -299,12 +307,6 @@ public class GameEngine extends Thread
         });
 
         //Log.i("numOfNew", Integer.toString(numOfNew));
-        SoundFX.getInstance().play(R.raw.explosion, 1.0f);
-    }
-
-    public boolean isGameOver()
-    {
-        return _isGameOver;
     }
 
     private void spaceshipCollision(SpaceShip spaceShip)
@@ -332,8 +334,25 @@ public class GameEngine extends Thread
                 }
             });
         }
+
+        // TODO: spaceship with asteroid collision SFX
+        SoundFX.getInstance().play(R.raw.explosion, 1.0f);
+
         // animate
         spaceShip.setAnimatedRow(_countSpaceshipCollissions);
+    }
+
+    private void powerupCollision(PowerUp powerUp, SpaceShip spaceShip)
+    {
+        // TODO: play power up pickup SFX
+
+        // upgrade weapon
+        float newLaserInterval = spaceShip.getOriginalLaserInterval()/3.0f;
+        spaceShip.startLaserUpgrade(newLaserInterval, 10000.0f); // hold for 10 secs
+
+        // Remove from the game engine
+        GameEngine.getInstance().removeCollidable(powerUp);
+        GameEngine.getInstance().removeUpdateable(powerUp);
     }
 
     public void draw()

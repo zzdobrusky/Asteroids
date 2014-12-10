@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import com.studiorur.games.asteroids.AdaptersViews.GameScreenAdapter;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.Helpers.Boundary;
+import com.studiorur.games.asteroids.Helpers.LoopTimer;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
@@ -28,9 +29,11 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     float _frictionCoefficient = 0.89f;
     Boundary _boundary;
     CollidableType _collidableType = CollidableType.SPACESHIP;
-    float _laserInterval = 500.0f; // in milliseconds
-    float _passedTime = 0.0f;
+    float _originalLaserInterval = 500.0f; // in milliseconds
+    float _currentLaserInterval = _originalLaserInterval;
+    float _passedTime = _currentLaserInterval; // shoots first
     boolean _isShooting = false;
+    LoopTimer _laserUpgradeTimer;
 
     public PointF getVelocity()
     {
@@ -70,6 +73,8 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         _invertedMass = 1.0f/mass;
         _worldRect = worldRect;
 
+        _laserUpgradeTimer = new LoopTimer();
+
         // load sprite sheet
         loadSpritesheet(gameScreenActivity.getResources(), resourceIdentifier, numOfRows, numOfCols);
 
@@ -100,9 +105,32 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
                 else if(motionEvent.getAction() == MotionEvent.ACTION_UP)
                 {
                     _isShooting = false;
+                    _passedTime = _currentLaserInterval;
                 }
             }
         });
+    }
+
+    public float getOriginalLaserInterval()
+    {
+        return _originalLaserInterval;
+    }
+
+    public void startLaserUpgrade(float laserInterval, float laserUpgradeInterval)
+    {
+        _currentLaserInterval = laserInterval;
+        _passedTime = _currentLaserInterval;
+        // start one time timer and set up listener
+        _laserUpgradeTimer.setOnTimePassedListener(new LoopTimer.OnTimePassedListener()
+        {
+            @Override
+            public void onTimePassed()
+            {
+                // go back to original laser frequency
+                _currentLaserInterval = _originalLaserInterval;
+            }
+        });
+        _laserUpgradeTimer.start(laserUpgradeInterval, 1); // do it just once
     }
 
     private void shootLaser()
@@ -119,7 +147,8 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
 
     public void setLaserFrequence(float laserInterval)
     {
-        _laserInterval = laserInterval;
+        _currentLaserInterval = laserInterval;
+        _passedTime = laserInterval;
     }
 
     public void addExternalForce(PointF force)
@@ -167,12 +196,14 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         if(_isShooting)
         {
             _passedTime += time;
-            if(_passedTime >= _laserInterval)
+            if(_passedTime >= _currentLaserInterval)
             {
                 shootLaser();
                 _passedTime = 0.0f;
             }
         }
 
+
+        _laserUpgradeTimer.update(time);
     }
 }

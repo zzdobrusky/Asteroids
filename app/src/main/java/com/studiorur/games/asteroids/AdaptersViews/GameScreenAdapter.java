@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import com.studiorur.games.asteroids.GameManagement.AsteroidGenerator;
 import com.studiorur.games.asteroids.GameManagement.DataModel;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
+import com.studiorur.games.asteroids.GameManagement.PowerupsGenerator;
 import com.studiorur.games.asteroids.GameManagement.StarGenerator;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
@@ -318,6 +319,19 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         GameEngine.getInstance().addUpdateable(spaceShip);
         GameEngine.getInstance().addCollidable(spaceShip);
 
+        // Powerups
+        PowerupsGenerator powerupsGenerator = new PowerupsGenerator(
+                _context,
+                worldRect,
+                R.drawable.power_up,
+                0.1f,
+                0.07f,
+                -0.0001f
+        );
+        powerupsGenerator.setPowerupFrequency(8000.0f);
+        GameEngine.getInstance().addUpdateable(powerupsGenerator);
+        powerupsGenerator.start();
+
         // Asteroids
         AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
                 _context,
@@ -327,12 +341,14 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 heightInWorld,
                 0.08f,
                 0.5f,
-                0.0001f,
-                0.001f);
+                0.00005f,
+                0.0005f,
+                0.004f);
         asteroidGenerator.setAsteroidFrequency(1000.0f);
         asteroidGenerator.start();
         // register with the game engine
         GameEngine.getInstance().registerAsteroidGenerator(asteroidGenerator);
+        GameEngine.getInstance().addUpdateable(asteroidGenerator);
 
         GameEngine.getInstance().startGame();
     }
