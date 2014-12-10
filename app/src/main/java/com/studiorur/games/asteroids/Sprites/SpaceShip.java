@@ -28,6 +28,9 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     float _frictionCoefficient = 0.89f;
     Boundary _boundary;
     CollidableType _collidableType = CollidableType.SPACESHIP;
+    float _laserInterval = 500.0f; // in milliseconds
+    float _passedTime = 0.0f;
+    boolean _isShooting = false;
 
     public PointF getVelocity()
     {
@@ -89,20 +92,34 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
                 float forceY = (worldLoc.y - _center.y) * _forceCoefficient;
                 _rocketForce = new PointF(forceX, forceY);
 
-                // TODO: start shooting projectiles with some frequency
-                if(motionEvent.getAction() == MotionEvent.ACTION_UP)
+                // Start shooting projectiles with some frequency
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN)
                 {
-                    Projectile newProjectile = new Projectile(new PointF(_center.x, _center.y + _height/1.5f), _worldRect, 0.2f);
-                    newProjectile.setVelocity(new PointF(0.0f, 0.001f));
-                    newProjectile.setWidth(0.01f);
-                    newProjectile.setHeight(0.05f);
-                    newProjectile.setColor(Color.MAGENTA);
-                    //SoundFX.getInstance().play(R.raw.shot, 1.0f); doesn't work
-                    GameEngine.getInstance().addUpdateable(newProjectile);
-                    GameEngine.getInstance().addCollidable(newProjectile);
+                    _isShooting = true;
+                }
+                else if(motionEvent.getAction() == MotionEvent.ACTION_UP)
+                {
+                    _isShooting = false;
                 }
             }
         });
+    }
+
+    private void shootLaser()
+    {
+        Projectile newProjectile = new Projectile(new PointF(_center.x, _center.y + _height/1.5f), _worldRect, 0.2f);
+        newProjectile.setVelocity(new PointF(0.0f, 0.001f));
+        newProjectile.setWidth(0.01f);
+        newProjectile.setHeight(0.05f);
+        newProjectile.setColor(Color.MAGENTA);
+        //SoundFX.getInstance().play(R.raw.shot, 1.0f); doesn't work
+        GameEngine.getInstance().addUpdateable(newProjectile);
+        GameEngine.getInstance().addCollidable(newProjectile);
+    }
+
+    public void setLaserFrequence(float laserInterval)
+    {
+        _laserInterval = laserInterval;
     }
 
     public void addExternalForce(PointF force)
@@ -145,5 +162,17 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
 
         // reset forces each update
         resetForces();
+
+        // laser shooting
+        if(_isShooting)
+        {
+            _passedTime += time;
+            if(_passedTime >= _laserInterval)
+            {
+                shootLaser();
+                _passedTime = 0.0f;
+            }
+        }
+
     }
 }

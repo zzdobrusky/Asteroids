@@ -302,7 +302,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         GameEngine.getInstance().addUpdateable(starGeneratorFaster);
 
         // Your spaceship
-        SpaceShip ship = new SpaceShip(
+        SpaceShip spaceShip = new SpaceShip(
                 this,
                 worldRect,
                 1.0f,
@@ -310,12 +310,13 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 4,
                 4,
                 70.0f);
-        ship.setCenterX(0.0f);
-        ship.setCenterY(0.0f);
-        ship.setWidth(0.15f);
-        ship.setHeight(0.25f);
-        GameEngine.getInstance().addUpdateable(ship);
-        GameEngine.getInstance().addCollidable(ship);
+        spaceShip.setCenterX(0.0f);
+        spaceShip.setCenterY(0.0f);
+        spaceShip.setWidth(0.15f);
+        spaceShip.setHeight(0.25f);
+        spaceShip.setLaserFrequence(600.0f);
+        GameEngine.getInstance().addUpdateable(spaceShip);
+        GameEngine.getInstance().addCollidable(spaceShip);
 
         // Asteroids
         AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
@@ -327,8 +328,8 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 0.08f,
                 0.5f,
                 0.0001f,
-                0.001f,
-                4000.0f);
+                0.001f);
+        asteroidGenerator.setAsteroidFrequency(2000.0f);
         asteroidGenerator.start();
         // register with the game engine
         GameEngine.getInstance().registerAsteroidGenerator(asteroidGenerator);

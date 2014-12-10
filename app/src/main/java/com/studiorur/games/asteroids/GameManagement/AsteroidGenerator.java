@@ -23,7 +23,7 @@ public class AsteroidGenerator implements IUpdatable
     float _maxVelocity;
     float _maxRotationVelocity;
     float _screenOffset = 0.4f;
-    float _timeInterval;
+    float _timeInterval = 4000.0f; // in milliseconds
     Rectangle _worldRect;
     float _passedTime = 0.0f;
     boolean _isRunning = false;
@@ -37,8 +37,7 @@ public class AsteroidGenerator implements IUpdatable
             float minSize,
             float maxSize,
             float maxVelocity,
-            float maxRotationVelocity,
-            float timeInterval)
+            float maxRotationVelocity)
     {
         _context = context;
         _worldRect = worldRect;
@@ -49,7 +48,6 @@ public class AsteroidGenerator implements IUpdatable
         _maxSize = maxSize;
         _maxVelocity = maxVelocity;
         _maxRotationVelocity = maxRotationVelocity;
-        _timeInterval = timeInterval;
 
         // add itself to a game engine - this will take care of timing
         GameEngine.getInstance().addUpdateable(this);
@@ -68,13 +66,13 @@ public class AsteroidGenerator implements IUpdatable
     private void randomizeAsteroid(Asteroid asteroid)
     {
         float randX = Utils.randomInRange(-_width / 2.0f, _width / 2.0f);
-        float randY = Utils.randomInRange(_height / 2.0f, _height / 2.0f + _screenOffset); // do it offscreen only
+        float centerY = _height / 2.0f + _screenOffset; // do it offscreen only
         float randSize = Utils.randomInRange(_minSize, _maxSize);
         float randVelocityX = Utils.randomInRange(-_maxVelocity, _maxVelocity);
         float randVelocityY = Utils.randomInRange(_maxVelocity / 2.0f, _maxVelocity);
         float randRotationVelocity = Utils.randomInRange(0.0f, _maxRotationVelocity);
 
-        asteroid.setCenter(new PointF(randX, randY));
+        asteroid.setCenter(new PointF(randX, centerY));
         asteroid.setWidth(randSize);
         asteroid.setHeight(randSize);
         asteroid.setVelocity(new PointF(randVelocityX, -randVelocityY));
@@ -94,6 +92,11 @@ public class AsteroidGenerator implements IUpdatable
     {
             GameEngine.getInstance().removeUpdateable(asteroid);
             GameEngine.getInstance().removeCollidable(asteroid);
+    }
+
+    public void setAsteroidFrequency(float timeInterval)
+    {
+        _timeInterval = timeInterval;
     }
 
     @Override

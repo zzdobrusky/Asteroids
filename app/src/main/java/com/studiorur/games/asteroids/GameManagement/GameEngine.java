@@ -22,6 +22,13 @@ public class GameEngine extends Thread
     public enum GameState
     { RUNNING, PAUSED, NEVER_RUN };
 
+    //for consistent rendering
+    private long _sleepTime;
+    //amount of time to sleep for (in milliseconds)
+    private long _delay = 50;
+
+    private static GameEngine _instance = null;
+
     private GameState _gameState = GameState.NEVER_RUN;
     private boolean _isGameOver = false;
     private ArrayList<IUpdatable> _updatables;
@@ -62,13 +69,6 @@ public class GameEngine extends Thread
     {
         _onScoreChangeListener = onScoreChangeListener;
     }
-
-    //for consistent rendering
-    private long _sleepTime;
-    //amount of time to sleep for (in milliseconds)
-    private long _delay = 50;
-
-    private static GameEngine _instance = null;
 
     public static GameEngine getInstance()
     {

@@ -93,11 +93,11 @@ public class Asteroid extends AnimatedSprite implements ICollidable
 
         _rotation = _rotation + _rotationVelocity * time;
 
-        // check if out of boundaries, remove from game engine if yes
-        if((_center.x - _width/2.0f) < (_worldRect.getLeft() - _screenOffset) ||
-           (_center.x + _width/2.0f) > (_worldRect.getRight() + _screenOffset) ||
-           (_center.y + _height/2.0f) > (_worldRect.getTop() + _screenOffset) ||
-           (_center.y - _height/2.0f) < (_worldRect.getBottom() - _screenOffset))
+        // check if out of boundaries, remove from game engine if yes, do it 2x screen offset so it has time to disappear
+        if((_center.x - _width/2.0f) < (_worldRect.getLeft() - 2.0f * _screenOffset) ||
+           (_center.x + _width/2.0f) > (_worldRect.getRight() + 2.0f * _screenOffset) ||
+           (_center.y + _height/2.0f) > (_worldRect.getTop() + 2.0f * _screenOffset) ||
+           (_center.y - _height/2.0f) < (_worldRect.getBottom() - 2.0f * _screenOffset))
         {
             GameEngine.getInstance().removeUpdateable(this);
             GameEngine.getInstance().removeCollidable(this);
