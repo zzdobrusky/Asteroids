@@ -40,11 +40,12 @@ public class GameOverView extends RelativeLayout
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         RelativeLayout.LayoutParams linearLayoutLP = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayoutLP.addRule(CENTER_IN_PARENT);
+        linearLayout.setGravity(CENTER_HORIZONTAL);
         addView(linearLayout, linearLayoutLP);
 
         ImageView splashImageView = new ImageView(context);
         splashImageView.setImageResource(R.drawable.asteroids_splash);
-        LinearLayout.LayoutParams splashImageViewLP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
+        LinearLayout.LayoutParams splashImageViewLP = new LinearLayout.LayoutParams(Math.round(2 * BUTTON_WIDTH * scale), Math.round(2 * BUTTON_HEIGHT * scale));
         linearLayout.addView(splashImageView, splashImageViewLP);
 
         _mainMenuButton = new Button(context);
@@ -61,7 +62,7 @@ public class GameOverView extends RelativeLayout
         _scoreTextView.setPadding(Math.round(BUTTON_PADDING_WIDTH * scale), Math.round(BUTTON_PADDING_HEIGHT * scale), Math.round(BUTTON_PADDING_WIDTH * scale), Math.round(BUTTON_PADDING_HEIGHT * scale));
         _scoreTextView.setText("testing");
         _scoreTextView.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
-        addView(_scoreTextView, highestScoreTextViewLP);
+        linearLayout.addView(_scoreTextView, highestScoreTextViewLP);
     }
 
     public Button getMainMenuButton()

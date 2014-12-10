@@ -9,6 +9,7 @@ import com.studiorur.games.asteroids.Sprites.AnimatedSprite;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +31,37 @@ public class GameEngine extends Thread
     private float _passedTime = 0.0f;
     private boolean _isAllowedToBreak = true;
     private int _countSpaceshipCollissions = 0;
+    private int _score = 0;
 
+    // on game over listener
+    private OnGameOverListener _onGameOverListener = null;
+    public interface OnGameOverListener
+    {
+        public void onGameOver();
+    }
+    public OnGameOverListener getOnGameOverListener()
+    {
+        return _onGameOverListener;
+    }
+    public void setOnGameOverListener(OnGameOverListener onGameOverListener)
+    {
+        _onGameOverListener = onGameOverListener;
+    }
+
+    // on score change listener
+    private OnScoreChangeListener _onScoreChangeListener = null;
+    public interface OnScoreChangeListener
+    {
+        public void onScoreChange(int score);
+    }
+    public OnScoreChangeListener getOnScoreChangeListener()
+    {
+        return _onScoreChangeListener;
+    }
+    public void setOnScoreChangeListener(OnScoreChangeListener onScoreChangeListener)
+    {
+        _onScoreChangeListener = onScoreChangeListener;
+    }
 
     //for consistent rendering
     private long _sleepTime;
@@ -106,13 +137,11 @@ public class GameEngine extends Thread
     public synchronized void resumeGame()
     {
         _gameState = GameState.RUNNING;
-
     }
 
     @Override
     public void run()
     {
-
         //UPDATE - tweaked version of http://blorb.tumblr.com/post/236799414/simple-java-android-game-loop
         while (true)
         {
@@ -219,6 +248,11 @@ public class GameEngine extends Thread
                             // remove projectile
                             GameEngine.getInstance().removeUpdateable((IUpdatable)object1);
                             GameEngine.getInstance().removeCollidable(object1);
+                            // add some points
+                            _score += 1;
+                            // fire up on change score event
+                            if(_onScoreChangeListener != null)
+                                _onScoreChangeListener.onScoreChange(_score);
                         }
                         return;
                     }
@@ -232,6 +266,11 @@ public class GameEngine extends Thread
                             // remove projectile
                             GameEngine.getInstance().removeUpdateable((IUpdatable)object2);
                             GameEngine.getInstance().removeCollidable(object2);
+                            // add some points
+                            _score += 1;
+                            // fire up on change score event
+                            if(_onScoreChangeListener != null)
+                                _onScoreChangeListener.onScoreChange(_score);
                         }
                         return;
                     }
@@ -287,7 +326,9 @@ public class GameEngine extends Thread
                     // last frame of explosion - Game over!
                     _isGameOver = true; // set game over flag
 
-                    // TODO: pop up the game over screen
+                    // fire up the game over event
+                    if(_onGameOverListener != null)
+                        _onGameOverListener.onGameOver();
                 }
             });
         }

@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.studiorur.games.asteroids.GameManagement.AsteroidGenerator;
+import com.studiorur.games.asteroids.GameManagement.DataModel;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.GameManagement.StarGenerator;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
@@ -23,11 +24,13 @@ import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
+import java.io.File;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 
-public class GameScreenActivity extends Activity implements GLSurfaceView.Renderer
+public class GameScreenAdapter extends Activity implements GLSurfaceView.Renderer
 {
     int _height = -1;
     int _width = -1;
@@ -36,19 +39,20 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
     Context _context;
     GLSurfaceView _surfaceView;
     PauseMenuView _pauseMenuView;
+    GameOverView _gameOverView;
     RelativeLayout _rootLayout;
+    File _scoreFile;
 
+    // set up touch listener
+    private OnTouchScreenListener _onTouchScreenListener = null;
     public interface OnTouchScreenListener
     {
         public void onTouchScreen(PointF worldLoc, MotionEvent motionEvent);
     }
-    private OnTouchScreenListener _onTouchScreenListener = null;
-
     public OnTouchScreenListener getOnTouchScreenListener()
     {
         return _onTouchScreenListener;
     }
-
     public void setOnTouchScreenListener(OnTouchScreenListener onTouchScreenListener)
     {
         _onTouchScreenListener = onTouchScreenListener;
@@ -59,6 +63,8 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
     {
         super.onCreate(savedInstanceState);
         _context = this;
+
+        _scoreFile = new File(getFilesDir(), "game_score.txt");
 
         // lock screen orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -75,14 +81,13 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         setContentView(_rootLayout);
     }
 
-
     @Override
     public void onBackPressed()
     {
         if(!GameEngine.getInstance().isGameOver())
         {
             if (GameEngine.getInstance().getGameState() == GameEngine.GameState.RUNNING)
-                pauseGame();
+                pauseGamePopup();
             else if (GameEngine.getInstance().getGameState() == GameEngine.GameState.PAUSED)
                 resumeGame();
         }
@@ -94,9 +99,10 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         GameEngine.getInstance().resumeGame();
     }
 
-    private void pauseGame()
+    private void pauseGamePopup()
     {
         GameEngine.getInstance().pauseGame();
+        DataModel.getInstance(_scoreFile).saveScore();
 
         // create pause menu
         _pauseMenuView = new PauseMenuView(_context);
@@ -135,22 +141,7 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
                 else if(event.getAction() == MotionEvent.ACTION_UP)
                 {
                     _pauseMenuView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_up);
-
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            // Call main menu activity and destroy the current one
-                            Intent mainMenuIntent = new Intent();
-                            mainMenuIntent.setClass(_context, GameScreenActivity.class);
-                            //mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                            startActivity(mainMenuIntent);
-                            finish();
-                        }
-                    });
-
+                    openMainMenu();
                 }
 
                 return true;
@@ -160,50 +151,62 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         _rootLayout.addView(_pauseMenuView);
     }
 
-    private void gameOver()
+    private void gameOverPopup()
     {
-        // create pause menu
-        GameOverView gameOverView = new GameOverView(_context);
+        GameEngine.getInstance().pauseGame();
+        DataModel.getInstance(_scoreFile).saveScore();
 
-        gameOverView.getMainMenuButton().setOnTouchListener(new View.OnTouchListener()
+        runOnUiThread(new Runnable()
         {
             @Override
-            public boolean onTouch(View v, MotionEvent event)
+            public void run()
             {
-                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                // create game over menu
+                _gameOverView = new GameOverView(_context);
+                _gameOverView.getMainMenuButton().setOnTouchListener(new View.OnTouchListener()
                 {
-                    _pauseMenuView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_down);
-
-                }
-                else if(event.getAction() == MotionEvent.ACTION_UP)
-                {
-                    _pauseMenuView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_up);
-
-                    runOnUiThread(new Runnable()
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event)
                     {
-                        @Override
-                        public void run()
+                        if(event.getAction() == MotionEvent.ACTION_DOWN)
                         {
-                            // Call main menu activity and destroy the current one
-                            Intent mainMenuIntent = new Intent();
-                            mainMenuIntent.setClass(_context, GameScreenActivity.class);
-                            //mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            _gameOverView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_down);
 
-                            startActivity(mainMenuIntent);
-                            finish();
                         }
-                    });
+                        else if(event.getAction() == MotionEvent.ACTION_UP)
+                        {
+                            _gameOverView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_up);
+                            openMainMenu();
+                        }
 
-                }
+                        return true;
+                    }
+                });
 
-                return true;
+                // update score
+                String currentScore = Integer.toString(DataModel.getInstance(_scoreFile).getCurrentScore());
+                _gameOverView.getScoreTextView().setText("Your score is: " + currentScore);
+
+                _rootLayout.addView(_gameOverView);
             }
         });
+    }
 
-        // update score
-        gameOverView.getScoreTextView().setText("Your score is: 1234");
-
-        _rootLayout.addView(_pauseMenuView);
+    private void openMainMenu()
+    {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                // Call main menu activity and destroy the current one
+                Intent mainMenuIntent = new Intent();
+                mainMenuIntent.setClass(_context, GameScreenAdapter.class);
+                mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(mainMenuIntent);
+                finish();
+            }
+        });
     }
 
     @Override
@@ -279,6 +282,17 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         SoundFX.getInstance().addSound(this, R.raw.shot);
         SoundFX.getInstance().addSound(this, R.raw.explosion);
 
+        // set up on game over listener
+        GameEngine.getInstance().setOnGameOverListener(new GameEngine.OnGameOverListener()
+        {
+            @Override
+            public void onGameOver()
+            {
+                DataModel.getInstance(_scoreFile).saveScore();
+                gameOverPopup();
+            }
+        });
+
         // Background stars - two layers of stars with different speeds will create a parallax effect
         StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
         starGeneratorSlower.init();
@@ -319,7 +333,6 @@ public class GameScreenActivity extends Activity implements GLSurfaceView.Render
         // register with the game engine
         GameEngine.getInstance().registerAsteroidGenerator(asteroidGenerator);
 
-        // TODO: needs some interface
         GameEngine.getInstance().startGame();
     }
 

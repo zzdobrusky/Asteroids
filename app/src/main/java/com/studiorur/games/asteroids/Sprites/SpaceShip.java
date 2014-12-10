@@ -4,13 +4,12 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
+import com.studiorur.games.asteroids.AdaptersViews.GameScreenAdapter;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
-import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
-import com.studiorur.games.asteroids.AdaptersViews.GameScreenActivity;
 import com.studiorur.games.asteroids.Shapes.Projectile;
 
 /**
@@ -23,7 +22,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     float _invertedMass;
     PointF _externalForce;
     PointF _rocketForce;
-    GameScreenActivity _gameScreenActivity = null;
+    GameScreenAdapter _gameScreenActivity = null;
     Rectangle _worldRect;
     float _forceCoefficient = 0.000017f;
     float _frictionCoefficient = 0.89f;
@@ -56,7 +55,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     }
 
     public SpaceShip(
-            GameScreenActivity gameScreenActivity,
+            GameScreenAdapter gameScreenActivity,
             Rectangle worldRect,
             float mass,
             int resourceIdentifier,
@@ -80,7 +79,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         resetForces();
 
         // start listening for touch events (will propel the spaceship)
-        _gameScreenActivity.setOnTouchScreenListener(new GameScreenActivity.OnTouchScreenListener()
+        _gameScreenActivity.setOnTouchScreenListener(new GameScreenAdapter.OnTouchScreenListener()
         {
             @Override
             public void onTouchScreen(PointF worldLoc, MotionEvent motionEvent)
