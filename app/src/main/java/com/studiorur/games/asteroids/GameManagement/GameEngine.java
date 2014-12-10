@@ -227,7 +227,10 @@ public class GameEngine extends Thread
                     {
                         // Break up asteroid make a ship more damaged + sound effect
                         if(_isAllowedToBreak)
+                        {
                             asteroidCollision((Asteroid) object1);
+                            spaceshipCollision((SpaceShip) object1);
+                        }
 
                         return;
                     }
@@ -336,7 +339,7 @@ public class GameEngine extends Thread
         }
 
         // TODO: spaceship with asteroid collision SFX
-        SoundFX.getInstance().play(R.raw.explosion, 1.0f);
+        SoundFX.getInstance().play(R.raw.explosion);
 
         // animate
         spaceShip.setAnimatedRow(_countSpaceshipCollissions);
