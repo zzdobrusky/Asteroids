@@ -9,8 +9,10 @@ import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.LoopTimer;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
+import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
+import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Shapes.Projectile;
 
 /**
@@ -140,7 +142,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         newProjectile.setWidth(0.01f);
         newProjectile.setHeight(0.05f);
         newProjectile.setColor(Color.MAGENTA);
-        //SoundFX.getInstance().play(R.raw.shot, 1.0f); doesn't work
+        SoundFX.getInstance().play(R.raw.laser, 1.0f);
         GameEngine.getInstance().addUpdateable(newProjectile);
         GameEngine.getInstance().addCollidable(newProjectile);
     }

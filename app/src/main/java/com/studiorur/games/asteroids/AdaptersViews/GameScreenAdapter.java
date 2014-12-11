@@ -296,10 +296,12 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
 
         // *********************** GAME SETUP ***********************
 
-        // Initialize and load sound fxs
-        SoundFX.getInstance().initializeAudioManager(this);
-        SoundFX.getInstance().addSound(this, R.raw.shot);
+        // Load sound fxs
+        SoundFX.getInstance().addSound(this, R.raw.laser);
         SoundFX.getInstance().addSound(this, R.raw.explosion);
+        SoundFX.getInstance().addSound(this, R.raw.asteroid_explosion);
+        SoundFX.getInstance().addSound(this, R.raw.spaceship_final);
+        SoundFX.getInstance().addSound(this, R.raw.power_up);
 
         // set up on game over listener
         GameEngine.getInstance().setOnGameOverListener(new GameEngine.OnGameOverListener()

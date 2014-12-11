@@ -34,7 +34,7 @@ public class GameEngine extends Thread
     private ArrayList<IUpdatable> _updatables;
     private ArrayList<ICollidable> _collidables;
     private AsteroidGenerator _asteroidGenerator;
-    private float _breakUpInterval = 500.0f; // in milliseconds
+    private float _breakUpInterval = 200.0f; // in milliseconds
     private float _passedTime = 0.0f;
     private boolean _isAllowedToBreak = true;
     private int _countSpaceshipCollissions = 0;
@@ -241,12 +241,21 @@ public class GameEngine extends Thread
                         powerupCollision((PowerUp)object2, (SpaceShip)object1);
                         // add extra points
                         _score += 5;
+                        // fire up on change score event
+                        if(_onScoreChangeListener != null)
+                            _onScoreChangeListener.onScoreChange(_score);
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.POWER_UP &&
                             object2.getCollidableType() == CollidableType.SPACESHIP)
                     {
-                        // TODO: remove power-up, do sound effect, add weaponry to spaceship, start a timer
+                        // Remove power-up add weaponry to spaceship, start a timer
+                        powerupCollision((PowerUp)object1, (SpaceShip)object2);
+                        // add extra points
+                        _score += 5;
+                        // fire up on change score event
+                        if(_onScoreChangeListener != null)
+                            _onScoreChangeListener.onScoreChange(_score);
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.PROJECTILE &&
@@ -298,6 +307,7 @@ public class GameEngine extends Thread
         _passedTime = 0.0f;
 
         //Log.i("breakup", "asteroid break up");
+        SoundFX.getInstance().play(R.raw.asteroid_explosion, 1.0f);
 
         asteroid.startAnimation();
         asteroid.setOnAnimationStopListener(new AnimatedSprite.OnAnimationStopListener()
@@ -317,7 +327,8 @@ public class GameEngine extends Thread
         _countSpaceshipCollissions++;
         if(_countSpaceshipCollissions >= 3)
         {
-            // TODO: play awesome explosion audio
+            // Play awesome explosion audio
+            SoundFX.getInstance().play(R.raw.spaceship_final, 1.0f);
 
             // change the number of animation from endless to 1
             spaceShip.setNumOfRepetitions(1);
@@ -339,7 +350,7 @@ public class GameEngine extends Thread
         }
 
         // TODO: spaceship with asteroid collision SFX
-        SoundFX.getInstance().play(R.raw.explosion);
+        SoundFX.getInstance().play(R.raw.explosion, 1.0f);
 
         // animate
         spaceShip.setAnimatedRow(_countSpaceshipCollissions);
@@ -347,7 +358,8 @@ public class GameEngine extends Thread
 
     private void powerupCollision(PowerUp powerUp, SpaceShip spaceShip)
     {
-        // TODO: play power up pickup SFX
+        // Play power up pickup SFX
+        SoundFX.getInstance().play(R.raw.power_up, 1.0f);
 
         // upgrade weapon
         float newLaserInterval = spaceShip.getOriginalLaserInterval()/3.0f;

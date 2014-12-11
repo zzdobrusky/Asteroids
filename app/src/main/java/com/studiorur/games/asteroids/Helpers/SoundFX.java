@@ -1,6 +1,5 @@
 package com.studiorur.games.asteroids.Helpers;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -16,7 +15,6 @@ public class SoundFX
     private HashMap<Integer, Integer> _soundIds;
     private HashMap<Integer, Boolean> _soundsLoaded;
     private static SoundFX _instance = null;
-    float _volume;
 
     public static SoundFX getInstance()
     {
@@ -40,16 +38,6 @@ public class SoundFX
         _soundsLoaded = new HashMap<Integer, Boolean>();
     }
 
-    public void initializeAudioManager(Activity activity)
-    {
-        AudioManager audioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
-        float actVolume = (float) audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        float maxVolume = (float) audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        _volume = actVolume / maxVolume;
-
-        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-    }
-
     public void addSound(Context context, final int soundIdentifier)
     {
         // load the soound
@@ -66,10 +54,10 @@ public class SoundFX
         _soundIds.put(soundIdentifier, soundId);
     }
 
-    public void play(int soundIdentifier)
+    public void play(int soundIdentifier, float volume)
     {
         if(_soundIds.get(soundIdentifier) > 0 && _soundPool != null && _soundsLoaded.get(soundIdentifier) == true)
-            _soundPool.play(_soundIds.get(soundIdentifier), _volume, _volume, 1, 0, 1f);
+            _soundPool.play(_soundIds.get(soundIdentifier), volume, volume, 1, 0, 1f);
     }
 
     public void stop(int soundIdentifier)
