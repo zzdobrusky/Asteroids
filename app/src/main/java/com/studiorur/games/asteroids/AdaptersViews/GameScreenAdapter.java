@@ -213,7 +213,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     @Override
     protected void onPause()
     {
-
         _surfaceView.onPause();
         super.onPause();
     }
@@ -221,7 +220,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     @Override
     protected void onResume()
     {
-
         _surfaceView.onResume();
         super.onResume();
     }
