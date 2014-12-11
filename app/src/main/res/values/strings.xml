@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Asteroids</string>
-    <string name="main_menu_name">Main Menu</string>
+    <string name="main_menu_name">Asteroids</string>
     <string name="action_settings">Settings</string>
     <string name="play_button_label">Play New Game</string>
     <string name="resume_button_label">Resume Game</string>

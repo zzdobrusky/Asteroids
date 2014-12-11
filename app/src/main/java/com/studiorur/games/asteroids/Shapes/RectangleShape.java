@@ -84,7 +84,7 @@ public class RectangleShape
         _color = color;
     }
 
-    static void init()
+    private void init()
     {
         String vertexShaderSource = "" +
                 "attribute vec4 position; \n" +
@@ -141,8 +141,11 @@ public class RectangleShape
 
     public void draw()
     {
-        if(_Program < 0)
+        if ( GLES20.glIsProgram( _Program ) != true )
+        {
+            // Recreate
             init();
+        }
 
         GLES20.glUseProgram(_Program);
 

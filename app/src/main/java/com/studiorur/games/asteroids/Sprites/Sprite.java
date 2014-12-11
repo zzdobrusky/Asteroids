@@ -26,7 +26,7 @@ public class Sprite
 
     // Unique for each sprite
     // Texture related
-    private Bitmap _texture;
+    private Bitmap _texture = null;
     private FloatBuffer _quadTextureBuffer = null;
     private int _textureId;
     private RectF _textureRect = new RectF(0.0f, 0.0f, 1.0f, 1.0f); // default is the whole texture
@@ -220,10 +220,13 @@ public class Sprite
 
     public void draw()
     {
-        if(_Program < 0)
+        if ( GLES20.glIsProgram( _Program ) != true )
+        {
+            // Recreate
             init();
-
+        }
         GLES20.glUseProgram(_Program);
+
         bindTexture();
         setTextureCoordinates();
         setModelView();

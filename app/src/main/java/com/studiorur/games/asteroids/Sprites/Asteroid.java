@@ -6,8 +6,10 @@ import android.graphics.PointF;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
+import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
+import com.studiorur.games.asteroids.R;
 
 /**
  * Created by zbynek on 11/27/2014.
@@ -20,6 +22,7 @@ public class Asteroid extends AnimatedSprite implements ICollidable
     CollidableType _collidableType = CollidableType.ASTEROID;
     Rectangle _worldRect;
     float _screenOffset;
+    private SoundFX _asteroidExplosionSound;
 
     public PointF getVelocity()
     {
@@ -61,6 +64,8 @@ public class Asteroid extends AnimatedSprite implements ICollidable
         _screenOffset = screenOffset;
         _boundary = new Boundary(true); // make it a circle
 
+        _asteroidExplosionSound = new SoundFX(context, R.raw.asteroid_explosion);
+
         // get ready animation
         initAnimation(0, 0, 3, animationInterval, 1);
     }
@@ -80,6 +85,11 @@ public class Asteroid extends AnimatedSprite implements ICollidable
     public boolean isColliding(ICollidable object)
     {
         return getBoundery().contains(object.getBoundery());
+    }
+
+    public void playExplosionSound()
+    {
+        _asteroidExplosionSound.play();
     }
 
     @Override

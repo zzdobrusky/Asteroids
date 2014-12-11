@@ -6,26 +6,30 @@ import android.graphics.PointF;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.Helpers.Boundary;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
+import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
+import com.studiorur.games.asteroids.R;
 
 /**
  * Created by zbynek on 12/3/2014.
  */
-public class PowerUp extends AnimatedSprite implements ICollidable
+public class LaserPowerUp extends AnimatedSprite implements ICollidable
 {
     PointF _velocity = new PointF(0.0f, 0.0f);
     Boundary _boundary;
     Rectangle _worldRect;
     float _screenOffset;
     CollidableType _collidableType = CollidableType.POWER_UP;
+    SoundFX _powerupSound;
 
-    public PowerUp(Context context, int resourceIdentifier, PointF center, Rectangle worldRect, float screenOffset)
+    public LaserPowerUp(Context context, int resourceIdentifier, PointF center, Rectangle worldRect, float screenOffset)
     {
         _velocity = new PointF(0.0f, 0.0f);
         _center = new PointF(center.x, center.y);
         _worldRect = worldRect;
         _screenOffset = screenOffset;
+        _powerupSound = new SoundFX(context, R.raw.power_up);
 
         // load sprite sheet
         loadSpritesheet(context.getResources(), resourceIdentifier, 1, 1);
@@ -44,6 +48,11 @@ public class PowerUp extends AnimatedSprite implements ICollidable
     public CollidableType getCollidableType()
     {
         return _collidableType;
+    }
+
+    public void playPickUpSound()
+    {
+        _powerupSound.play();
     }
 
     @Override

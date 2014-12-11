@@ -6,7 +6,7 @@ import android.graphics.PointF;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.Helpers.Utils;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
-import com.studiorur.games.asteroids.Sprites.PowerUp;
+import com.studiorur.games.asteroids.Sprites.LaserPowerUp;
 
 /**
  * Created by zbynek on 11/25/2014.
@@ -16,7 +16,7 @@ public class PowerupsGenerator implements IUpdatable
     float _screenOffset = 0.4f;
     Rectangle _worldRect;
     float _timeInterval = 4000.0f;
-    float _passedTime = 0.0f;
+    float _passedTime = 2000.0f; // first powerup shows in (4000 - 2000)
     boolean _isRunning = false;
     Context _context;
     int _textureIdentifier;
@@ -65,18 +65,18 @@ public class PowerupsGenerator implements IUpdatable
             {
                 // add power-up
                 float randX = Utils.randomInRange(-2.0f, 2.0f);
-                PowerUp newPowerUp = new PowerUp(
+                LaserPowerUp newLaserPowerUp = new LaserPowerUp(
                         _context,
                         _textureIdentifier,
                         new PointF(randX, _worldRect.getTop() + _screenOffset/2.0f),
                         _worldRect,
                         _screenOffset);
-                newPowerUp.setWidth(_powerupWidth);
-                newPowerUp.setHeight(_powerupHeight);
-                newPowerUp.setVelocity(new PointF(0.0f, _powerupVelocityY));
+                newLaserPowerUp.setWidth(_powerupWidth);
+                newLaserPowerUp.setHeight(_powerupHeight);
+                newLaserPowerUp.setVelocity(new PointF(0.0f, _powerupVelocityY));
 
-                GameEngine.getInstance().addUpdateable(newPowerUp);
-                GameEngine.getInstance().addCollidable(newPowerUp);
+                GameEngine.getInstance().addUpdateable(newLaserPowerUp);
+                GameEngine.getInstance().addCollidable(newLaserPowerUp);
 
                 //Log.i("power-up_generator", "power-up added");
 

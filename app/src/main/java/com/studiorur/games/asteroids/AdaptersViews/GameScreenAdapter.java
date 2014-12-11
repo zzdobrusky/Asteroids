@@ -215,6 +215,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     {
         super.onPause();
         _surfaceView.onPause();
+        //GameEngine.getInstance().pauseGame();
     }
 
     @Override
@@ -222,6 +223,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     {
         super.onResume();
         _surfaceView.onResume();
+        //GameEngine.getInstance().resumeGame();
     }
 
     @Override
@@ -295,13 +297,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         Rectangle worldRect = new Rectangle(2.0f, heightInWorld, new PointF(0.0f, 0.0f));
 
         // *********************** GAME SETUP ***********************
-
-        // Load sound fxs
-        SoundFX.getInstance().addSound(this, R.raw.laser);
-        SoundFX.getInstance().addSound(this, R.raw.explosion);
-        SoundFX.getInstance().addSound(this, R.raw.asteroid_explosion);
-        SoundFX.getInstance().addSound(this, R.raw.spaceship_final);
-        SoundFX.getInstance().addSound(this, R.raw.power_up);
 
         // set up on game over listener
         GameEngine.getInstance().setOnGameOverListener(new GameEngine.OnGameOverListener()

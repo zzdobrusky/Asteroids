@@ -12,56 +12,42 @@ import java.util.HashMap;
 public class SoundFX
 {
     private SoundPool _soundPool;
-    private HashMap<Integer, Integer> _soundIds;
-    private HashMap<Integer, Boolean> _soundsLoaded;
-    private static SoundFX _instance = null;
+    private int _soundId;
+    private int _streamId;
+    private int _soundIdentifier;
+    private boolean _soundLoaded;
 
-    public static SoundFX getInstance()
-    {
-        if(_instance == null)
-        {
-            // Thread safe
-            synchronized (SoundFX.class)
-            {
-                if(_instance == null)
-                    _instance = new SoundFX();
-            }
-        }
-
-        return _instance;
-    }
-
-    private SoundFX()
+    public SoundFX(Context context, int soundIdentifier)
     {
         _soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        _soundIds = new HashMap<Integer, Integer>();
-        _soundsLoaded = new HashMap<Integer, Boolean>();
+        _soundIdentifier = soundIdentifier;
+        addSound(context);
     }
 
-    public void addSound(Context context, final int soundIdentifier)
+    private void addSound(Context context)
     {
-        // load the soound
-        _soundsLoaded.put(soundIdentifier, false);
+        // load the sound
+        _soundId = _soundPool.load(context, _soundIdentifier, 1);
         _soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener()
         {
             @Override
             public void onLoadComplete(SoundPool soundPool, int soundId, int status)
             {
-                _soundsLoaded.put(soundIdentifier, true);
+                _soundLoaded = true;
             }
         });
-        int soundId = _soundPool.load(context, soundIdentifier, 1);
-        _soundIds.put(soundIdentifier, soundId);
+
     }
 
-    public void play(int soundIdentifier, float volume)
+    public void play()
     {
-        if(_soundIds.get(soundIdentifier) > 0 && _soundPool != null && _soundsLoaded.get(soundIdentifier) == true)
-            _soundPool.play(_soundIds.get(soundIdentifier), volume, volume, 1, 0, 1f);
+        if(_soundId > 0 && _soundLoaded == true)
+            _streamId = _soundPool.play(_soundId, 1.0f, 1.0f, 1, 0, 1f);
     }
 
-    public void stop(int soundIdentifier)
+    public void stop()
     {
-        // not used
+        if(_streamId > 0)
+            _soundPool.stop(_streamId);
     }
 }

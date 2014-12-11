@@ -1,5 +1,6 @@
 package com.studiorur.games.asteroids.Sprites;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.view.MotionEvent;
@@ -36,6 +37,8 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     float _passedTime = _currentLaserInterval; // shoots first
     boolean _isShooting = false;
     LoopTimer _laserUpgradeTimer;
+    SoundFX _laserSound;
+    SoundFX _finalExplosionSound;
 
     public PointF getVelocity()
     {
@@ -74,6 +77,8 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         _gameScreenActivity = gameScreenActivity;
         _invertedMass = 1.0f/mass;
         _worldRect = worldRect;
+        _laserSound = new SoundFX(_gameScreenActivity, R.raw.laser);
+        _finalExplosionSound = new SoundFX(_gameScreenActivity, R.raw.spaceship_final);
 
         _laserUpgradeTimer = new LoopTimer();
 
@@ -101,16 +106,16 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
 
                 // Start shooting projectiles with some frequency
                 if(motionEvent.getAction() == MotionEvent.ACTION_DOWN)
-                {
                     _isShooting = true;
-                }
                 else if(motionEvent.getAction() == MotionEvent.ACTION_UP)
-                {
                     _isShooting = false;
-                    _passedTime = _currentLaserInterval;
-                }
             }
         });
+    }
+
+    public void playFinalExplosionSound()
+    {
+        _finalExplosionSound.play();
     }
 
     public float getOriginalLaserInterval()
@@ -142,7 +147,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         newProjectile.setWidth(0.01f);
         newProjectile.setHeight(0.05f);
         newProjectile.setColor(Color.MAGENTA);
-        SoundFX.getInstance().play(R.raw.laser, 1.0f);
+        _laserSound.play();
         GameEngine.getInstance().addUpdateable(newProjectile);
         GameEngine.getInstance().addCollidable(newProjectile);
     }
