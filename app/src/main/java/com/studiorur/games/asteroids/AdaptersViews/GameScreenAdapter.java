@@ -213,36 +213,21 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     @Override
     protected void onPause()
     {
-        _surfaceView.onPause();
         super.onPause();
+        _surfaceView.onPause();
     }
 
     @Override
     protected void onResume()
     {
-        _surfaceView.onResume();
         super.onResume();
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-        float x = event.getX();
-        float y = event.getY();
-
-        PointF worldLoc = deviceToWorldCoord(new PointF(x, y));
-
-        if (_onTouchScreenListener != null)
-            _onTouchScreenListener.onTouchScreen(worldLoc, event);
-
-        return true;
+        _surfaceView.onResume();
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig eglConfig)
     {
-        // set background color
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        init();
     }
 
     @Override
@@ -270,6 +255,24 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
 
     private void init()
     {
+        // set up on touch listener registered with opengl view (not activity)
+        _surfaceView.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                float x = event.getX();
+                float y = event.getY();
+
+                PointF worldLoc = deviceToWorldCoord(new PointF(x, y));
+
+                if (_onTouchScreenListener != null)
+                    _onTouchScreenListener.onTouchScreen(worldLoc, event);
+
+                return true;
+            }
+        });
+
         // extract the screen size
         DisplayMetrics dm = getResources().getDisplayMetrics();
         _width = dm.widthPixels;
@@ -372,9 +375,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     public void onDrawFrame(GL10 gl10)
     {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-
-        if(_width <= 0 || _height <= 0)
-            init();
 
         // draw components
         GameEngine.getInstance().draw();
