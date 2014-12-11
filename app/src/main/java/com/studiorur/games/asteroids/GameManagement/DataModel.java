@@ -38,7 +38,8 @@ public class DataModel
     private DataModel(File filesDir)
     {
         _filesDir = filesDir;
-        loadScore();
+        if(_filesDir != null)
+            loadScore();
 
         // set up on score change listener from game engine
         GameEngine.getInstance().setOnScoreChangeListener(new GameEngine.OnScoreChangeListener()

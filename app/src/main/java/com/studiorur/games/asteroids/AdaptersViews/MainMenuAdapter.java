@@ -53,7 +53,7 @@ public class MainMenuAdapter extends Activity
                 {
                     mainMenuView.getPlayButton().setBackgroundResource(R.drawable.rounded_button_background_up);
 
-                    // TODO: call game screen activity
+                    // Call game screen activity
                     Intent gameScreenIntent = new Intent();
                     gameScreenIntent.setClass(_context, GameScreenAdapter.class);
                     gameScreenIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

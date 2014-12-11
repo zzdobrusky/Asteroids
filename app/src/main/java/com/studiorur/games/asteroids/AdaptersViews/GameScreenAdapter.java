@@ -202,12 +202,28 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
             {
                 // Call main menu activity and destroy the current one
                 Intent mainMenuIntent = new Intent();
-                mainMenuIntent.setClass(_context, GameScreenAdapter.class);
+                mainMenuIntent.setClass(_context, MainMenuAdapter.class);
                 mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(mainMenuIntent);
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onPause()
+    {
+
+        _surfaceView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume()
+    {
+
+        _surfaceView.onResume();
+        super.onResume();
     }
 
     @Override
