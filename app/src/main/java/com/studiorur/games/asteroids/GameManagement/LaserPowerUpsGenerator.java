@@ -2,6 +2,7 @@ package com.studiorur.games.asteroids.GameManagement;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.Helpers.Utils;
@@ -11,12 +12,12 @@ import com.studiorur.games.asteroids.Sprites.LaserPowerUp;
 /**
  * Created by zbynek on 11/25/2014.
  */
-public class PowerupsGenerator implements IUpdatable
+public class LaserPowerUpsGenerator implements IUpdatable
 {
     float _screenOffset = 0.4f;
     Rectangle _worldRect;
     float _timeInterval = 4000.0f;
-    float _passedTime = 2000.0f; // first powerup shows in (4000 - 2000)
+    float _passedTime = 2000.0f; // first powerup shows in (4000 - 2000), constructor can change
     boolean _isRunning = false;
     Context _context;
     int _textureIdentifier;
@@ -24,13 +25,14 @@ public class PowerupsGenerator implements IUpdatable
     float _powerupHeight;
     float _powerupVelocityY;
 
-
-    public PowerupsGenerator(Context context,
-                             Rectangle worldRect,
-                             int textureIdentifier,
-                             float powerupWidth,
-                             float powerupHeight,
-                             float powerupVelocityY)
+    public LaserPowerUpsGenerator(Context context,
+                                  Rectangle worldRect,
+                                  int textureIdentifier,
+                                  float powerupWidth,
+                                  float powerupHeight,
+                                  float powerupVelocityY,
+                                  float timeInterval,
+                                  float firstPowerupAfter)
     {
         _context = context;
         _worldRect = worldRect;
@@ -38,6 +40,8 @@ public class PowerupsGenerator implements IUpdatable
         _powerupWidth = powerupWidth;
         _powerupHeight = powerupHeight;
         _powerupVelocityY = powerupVelocityY; // and 0 speed at x direction
+        _timeInterval = timeInterval;
+        _passedTime = _timeInterval - firstPowerupAfter;
     }
 
     public void start()
@@ -64,11 +68,14 @@ public class PowerupsGenerator implements IUpdatable
             if (_passedTime > _timeInterval)
             {
                 // add power-up
-                float randX = Utils.randomInRange(-2.0f, 2.0f);
+                float randX = Utils.randomInRange(_worldRect.getLeft() + _powerupWidth/2.0f, _worldRect.getRight() - _powerupWidth/2.0f);
+
+                //Log.i("powerupX", "powerupX: " + Float.toString(randX));
+
                 LaserPowerUp newLaserPowerUp = new LaserPowerUp(
                         _context,
                         _textureIdentifier,
-                        new PointF(randX, _worldRect.getTop() + _screenOffset/2.0f),
+                        new PointF(randX, _worldRect.getTop() + _screenOffset/3.0f),
                         _worldRect,
                         _screenOffset);
                 newLaserPowerUp.setWidth(_powerupWidth);

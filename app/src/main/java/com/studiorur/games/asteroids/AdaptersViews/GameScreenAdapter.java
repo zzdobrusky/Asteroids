@@ -9,6 +9,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +19,11 @@ import android.widget.RelativeLayout;
 import com.studiorur.games.asteroids.GameManagement.AsteroidGenerator;
 import com.studiorur.games.asteroids.GameManagement.DataModel;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
-import com.studiorur.games.asteroids.GameManagement.PowerupsGenerator;
+import com.studiorur.games.asteroids.GameManagement.LaserPowerUpsGenerator;
+import com.studiorur.games.asteroids.GameManagement.LevelManager;
 import com.studiorur.games.asteroids.GameManagement.StarGenerator;
+import com.studiorur.games.asteroids.Helpers.LoopTimer;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
-import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
@@ -37,12 +39,13 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     int _width = -1;
     float _displayScaleX;
     float _displayScaleY;
-    Context _context;
-    GLSurfaceView _surfaceView;
-    PauseMenuView _pauseMenuView;
-    GameOverView _gameOverView;
-    RelativeLayout _rootLayout;
-    File _scoreFile;
+    Context _context = null;
+    GLSurfaceView _surfaceView = null;
+    PauseMenuView _pauseMenuView = null;
+    GameOverView _gameOverView = null;
+    RelativeLayout _rootLayout = null;
+    File _scoreFile = null;
+    LevelManager _levelManager = null;
 
     // set up touch listener
     private OnTouchScreenListener _onTouchScreenListener = null;
@@ -82,25 +85,164 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         setContentView(_rootLayout);
     }
 
+    private void init()
+    {
+        // set up on touch listener registered with opengl view (not activity)
+        _surfaceView.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                float x = event.getX();
+                float y = event.getY();
+
+                PointF worldLoc = deviceToWorldCoord(new PointF(x, y));
+
+                if (_onTouchScreenListener != null)
+                    _onTouchScreenListener.onTouchScreen(worldLoc, event);
+
+                return true;
+            }
+        });
+
+        // extract the screen size
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        _width = dm.widthPixels;
+        _height = dm.heightPixels;
+
+        if(_width < _height)
+        {
+            _displayScaleX = (float)_width/(float)_height;
+            _displayScaleY = 1.0f;
+        }
+        else
+        {
+            _displayScaleX = 1.0f;
+            _displayScaleY = (float)_height/(float)_width;
+        }
+
+        float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
+        float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
+        float heightInWorld = topBorder - bottomBorder;
+        Rectangle worldRect = new Rectangle(2.0f, heightInWorld, new PointF(0.0f, 0.0f));
+
+        // *********************** GAME SETUP ***********************
+
+        // set up on game over listener
+        GameEngine.getInstance().setOnGameOverListener(new GameEngine.OnGameOverListener()
+        {
+            @Override
+            public void onGameOver()
+            {
+                DataModel.getInstance(_scoreFile).saveScore();
+                gameOver();
+            }
+        });
+
+        // Background stars - two layers of stars with different speeds will create a parallax effect
+        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
+        starGeneratorSlower.init();
+        GameEngine.getInstance().addUpdateable(starGeneratorSlower);
+        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
+        starGeneratorFaster.init();
+        GameEngine.getInstance().addUpdateable(starGeneratorFaster);
+
+        // Your spaceship
+        SpaceShip spaceShip = new SpaceShip(
+                this,
+                worldRect,
+                1.0f,
+                R.drawable.spaceship_spreadsheet,
+                4,
+                4,
+                70.0f);
+        spaceShip.setCenterX(0.0f);
+        spaceShip.setCenterY(0.0f);
+        spaceShip.setWidth(0.15f);
+        spaceShip.setHeight(0.25f);
+        spaceShip.setLaserFrequence(600.0f);
+        GameEngine.getInstance().addUpdateable(spaceShip);
+        GameEngine.getInstance().addCollidable(spaceShip);
+
+        // Powerups
+        float currentPowerUpInterval = 12000.0f;
+        final LaserPowerUpsGenerator laserPowerUpsGenerator = new LaserPowerUpsGenerator(
+                _context,
+                worldRect,
+                R.drawable.power_up,
+                0.1f,
+                0.07f,
+                -0.0003f,
+                currentPowerUpInterval,
+                2000.0f);
+        GameEngine.getInstance().addUpdateable(laserPowerUpsGenerator);
+        laserPowerUpsGenerator.start();
+
+        // Asteroids
+        float currentAsteroidInterval = 1000.0f;
+        final AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
+                _context,
+                worldRect,
+                R.drawable.asteroid_spritesheet,
+                2.0f,
+                heightInWorld,
+                0.08f,
+                0.5f,
+                0.00005f,
+                0.0005f,
+                0.004f,
+                currentAsteroidInterval);
+        asteroidGenerator.start();
+        // register with the game engine
+        GameEngine.getInstance().registerAsteroidGenerator(asteroidGenerator);
+        GameEngine.getInstance().addUpdateable(asteroidGenerator);
+
+        // game will start inside onResume method
+
+        // set up levels
+        _levelManager = new LevelManager(
+                15,
+                15000.0f,
+                asteroidGenerator,
+                currentAsteroidInterval,
+                100.0f,
+                laserPowerUpsGenerator,
+                currentPowerUpInterval,
+                5000.0f);
+        _levelManager.start();
+        GameEngine.getInstance().addUpdateable(_levelManager);
+    }
+
     @Override
     public void onBackPressed()
     {
         if(!GameEngine.getInstance().isGameOver())
         {
             if (GameEngine.getInstance().getGameState() == GameEngine.GameState.RUNNING)
-                pauseGamePopup();
+                pauseGame();
             else if (GameEngine.getInstance().getGameState() == GameEngine.GameState.PAUSED)
                 resumeGame();
         }
     }
 
-    private void resumeGame()
+    private void startGame()
     {
-        _rootLayout.removeView(_pauseMenuView);
-        GameEngine.getInstance().resumeGame();
+        if(GameEngine.getInstance().getGameState() == GameEngine.GameState.NEVER_RUN)
+            GameEngine.getInstance().startGame();
     }
 
-    private void pauseGamePopup()
+    private void resumeGame()
+    {
+        if(_pauseMenuView != null)
+            _rootLayout.removeView(_pauseMenuView);
+
+        if(GameEngine.getInstance().getGameState() == GameEngine.GameState.NEVER_RUN)
+            GameEngine.getInstance().startGame();
+        else if(GameEngine.getInstance().getGameState() == GameEngine.GameState.PAUSED)
+            GameEngine.getInstance().resumeGame();
+    }
+
+    private void pauseGame()
     {
         GameEngine.getInstance().pauseGame();
         DataModel.getInstance(_scoreFile).saveScore();
@@ -152,7 +294,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         _rootLayout.addView(_pauseMenuView);
     }
 
-    private void gameOverPopup()
+    private void gameOver()
     {
         GameEngine.getInstance().pauseGame();
         DataModel.getInstance(_scoreFile).saveScore();
@@ -215,7 +357,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     {
         super.onPause();
         _surfaceView.onPause();
-        //GameEngine.getInstance().pauseGame();
+        pauseGame();
     }
 
     @Override
@@ -223,7 +365,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     {
         super.onResume();
         _surfaceView.onResume();
-        //GameEngine.getInstance().resumeGame();
+        resumeGame();
     }
 
     @Override
@@ -253,119 +395,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         }
 
         GLES20.glViewport(offsetX, offsetY, size, size);
-    }
-
-    private void init()
-    {
-        // set up on touch listener registered with opengl view (not activity)
-        _surfaceView.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                float x = event.getX();
-                float y = event.getY();
-
-                PointF worldLoc = deviceToWorldCoord(new PointF(x, y));
-
-                if (_onTouchScreenListener != null)
-                    _onTouchScreenListener.onTouchScreen(worldLoc, event);
-
-                return true;
-            }
-        });
-
-        // extract the screen size
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        _width = dm.widthPixels;
-        _height = dm.heightPixels;
-
-        if(_width < _height)
-        {
-            _displayScaleX = (float)_width/(float)_height;
-            _displayScaleY = 1.0f;
-        }
-        else
-        {
-            _displayScaleX = 1.0f;
-            _displayScaleY = (float)_height/(float)_width;
-        }
-
-        float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
-        float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
-        float heightInWorld = topBorder - bottomBorder;
-        Rectangle worldRect = new Rectangle(2.0f, heightInWorld, new PointF(0.0f, 0.0f));
-
-        // *********************** GAME SETUP ***********************
-
-        // set up on game over listener
-        GameEngine.getInstance().setOnGameOverListener(new GameEngine.OnGameOverListener()
-        {
-            @Override
-            public void onGameOver()
-            {
-                DataModel.getInstance(_scoreFile).saveScore();
-                gameOverPopup();
-            }
-        });
-
-        // Background stars - two layers of stars with different speeds will create a parallax effect
-        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
-        starGeneratorSlower.init();
-        GameEngine.getInstance().addUpdateable(starGeneratorSlower);
-        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
-        starGeneratorFaster.init();
-        GameEngine.getInstance().addUpdateable(starGeneratorFaster);
-
-        // Your spaceship
-        SpaceShip spaceShip = new SpaceShip(
-                this,
-                worldRect,
-                1.0f,
-                R.drawable.spaceship_spreadsheet,
-                4,
-                4,
-                70.0f);
-        spaceShip.setCenterX(0.0f);
-        spaceShip.setCenterY(0.0f);
-        spaceShip.setWidth(0.15f);
-        spaceShip.setHeight(0.25f);
-        spaceShip.setLaserFrequence(600.0f);
-        GameEngine.getInstance().addUpdateable(spaceShip);
-        GameEngine.getInstance().addCollidable(spaceShip);
-
-        // Powerups
-        PowerupsGenerator powerupsGenerator = new PowerupsGenerator(
-                _context,
-                worldRect,
-                R.drawable.power_up,
-                0.1f,
-                0.07f,
-                -0.0001f
-        );
-        powerupsGenerator.setPowerupFrequency(8000.0f);
-        GameEngine.getInstance().addUpdateable(powerupsGenerator);
-        powerupsGenerator.start();
-
-        // Asteroids
-        AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
-                _context,
-                worldRect,
-                R.drawable.asteroid_spritesheet,
-                2.0f,
-                heightInWorld,
-                0.08f,
-                0.5f,
-                0.00005f,
-                0.0005f,
-                0.004f);
-        asteroidGenerator.setAsteroidFrequency(1000.0f);
-        asteroidGenerator.start();
-        // register with the game engine
-        GameEngine.getInstance().registerAsteroidGenerator(asteroidGenerator);
-        GameEngine.getInstance().addUpdateable(asteroidGenerator);
-
-        GameEngine.getInstance().startGame();
     }
 
     @Override

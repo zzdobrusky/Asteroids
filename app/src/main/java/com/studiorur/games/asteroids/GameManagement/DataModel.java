@@ -86,6 +86,10 @@ public class DataModel
         {
             e.printStackTrace();
         }
+        finally
+        {
+            return;
+        }
     }
 
     public void saveScore()

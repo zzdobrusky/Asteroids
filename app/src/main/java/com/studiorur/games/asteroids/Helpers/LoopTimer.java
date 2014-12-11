@@ -1,5 +1,7 @@
 package com.studiorur.games.asteroids.Helpers;
 
+import com.studiorur.games.asteroids.Interfaces.IUpdatable;
+
 /**
  * Created by zbynek on 11/26/2014.
  */
@@ -51,7 +53,7 @@ public class LoopTimer
                 if(_repeatNumber > 0)
                 {
                     _count++;
-                    if (_repeatNumber >= _repeatNumber)
+                    if (_count >= _repeatNumber)
                         stop(); // stop and reset timer
                 }
             }

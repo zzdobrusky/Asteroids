@@ -18,14 +18,12 @@ public class Projectile extends RectangleShape implements IUpdatable, ICollidabl
     Boundary _boundary;
     CollidableType _collidableType = CollidableType.PROJECTILE;
     Rectangle _worldRect;
-    float _screenOffset;
 
-    public Projectile(PointF center, Rectangle worldRect, float screenOffset)
+    public Projectile(PointF center, Rectangle worldRect)
     {
         _velocity = new PointF(0.0f, 0.0f);
         _center = new PointF(center.x, center.y);
         _worldRect = worldRect;
-        _screenOffset = screenOffset;
 
         // create boundary
         _boundary = new Boundary(false); // make it a rectangle
@@ -56,10 +54,10 @@ public class Projectile extends RectangleShape implements IUpdatable, ICollidabl
         _center.y = _center.y + _velocity.y * time;
 
         // remove strait projectiles
-        if((_center.x - _width/2.0f) < (_worldRect.getLeft() - _screenOffset) ||
-           (_center.x + _width/2.0f) > (_worldRect.getRight() + _screenOffset) ||
-           (_center.y + _height/2.0f) > (_worldRect.getTop() + _screenOffset) ||
-           (_center.y - _height/2.0f) < (_worldRect.getBottom() - _screenOffset))
+        if((_center.x - _width/2.0f) < _worldRect.getLeft() ||
+           (_center.x + _width/2.0f) > _worldRect.getRight() ||
+           (_center.y + _height/2.0f) > _worldRect.getTop()||
+           (_center.y - _height/2.0f) < _worldRect.getBottom())
         {
             GameEngine.getInstance().removeUpdateable(this);
             GameEngine.getInstance().removeCollidable(this);

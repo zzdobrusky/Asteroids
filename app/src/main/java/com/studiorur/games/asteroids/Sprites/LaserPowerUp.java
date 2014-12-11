@@ -26,7 +26,7 @@ public class LaserPowerUp extends AnimatedSprite implements ICollidable
     public LaserPowerUp(Context context, int resourceIdentifier, PointF center, Rectangle worldRect, float screenOffset)
     {
         _velocity = new PointF(0.0f, 0.0f);
-        _center = new PointF(center.x, center.y);
+        _center = new PointF(center.x, center.y); // copy
         _worldRect = worldRect;
         _screenOffset = screenOffset;
         _powerupSound = new SoundFX(context, R.raw.power_up);

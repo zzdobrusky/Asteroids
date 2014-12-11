@@ -38,7 +38,8 @@ public class AsteroidGenerator implements IUpdatable
             float maxSize,
             float minVelocityY,
             float maxVelocity,
-            float maxRotationVelocity)
+            float maxRotationVelocity,
+            float timeInterval)
     {
         _context = context;
         _worldRect = worldRect;
@@ -50,6 +51,7 @@ public class AsteroidGenerator implements IUpdatable
         _minVelocityY = minVelocityY;
         _maxVelocity = maxVelocity;
         _maxRotationVelocity = maxRotationVelocity;
+        _timeInterval = timeInterval;
     }
 
     public void start()
@@ -93,7 +95,7 @@ public class AsteroidGenerator implements IUpdatable
             GameEngine.getInstance().removeCollidable(asteroid);
     }
 
-    public void setAsteroidFrequency(float timeInterval)
+    public void setAsteroidInterval(float timeInterval)
     {
         _timeInterval = timeInterval;
     }

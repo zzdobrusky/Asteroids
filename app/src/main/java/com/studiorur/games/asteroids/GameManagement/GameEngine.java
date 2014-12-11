@@ -17,16 +17,14 @@ import java.util.logging.Logger;
  */
 public class GameEngine extends Thread
 {
-    public enum GameState
-    { RUNNING, PAUSED, NEVER_RUN };
-
-    //for consistent rendering
+    // Game loop related - variable loop for consistent rendering
     private long _sleepTime;
-    //amount of time to sleep for (in milliseconds)
+    // Base amount of time to sleep for (in milliseconds)
     private long _delay = 50;
 
-    private static GameEngine _instance = null;
-
+    // Game related
+    public enum GameState
+    { RUNNING, PAUSED, NEVER_RUN };
     private GameState _gameState = GameState.NEVER_RUN;
     private boolean _isGameOver = false;
     private ArrayList<IUpdatable> _updatables;
@@ -37,6 +35,22 @@ public class GameEngine extends Thread
     private boolean _isAllowedToBreak = true;
     private int _countSpaceshipCollissions = 0;
     private int _score = 0;
+
+    // singleton related
+    private static GameEngine _instance = null;
+    public static GameEngine getInstance()
+    {
+        if(_instance == null)
+        {
+            // Thread safe
+            synchronized (GameEngine.class)
+            {
+                if (_instance == null)
+                    _instance = new GameEngine();
+            }
+        }
+        return _instance;
+    }
 
     // on game over listener
     private OnGameOverListener _onGameOverListener = null;
@@ -68,20 +82,7 @@ public class GameEngine extends Thread
         _onScoreChangeListener = onScoreChangeListener;
     }
 
-    public static GameEngine getInstance()
-    {
-        if(_instance == null)
-        {
-            // Thread safe
-            synchronized (GameEngine.class)
-            {
-                if (_instance == null)
-                    _instance = new GameEngine();
-            }
-        }
-        return _instance;
-    }
-
+    // CONSTRUCTOR
     private GameEngine()
     {
         _updatables = new ArrayList<IUpdatable>();
@@ -177,21 +178,6 @@ public class GameEngine extends Thread
     public boolean isGameOver()
     {
         return _isGameOver;
-    }
-
-    public void update(float time)
-    {
-        _passedTime += time;
-
-        // do filtered collisions - we need at least 2 objects to do collisions
-        if(_collidables.size() >= 2)
-            doFilteredCollision();
-
-        for (int i = _updatables.size() - 1; i >= 0; i--)
-            _updatables.get(i).update(time);
-
-        if(_passedTime > _breakUpInterval)
-            _isAllowedToBreak = true;
     }
 
     private void doFilteredCollision()
@@ -365,6 +351,21 @@ public class GameEngine extends Thread
         // Remove from the game engine
         GameEngine.getInstance().removeCollidable(laserPowerUp);
         GameEngine.getInstance().removeUpdateable(laserPowerUp);
+    }
+
+    public void update(float time)
+    {
+        _passedTime += time;
+
+        // do filtered collisions - we need at least 2 objects to do collisions
+        if(_collidables.size() >= 2)
+            doFilteredCollision();
+
+        for (int i = _updatables.size() - 1; i >= 0; i--)
+            _updatables.get(i).update(time);
+
+        if(_passedTime > _breakUpInterval)
+            _isAllowedToBreak = true;
     }
 
     public void draw()

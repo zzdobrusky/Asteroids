@@ -142,11 +142,11 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
 
     private void shootLaser()
     {
-        Projectile newProjectile = new Projectile(new PointF(_center.x, _center.y + _height/1.5f), _worldRect, 0.2f);
+        Projectile newProjectile = new Projectile(new PointF(_center.x, _center.y + _height/1.5f), _worldRect);
         newProjectile.setVelocity(new PointF(0.0f, 0.001f));
         newProjectile.setWidth(0.01f);
         newProjectile.setHeight(0.05f);
-        newProjectile.setColor(Color.MAGENTA);
+        newProjectile.setColor(Color.GREEN);
         _laserSound.play();
         GameEngine.getInstance().addUpdateable(newProjectile);
         GameEngine.getInstance().addCollidable(newProjectile);
