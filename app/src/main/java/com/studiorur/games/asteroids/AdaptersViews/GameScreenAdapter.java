@@ -195,8 +195,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         // add to game engine
         GameEngine.getInstance().addUpdateable(asteroidGenerator);
 
-        // game will start inside onResume method
-
         // set up levels
         _levelManager = new LevelManager(
                 15,
@@ -209,6 +207,9 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 5000.0f);
         _levelManager.start();
         GameEngine.getInstance().addUpdateable(_levelManager);
+
+        // start the game engine
+        GameEngine.getInstance().startGame();
     }
 
     @Override
@@ -221,6 +222,24 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
             else if (GameEngine.getInstance().getGameState() == GameEngine.GameState.PAUSED)
                 resumeGame();
         }
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        _surfaceView.onPause();
+//        if(!GameEngine.getInstance().isGameOver())
+//            pauseGame();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        _surfaceView.onResume();
+//        if(!GameEngine.getInstance().isGameOver())
+//            resumeGame();
     }
 
     private void resumeGame()
@@ -356,24 +375,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
 //                ((Activity)_context).finish();
 //            }
 //        } );
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        _surfaceView.onPause();
-        if(!GameEngine.getInstance().isGameOver())
-            pauseGame();
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        _surfaceView.onResume();
-        if(!GameEngine.getInstance().isGameOver())
-            resumeGame();
     }
 
     @Override
