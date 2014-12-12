@@ -40,6 +40,9 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     SoundFX _laserSound;
     SoundFX _finalExplosionSound;
 
+    private enum Weapon {LASER, UPGRADED_LASER, TORPEDO};
+    private Weapon _currentWeapon = Weapon.LASER;
+
     public PointF getVelocity()
     {
         return _velocity;
@@ -205,12 +208,26 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
             _passedTime += time;
             if(_passedTime >= _currentLaserInterval)
             {
-                shootLaser();
+                switch(_currentWeapon)
+                {
+                    case LASER:
+                        shootLaser();
+                        break;
+
+                    case TORPEDO:
+                        shootTorpedo();
+                        break;
+                }
                 _passedTime = 0.0f;
             }
         }
 
 
         _laserUpgradeTimer.update(time);
+    }
+
+    private void shootTorpedo()
+    {
+        // TODO:
     }
 }
