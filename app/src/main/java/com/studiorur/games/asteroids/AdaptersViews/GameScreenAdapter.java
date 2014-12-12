@@ -8,7 +8,6 @@ import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,8 +33,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GameScreenAdapter extends Activity implements GLSurfaceView.Renderer
 {
-    int _height = -1;
-    int _width = -1;
+    int _height;
+    int _width;
     float _displayScaleX;
     float _displayScaleY;
     Context _context = null;
@@ -187,8 +186,9 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 heightInWorld,
                 0.08f,
                 0.5f,
-                0.00005f,
-                0.0005f,
+                0.0003f,
+                0.001f,
+                0.0002f,
                 0.004f,
                 currentAsteroidInterval);
         asteroidGenerator.start();
@@ -208,7 +208,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         _levelManager.start();
         GameEngine.getInstance().addUpdateable(_levelManager);
 
-        // start the game engine
+        // start the game
         GameEngine.getInstance().startGame();
     }
 
@@ -229,8 +229,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     {
         super.onPause();
         _surfaceView.onPause();
-//        if(!GameEngine.getInstance().isGameOver())
-//            pauseGame();
     }
 
     @Override
@@ -238,19 +236,15 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     {
         super.onResume();
         _surfaceView.onResume();
-//        if(!GameEngine.getInstance().isGameOver())
-//            resumeGame();
     }
 
     private void resumeGame()
     {
+        // remove pause pop up menu if any
         if(_pauseMenuView != null)
             _rootLayout.removeView(_pauseMenuView);
 
-        if(GameEngine.getInstance().getGameState() == GameEngine.GameState.NEVER_RUN)
-            GameEngine.getInstance().startGame();
-        else if(GameEngine.getInstance().getGameState() == GameEngine.GameState.PAUSED)
-            GameEngine.getInstance().resumeGame();
+        GameEngine.getInstance().resumeGame();
     }
 
     private void pauseGame()
@@ -258,7 +252,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         GameEngine.getInstance().pauseGame();
         DataModel.getInstance(_scoreFile).saveScore();
 
-        // create pause menu
+        // create pause popup menu
         _pauseMenuView = new PauseMenuView(_context);
         _pauseMenuView.getResumeButton().setOnTouchListener(new View.OnTouchListener()
         {

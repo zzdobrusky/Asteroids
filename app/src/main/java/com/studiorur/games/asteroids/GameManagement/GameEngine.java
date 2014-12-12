@@ -130,24 +130,29 @@ public class GameEngine extends Thread
         _gameState = GameState.RUNNING;
     }
 
+    public boolean isGameOver()
+    {
+        return _isGameOver;
+    }
+
     @Override
     public void run()
     {
         //UPDATE - tweaked version of http://blorb.tumblr.com/post/236799414/simple-java-android-game-loop
         while (true)
         {
-            //time before update
+            // Time before update
             long beforeTime = System.nanoTime();
 
-            //This is where we update the game engine
+            // This is where we update the game engine
             synchronized (GameEngine.class)
             {
                 if(_gameState == GameState.RUNNING && !_isGameOver)
                     update(_sleepTime);
             }
 
-            //SLEEP
-            //Sleep time. Time required to sleep to keep game consistent
+            // SLEEP
+            // Sleep time. Time required to sleep to keep game consistent
             _sleepTime = _delay + ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
 
             try
@@ -165,11 +170,6 @@ public class GameEngine extends Thread
         }
 
         // otherwise reset time
-    }
-
-    public boolean isGameOver()
-    {
-        return _isGameOver;
     }
 
     private void doFilteredCollision()

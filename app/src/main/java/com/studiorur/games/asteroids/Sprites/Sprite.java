@@ -225,6 +225,7 @@ public class Sprite
             // Recreate
             init();
         }
+
         GLES20.glUseProgram(_Program);
 
         bindTexture();

@@ -20,7 +20,8 @@ public class AsteroidGenerator implements IUpdatable
     float _minSize;
     float _maxSize;
     float _minVelocityY;
-    float _maxVelocity;
+    float _maxVelocityY;
+    float _maxVelocityX;
     float _maxRotationVelocity;
     float _screenOffset = 0.4f;
     float _timeInterval = 4000.0f; // in milliseconds
@@ -37,7 +38,8 @@ public class AsteroidGenerator implements IUpdatable
             float minSize,
             float maxSize,
             float minVelocityY,
-            float maxVelocity,
+            float maxVelocityY,
+            float maxVelocityX,
             float maxRotationVelocity,
             float timeInterval)
     {
@@ -49,7 +51,8 @@ public class AsteroidGenerator implements IUpdatable
         _minSize = minSize;
         _maxSize = maxSize;
         _minVelocityY = minVelocityY;
-        _maxVelocity = maxVelocity;
+        _maxVelocityY = maxVelocityY;
+        _maxVelocityX = maxVelocityX;
         _maxRotationVelocity = maxRotationVelocity;
         _timeInterval = timeInterval;
     }
@@ -69,8 +72,8 @@ public class AsteroidGenerator implements IUpdatable
         float randX = Utils.randomInRange(-_width / 2.0f, _width / 2.0f);
         float centerY = _height / 2.0f + _screenOffset; // do it offscreen only
         float randSize = Utils.randomInRange(_minSize, _maxSize);
-        float randVelocityX = Utils.randomInRange(-_maxVelocity, _maxVelocity);
-        float randVelocityY = Utils.randomInRange(_minVelocityY, _maxVelocity);
+        float randVelocityX = Utils.randomInRange(-_maxVelocityX, _maxVelocityX);
+        float randVelocityY = Utils.randomInRange(_minVelocityY, _maxVelocityY);
         float randRotationVelocity = Utils.randomInRange(0.0f, _maxRotationVelocity);
 
         asteroid.setCenter(new PointF(randX, centerY));

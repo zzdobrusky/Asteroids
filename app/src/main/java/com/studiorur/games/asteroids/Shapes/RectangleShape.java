@@ -22,7 +22,7 @@ public class RectangleShape
     protected float _width = 1.0f;
     protected float _height = 1.0f;
     protected float _rotation = 0.0f;
-    protected int _color = Color.BLUE;;
+    protected int _color = Color.BLUE;
 
     public float getCenterX()
     {

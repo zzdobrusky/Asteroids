@@ -21,7 +21,7 @@ public class CircleShape
 
     protected PointF _center = new PointF(0.0f, 0.0f);;
     protected float _radius  = 1.0f;;
-    protected int _color = Color.BLUE;;
+    protected int _color = Color.BLUE;
 
     public float getCenterX()
     {

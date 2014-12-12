@@ -29,7 +29,7 @@ public class LaserPowerUp extends AnimatedSprite implements ICollidable
         _center = new PointF(center.x, center.y); // copy
         _worldRect = worldRect;
         _screenOffset = screenOffset;
-        _powerupSound = new SoundFX(context, R.raw.power_up);
+        _powerupSound = new SoundFX(context, R.raw.laser_recharge);
 
         // load sprite sheet
         loadSpritesheet(context.getResources(), resourceIdentifier, 1, 1);
