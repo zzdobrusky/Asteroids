@@ -89,12 +89,6 @@ public class AsteroidGenerator implements IUpdatable
             GameEngine.getInstance().addCollidable(newAsteroid);
     }
 
-    public void removeAsteroid(Asteroid asteroid)
-    {
-            GameEngine.getInstance().removeUpdateable(asteroid);
-            GameEngine.getInstance().removeCollidable(asteroid);
-    }
-
     public void setAsteroidInterval(float timeInterval)
     {
         _timeInterval = timeInterval;

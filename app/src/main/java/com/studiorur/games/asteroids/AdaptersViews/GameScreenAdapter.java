@@ -225,12 +225,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         }
     }
 
-    private void startGame()
-    {
-        if(GameEngine.getInstance().getGameState() == GameEngine.GameState.NEVER_RUN)
-            GameEngine.getInstance().startGame();
-    }
-
     private void resumeGame()
     {
         if(_pauseMenuView != null)
@@ -357,7 +351,8 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     {
         super.onPause();
         _surfaceView.onPause();
-        pauseGame();
+        if(!GameEngine.getInstance().isGameOver())
+            pauseGame();
     }
 
     @Override
@@ -365,7 +360,8 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     {
         super.onResume();
         _surfaceView.onResume();
-        resumeGame();
+        if(!GameEngine.getInstance().isGameOver())
+            resumeGame();
     }
 
     @Override
