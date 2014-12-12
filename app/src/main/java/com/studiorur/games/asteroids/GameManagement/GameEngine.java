@@ -293,7 +293,8 @@ public class GameEngine extends Thread
         //Log.i("breakup", "asteroid break up");
         asteroid.playExplosionSound();
 
-        asteroid.startAnimation();
+        // get ready animation
+        asteroid.startAnimation(0, 0, 3, 60.0f, 1);
         asteroid.setOnAnimationStopListener(new AnimatedSprite.OnAnimationStopListener()
         {
             @Override

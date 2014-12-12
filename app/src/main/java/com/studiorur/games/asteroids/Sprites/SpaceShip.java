@@ -1,6 +1,5 @@
 package com.studiorur.games.asteroids.Sprites;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.view.MotionEvent;
@@ -21,22 +20,25 @@ import com.studiorur.games.asteroids.Shapes.Projectile;
  */
 public class SpaceShip extends AnimatedSprite implements ICollidable
 {
+    // Physics related
     PointF _velocity = new PointF(0.0f, 0.0f);;
     Float _rotationVelocity  = 0.0f;;
     float _invertedMass;
     PointF _externalForce;
     PointF _rocketForce;
-    GameScreenAdapter _gameScreenActivity = null;
     Rectangle _worldRect;
     float _forceCoefficient = 0.000017f;
     float _frictionCoefficient = 0.89f;
+    // Collision related
     Boundary _boundary;
     CollidableType _collidableType = CollidableType.SPACESHIP;
+    // Weaponry
     float _originalLaserInterval = 500.0f; // in milliseconds
     float _currentLaserInterval = _originalLaserInterval;
     float _passedTime = _currentLaserInterval; // shoots first
     boolean _isShooting = false;
     LoopTimer _laserUpgradeTimer;
+    // Sounds
     SoundFX _laserSound;
     SoundFX _finalExplosionSound;
 
@@ -77,11 +79,10 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
             int numOfCols,
             float animationInterval)
     {
-        _gameScreenActivity = gameScreenActivity;
         _invertedMass = 1.0f/mass;
         _worldRect = worldRect;
-        _laserSound = new SoundFX(_gameScreenActivity, R.raw.laser);
-        _finalExplosionSound = new SoundFX(_gameScreenActivity, R.raw.spaceship_final);
+        _laserSound = new SoundFX(gameScreenActivity, R.raw.laser);
+        _finalExplosionSound = new SoundFX(gameScreenActivity, R.raw.spaceship_final);
 
         _laserUpgradeTimer = new LoopTimer();
 
@@ -91,13 +92,14 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         // create boundary
         _boundary = new Boundary(false); // make it a rectangle
 
-        initAnimation(0, 0, 3, animationInterval, 0);
-        startAnimation();
+        // engine flame animation
+        startAnimation(0, 0, 3, animationInterval, 0);
 
+        // null forces
         resetForces();
 
         // start listening for touch events (will propel the spaceship)
-        _gameScreenActivity.setOnTouchScreenListener(new GameScreenAdapter.OnTouchScreenListener()
+        gameScreenActivity.setOnTouchScreenListener(new GameScreenAdapter.OnTouchScreenListener()
         {
             @Override
             public void onTouchScreen(PointF worldLoc, MotionEvent motionEvent)

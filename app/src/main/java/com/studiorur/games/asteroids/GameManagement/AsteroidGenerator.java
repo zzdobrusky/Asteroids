@@ -83,7 +83,7 @@ public class AsteroidGenerator implements IUpdatable
     public void addRandomAsteroid()
     {
             // randomly throw asteroids with random velocity, rotation, size and shape
-            Asteroid newAsteroid = new Asteroid(_context, _textureIdentifier, 1, 4, 60.0f, _worldRect, _screenOffset);
+            Asteroid newAsteroid = new Asteroid(_context, _textureIdentifier, 1, 4, _worldRect, _screenOffset);
             randomizeAsteroid(newAsteroid);
             GameEngine.getInstance().addUpdateable(newAsteroid);
             GameEngine.getInstance().addCollidable(newAsteroid);

@@ -2,6 +2,7 @@ package com.studiorur.games.asteroids.Sprites;
 
 import android.content.res.Resources;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 
@@ -68,7 +69,7 @@ public class AnimatedSprite extends Sprite implements IUpdatable
         setFrame(0, 0);
     }
 
-    public void initAnimation(int animatedRow, int startCol, int endCol, float animationInterval, int numOfRepetitions)
+    public void startAnimation(int animatedRow, int startCol, int endCol, float animationInterval, int numOfRepetitions)
     {
         _animatedRow = animatedRow;
         _startCol = startCol;
@@ -76,14 +77,9 @@ public class AnimatedSprite extends Sprite implements IUpdatable
         _animationInterval = animationInterval;
         _numOfRepetitions = numOfRepetitions;
 
-
         // Start timer and call each frame with animation interval till the end and repeat if required
         _currentCol = _startCol;
         setFrame(_animatedRow, _currentCol);
-    }
-
-    public void startAnimation()
-    {
         _isAnimating = true;
     }
 
@@ -93,14 +89,12 @@ public class AnimatedSprite extends Sprite implements IUpdatable
         _isAnimating = false;
         _countRepetitions = 0;
 
-        // set frame to the last frame
-        setFrame(_animatedRow, _endCol);
+        Log.i("stop_animation", "currCol: " + _currentCol);
 
         // register with listener
         if(_onAnimationStopListener != null)
             _onAnimationStopListener.onAnimationStop();
     }
-
 
     private void setFrame(int row, int col)
     {

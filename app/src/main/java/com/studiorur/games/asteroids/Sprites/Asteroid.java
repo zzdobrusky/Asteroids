@@ -54,7 +54,6 @@ public class Asteroid extends AnimatedSprite implements ICollidable
             int resourceIdentifier,
             int numOfRows,
             int numOfCols,
-            float animationInterval,
             Rectangle worldRect,
             float screenOffset)
     {
@@ -65,9 +64,6 @@ public class Asteroid extends AnimatedSprite implements ICollidable
         _boundary = new Boundary(true); // make it a circle
 
         _asteroidExplosionSound = new SoundFX(context, R.raw.asteroid_explosion);
-
-        // get ready animation
-        initAnimation(0, 0, 3, animationInterval, 1);
     }
 
     @Override
