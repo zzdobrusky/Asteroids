@@ -30,10 +30,6 @@ public class GameEngine extends Thread
     private boolean _isGameOver = false;
     private ArrayList<IUpdatable> _updatables;
     private ArrayList<ICollidable> _collidables;
-    private AsteroidGenerator _asteroidGenerator;
-    private float _breakUpInterval = 200.0f; // in milliseconds
-    private float _passedTime = 0.0f;
-    private boolean _isAllowedToBreak = true;
     private int _countSpaceshipCollissions = 0;
     private int _score = 0;
 
@@ -88,11 +84,6 @@ public class GameEngine extends Thread
     {
         _updatables = new ArrayList<IUpdatable>();
         _collidables = new ArrayList<ICollidable>();
-    }
-
-    public void registerAsteroidGenerator(AsteroidGenerator asteroidGenerator)
-    {
-        _asteroidGenerator = asteroidGenerator;
     }
 
     public GameState getGameState()
@@ -194,22 +185,16 @@ public class GameEngine extends Thread
                             object2.getCollidableType() == CollidableType.ASTEROID)
                     {
                         // Break up asteroid make a ship more damaged + sound effect
-                        if(_isAllowedToBreak)
-                        {
-                            asteroidBreakup((Asteroid) object2);
-                            spaceshipCracked((SpaceShip) object1);
-                        }
+                        asteroidBreakup((Asteroid) object2);
+                        spaceshipCracked((SpaceShip) object1);
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.ASTEROID &&
                             object2.getCollidableType() == CollidableType.SPACESHIP)
                     {
                         // Break up asteroid make a ship more damaged + sound effect
-                        if(_isAllowedToBreak)
-                        {
-                            asteroidBreakup((Asteroid) object1);
-                            spaceshipCracked((SpaceShip) object2);
-                        }
+                        asteroidBreakup((Asteroid) object1);
+                        spaceshipCracked((SpaceShip) object2);
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.SPACESHIP &&
@@ -230,22 +215,16 @@ public class GameEngine extends Thread
                             object2.getCollidableType() == CollidableType.ASTEROID)
                     {
                         // Break up asteroid + remove projectile + sound effect
-                        if(_isAllowedToBreak)
-                        {
-                            asteroidBreakup((Asteroid) object2);
-                            projectileHit((Projectile) object1);
-                        }
+                        asteroidBreakup((Asteroid) object2);
+                        projectileHit((Projectile) object1);
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.ASTEROID &&
                             object2.getCollidableType() == CollidableType.PROJECTILE)
                     {
                         // Break up asteroid + remove projectile + sound effect
-                        if(_isAllowedToBreak)
-                        {
-                            asteroidBreakup((Asteroid) object1);
-                            projectileHit((Projectile) object2);
-                        }
+                        asteroidBreakup((Asteroid) object1);
+                        projectileHit((Projectile) object2);
                         return;
                     }
 
@@ -256,11 +235,9 @@ public class GameEngine extends Thread
 
     private void asteroidBreakup(final Asteroid asteroid)
     {
-        _isAllowedToBreak = false;
-        _passedTime = 0.0f;
-
         //Log.i("breakup", "asteroid break up");
         asteroid.playExplosionSound();
+        GameEngine.getInstance().removeCollidable(asteroid);
 
         // get ready animation
         asteroid.startAnimation(0, 0, 3, 60.0f, 1);
@@ -270,7 +247,6 @@ public class GameEngine extends Thread
             public void onAnimationStop()
             {
                 GameEngine.getInstance().removeUpdateable(asteroid);
-                GameEngine.getInstance().removeCollidable(asteroid);
             }
         });
 
@@ -342,17 +318,12 @@ public class GameEngine extends Thread
 
     public void update(float time)
     {
-        _passedTime += time;
-
         // do filtered collisions - we need at least 2 objects to do collisions
         if(_collidables.size() >= 2)
             doFilteredCollision();
 
         for (int i = _updatables.size() - 1; i >= 0; i--)
             _updatables.get(i).update(time);
-
-        if(_passedTime > _breakUpInterval)
-            _isAllowedToBreak = true;
     }
 
     public void draw()

@@ -129,10 +129,12 @@ public class AnimatedSprite extends Sprite implements IUpdatable
             if(_passedTime >= _animationInterval)
             {
                 _currentCol++;
-                if (_currentCol > _endCol+1)
+                if (_currentCol > _endCol)
                     _currentCol = _startCol;
 
                 setFrame(_animatedRow, _currentCol);
+
+                //Log.i("frame", "frame :" + _currentCol);
 
                 // check if to stop the animation, 0 is infinite repetitions
                 if (_numOfRepetitions != 0 && _currentCol == _endCol)

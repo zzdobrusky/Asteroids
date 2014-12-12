@@ -8,8 +8,8 @@ import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +22,6 @@ import com.studiorur.games.asteroids.GameManagement.GameEngine;
 import com.studiorur.games.asteroids.GameManagement.LaserPowerUpsGenerator;
 import com.studiorur.games.asteroids.GameManagement.LevelManager;
 import com.studiorur.games.asteroids.GameManagement.StarGenerator;
-import com.studiorur.games.asteroids.Helpers.LoopTimer;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
@@ -193,8 +192,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 0.004f,
                 currentAsteroidInterval);
         asteroidGenerator.start();
-        // register with the game engine
-        GameEngine.getInstance().registerAsteroidGenerator(asteroidGenerator);
+        // add to game engine
         GameEngine.getInstance().addUpdateable(asteroidGenerator);
 
         // game will start inside onResume method
@@ -341,9 +339,23 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 mainMenuIntent.setClass(_context, MainMenuAdapter.class);
                 mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(mainMenuIntent);
-                finish();
+                ((Activity)_context).finish();
             }
         });
+
+//        Handler handler = new Handler();
+//        handler.post( new Runnable()
+//        {
+//            public void run()
+//            {
+//                // Call main menu activity and destroy the current one
+//                Intent mainMenuIntent = new Intent();
+//                mainMenuIntent.setClass(_context, MainMenuAdapter.class);
+//                //mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(mainMenuIntent);
+//                ((Activity)_context).finish();
+//            }
+//        } );
     }
 
     @Override
