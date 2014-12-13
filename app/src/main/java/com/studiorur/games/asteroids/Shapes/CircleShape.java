@@ -5,6 +5,8 @@ import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.util.FloatMath;
 
+import com.studiorur.games.asteroids.Interfaces.IDrawable;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -12,7 +14,7 @@ import java.nio.FloatBuffer;
 /**
  * Created by zbynek on 11/24/2014.
  */
-public class CircleShape
+public class CircleShape implements IDrawable
 {
     static int _Program = -1;
     static final int POSITION_ATTRIBUTE_ID = 2;

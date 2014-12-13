@@ -79,7 +79,7 @@ public class PowerUpGenerator implements IUpdatable
 
                 //Log.i("powerupX", "powerupX: " + Float.toString(randX));
 
-                PowerUp newLaserPowerUp = new PowerUp(
+                PowerUp newPowerUp = new PowerUp(
                         _context,
                         _collidableType,
                         _textureIdentifier,
@@ -87,12 +87,13 @@ public class PowerUpGenerator implements IUpdatable
                         new PointF(randX, _worldRect.getTop() + _screenOffset/3.0f),
                         _worldRect,
                         _screenOffset);
-                newLaserPowerUp.setWidth(_powerupWidth);
-                newLaserPowerUp.setHeight(_powerupHeight);
-                newLaserPowerUp.setVelocity(new PointF(0.0f, _powerupVelocityY));
+                newPowerUp.setWidth(_powerupWidth);
+                newPowerUp.setHeight(_powerupHeight);
+                newPowerUp.setVelocity(new PointF(0.0f, _powerupVelocityY));
 
-                GameEngine.getInstance().addUpdateable(newLaserPowerUp);
-                GameEngine.getInstance().addCollidable(newLaserPowerUp);
+                GameEngine.getInstance().addDrawable(newPowerUp);
+                GameEngine.getInstance().addUpdateable(newPowerUp);
+                GameEngine.getInstance().addCollidable(newPowerUp);
 
                 //Log.i("power-up_generator", "power-up added");
 
@@ -100,11 +101,5 @@ public class PowerUpGenerator implements IUpdatable
                 _passedTime = 0.0f;
             }
         }
-    }
-
-    @Override
-    public void draw()
-    {
-        // not used
     }
 }

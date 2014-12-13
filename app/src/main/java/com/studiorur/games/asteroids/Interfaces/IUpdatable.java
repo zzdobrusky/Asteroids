@@ -6,6 +6,4 @@ package com.studiorur.games.asteroids.Interfaces;
 public interface IUpdatable
 {
     public void update(float time);
-
-    public void draw();
 }

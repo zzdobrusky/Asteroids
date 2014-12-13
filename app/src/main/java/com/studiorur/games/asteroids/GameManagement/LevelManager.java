@@ -78,10 +78,4 @@ public class LevelManager implements IUpdatable
     {
        _timer.update(time);
     }
-
-    @Override
-    public void draw()
-    {
-        // not used
-    }
 }

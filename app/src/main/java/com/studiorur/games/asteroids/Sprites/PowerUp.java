@@ -89,6 +89,7 @@ public class PowerUp extends AnimatedSprite implements ICollidable
                 (_center.y + _height/2.0f) > (_worldRect.getTop() + _screenOffset) ||
                 (_center.y - _height/2.0f) < (_worldRect.getBottom() - _screenOffset))
         {
+            GameEngine.getInstance().removeDrawable(this);
             GameEngine.getInstance().removeUpdateable(this);
             GameEngine.getInstance().removeCollidable(this);
         }

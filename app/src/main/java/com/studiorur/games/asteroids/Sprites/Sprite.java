@@ -9,6 +9,8 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.FloatMath;
 
+import com.studiorur.games.asteroids.Interfaces.IDrawable;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -16,7 +18,7 @@ import java.nio.FloatBuffer;
 /**
  * Created by zbynek on 11/22/2014.
  */
-public class Sprite
+public class Sprite implements IDrawable
 {
     // Shared
     static int _Program = -1;

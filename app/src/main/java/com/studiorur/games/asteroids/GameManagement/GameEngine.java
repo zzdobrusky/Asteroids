@@ -2,6 +2,7 @@ package com.studiorur.games.asteroids.GameManagement;
 
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
+import com.studiorur.games.asteroids.Interfaces.IDrawable;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.Shapes.Projectile;
 import com.studiorur.games.asteroids.Sprites.AnimatedSprite;
@@ -28,6 +29,7 @@ public class GameEngine extends Thread
     { RUNNING, PAUSED, NEVER_RUN };
     private GameState _gameState = GameState.NEVER_RUN;
     private boolean _isGameOver = false;
+    private ArrayList<IDrawable> _drawables;
     private ArrayList<IUpdatable> _updatables;
     private ArrayList<ICollidable> _collidables;
     private int _countSpaceshipCollissions = 0;
@@ -82,6 +84,7 @@ public class GameEngine extends Thread
     // CONSTRUCTOR
     private GameEngine()
     {
+        _drawables = new ArrayList<IDrawable>();
         _updatables = new ArrayList<IUpdatable>();
         _collidables = new ArrayList<ICollidable>();
     }
@@ -91,9 +94,19 @@ public class GameEngine extends Thread
         return _gameState;
     }
 
+    public void addDrawable(IDrawable drawable)
+    {
+        _drawables.add(0, drawable);
+    }
+
+    public void removeDrawable(IDrawable drawable)
+    {
+        _drawables.remove(drawable);
+    }
+
     public void addUpdateable(IUpdatable IUpdatable)
     {
-        _updatables.add(0, IUpdatable);
+        _updatables.add(IUpdatable);
     }
 
     public void removeUpdateable(IUpdatable updatable)
@@ -103,7 +116,7 @@ public class GameEngine extends Thread
 
     public void addCollidable(ICollidable ICollidable)
     {
-        _collidables.add(0, ICollidable);
+        _collidables.add(ICollidable);
     }
 
     public void removeCollidable(ICollidable collidable)
@@ -260,7 +273,8 @@ public class GameEngine extends Thread
             @Override
             public void onAnimationStop()
             {
-                GameEngine.getInstance().removeUpdateable(asteroid);
+                removeDrawable(asteroid);
+                removeUpdateable(asteroid);
             }
         });
 
@@ -308,8 +322,9 @@ public class GameEngine extends Thread
         spaceShip.startLaserUpgrade(newLaserInterval, 10000.0f); // hold for 10 secs
 
         // Remove from the game engine
-        GameEngine.getInstance().removeCollidable(laserPowerUp);
-        GameEngine.getInstance().removeUpdateable(laserPowerUp);
+        removeDrawable(laserPowerUp);
+        removeCollidable(laserPowerUp);
+        removeUpdateable(laserPowerUp);
 
         // add extra points
         _score += 5;
@@ -325,10 +340,10 @@ public class GameEngine extends Thread
 
         // TODO: upgrade weapon
 
-
         // Remove from the game engine
-        GameEngine.getInstance().removeCollidable(torpedoPowerUp);
-        GameEngine.getInstance().removeUpdateable(torpedoPowerUp);
+        removeDrawable(torpedoPowerUp);
+        removeCollidable(torpedoPowerUp);
+        removeUpdateable(torpedoPowerUp);
 
         // add extra points
         _score += 5;
@@ -340,8 +355,9 @@ public class GameEngine extends Thread
     private void projectileHit(Projectile projectile)
     {
         // remove projectile
-        GameEngine.getInstance().removeUpdateable(projectile);
-        GameEngine.getInstance().removeCollidable(projectile);
+        removeDrawable(projectile);
+        removeUpdateable(projectile);
+        removeCollidable(projectile);
         // add some points
         _score += 1;
         // fire up on change score event
@@ -363,8 +379,8 @@ public class GameEngine extends Thread
     {
         synchronized (GameEngine.class)
         {
-            for (int i = _updatables.size() - 1; i >= 0; i--)
-                _updatables.get(i).draw();
+            for (int i = _drawables.size() - 1; i >= 0; i--)
+                _drawables.get(i).draw();
         }
     }
 }

@@ -46,7 +46,7 @@ public class MainMenuView extends LinearLayout
         LinearLayout.LayoutParams playGameButtonLP = new LayoutParams(Math.round(BUTTON_WIDTH * scale), Math.round(BUTTON_HEIGHT * scale));
         _playButton.setPadding(Math.round(BUTTON_PADDING_WIDTH * scale), 0, Math.round(BUTTON_PADDING_WIDTH * scale), 0);
         _playButton.setText(R.string.play_button_label);
-        _playButton.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
+        //_playButton.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
         addView(_playButton, playGameButtonLP);
 
         _scoreTextView = new TextView(context);

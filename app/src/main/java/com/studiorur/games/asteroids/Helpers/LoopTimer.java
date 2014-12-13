@@ -1,11 +1,12 @@
 package com.studiorur.games.asteroids.Helpers;
 
+
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 
 /**
  * Created by zbynek on 11/26/2014.
  */
-public class LoopTimer
+public class LoopTimer implements IUpdatable
 {
     float _timeInterval;
     float _passedTime;

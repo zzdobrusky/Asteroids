@@ -45,7 +45,7 @@ public class PauseMenuView extends RelativeLayout
         resumeButtonLP.setMargins(0, Math.round(BUTTON_MARGIN_Y * scale), 0, Math.round(BUTTON_MARGIN_Y * scale));
         _resumeButton.setPadding(Math.round(BUTTON_PADDING_WIDTH * scale), 0, Math.round(BUTTON_PADDING_WIDTH * scale), 0);
         _resumeButton.setText(R.string.resume_button_label);
-        _resumeButton.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
+        //_resumeButton.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
         linearLayout.addView(_resumeButton, resumeButtonLP);
 
         _mainMenuButton = new Button(context);
@@ -54,7 +54,7 @@ public class PauseMenuView extends RelativeLayout
         mainMenuButtonLP.setMargins(0, Math.round(BUTTON_MARGIN_Y * scale), 0, Math.round(BUTTON_MARGIN_Y * scale));
         _mainMenuButton.setPadding(Math.round(BUTTON_PADDING_WIDTH * scale), 0, Math.round(BUTTON_PADDING_WIDTH * scale), 0);
         _mainMenuButton.setText(R.string.mainmenu_button_label);
-        _mainMenuButton.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
+        //_mainMenuButton.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
         linearLayout.addView(_mainMenuButton, mainMenuButtonLP);
     }
 

@@ -85,11 +85,12 @@ public class AsteroidGenerator implements IUpdatable
 
     public void addRandomAsteroid()
     {
-            // randomly throw asteroids with random velocity, rotation, size and shape
-            Asteroid newAsteroid = new Asteroid(_context, _textureIdentifier, 1, 4, _worldRect, _screenOffset);
-            randomizeAsteroid(newAsteroid);
-            GameEngine.getInstance().addUpdateable(newAsteroid);
-            GameEngine.getInstance().addCollidable(newAsteroid);
+        // randomly throw asteroids with random velocity, rotation, size and shape
+        Asteroid newAsteroid = new Asteroid(_context, _textureIdentifier, 1, 4, _worldRect, _screenOffset);
+        randomizeAsteroid(newAsteroid);
+        GameEngine.getInstance().addDrawable(newAsteroid);
+        GameEngine.getInstance().addUpdateable(newAsteroid);
+        GameEngine.getInstance().addCollidable(newAsteroid);
     }
 
     public void setAsteroidInterval(float timeInterval)
@@ -113,11 +114,5 @@ public class AsteroidGenerator implements IUpdatable
                 _passedTime = 0.0f;
             }
         }
-    }
-
-    @Override
-    public void draw()
-    {
-        // not used
     }
 }

@@ -105,6 +105,7 @@ public class Asteroid extends AnimatedSprite implements ICollidable
            (_center.y + _height/2.0f) > (_worldRect.getTop() + 2.0f * _screenOffset) ||
            (_center.y - _height/2.0f) < (_worldRect.getBottom() - 2.0f * _screenOffset))
         {
+            GameEngine.getInstance().removeDrawable(this);
             GameEngine.getInstance().removeUpdateable(this);
             GameEngine.getInstance().removeCollidable(this);
         }

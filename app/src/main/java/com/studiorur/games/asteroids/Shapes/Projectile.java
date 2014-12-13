@@ -59,6 +59,7 @@ public class Projectile extends RectangleShape implements IUpdatable, ICollidabl
            (_center.y + _height/2.0f) > _worldRect.getTop()||
            (_center.y - _height/2.0f) < _worldRect.getBottom())
         {
+            GameEngine.getInstance().removeDrawable(this);
             GameEngine.getInstance().removeUpdateable(this);
             GameEngine.getInstance().removeCollidable(this);
         }

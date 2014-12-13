@@ -57,7 +57,7 @@ public class GameOverView extends RelativeLayout
         mainMenuButtonLP.setMargins(0, Math.round(BUTTON_MARGIN_Y * scale), 0, Math.round(BUTTON_MARGIN_Y * scale));
         _mainMenuButton.setPadding(Math.round(BUTTON_PADDING_WIDTH * scale), 0, Math.round(BUTTON_PADDING_WIDTH * scale), 0);
         _mainMenuButton.setText(R.string.mainmenu_button_label);
-        _mainMenuButton.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
+        //_mainMenuButton.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
         linearLayout.addView(_mainMenuButton, mainMenuButtonLP);
 
         _scoreTextView = new TextView(context);

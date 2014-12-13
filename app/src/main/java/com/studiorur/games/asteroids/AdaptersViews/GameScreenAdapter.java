@@ -141,9 +141,11 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         // Background stars - two layers of stars with different speeds will create a parallax effect
         StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
         starGeneratorSlower.init();
+        GameEngine.getInstance().addDrawable(starGeneratorSlower);
         GameEngine.getInstance().addUpdateable(starGeneratorSlower);
         StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
         starGeneratorFaster.init();
+        GameEngine.getInstance().addDrawable(starGeneratorFaster);
         GameEngine.getInstance().addUpdateable(starGeneratorFaster);
 
         // Your spaceship
@@ -160,6 +162,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         spaceShip.setWidth(0.15f);
         spaceShip.setHeight(0.25f);
         spaceShip.setLaserFrequence(600.0f);
+        GameEngine.getInstance().addDrawable(spaceShip);
         GameEngine.getInstance().addUpdateable(spaceShip);
         GameEngine.getInstance().addCollidable(spaceShip);
 

@@ -4,13 +4,14 @@ import android.graphics.Color;
 import android.graphics.PointF;
 
 import com.studiorur.games.asteroids.Helpers.Utils;
+import com.studiorur.games.asteroids.Interfaces.IDrawable;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.Shapes.Star;
 
 /**
  * Created by zbynek on 11/25/2014.
  */
-public class StarGenerator implements IUpdatable
+public class StarGenerator implements IDrawable, IUpdatable
 {
     int _numOfStars;
     Star[] _stars;
