@@ -15,11 +15,13 @@ public class LevelManager implements IUpdatable
     float _asteroidIntervalDecrease;
     float _currentAsteroidInterval;
     float _laserPowerupIntervalDecrease;
-    float _currentPowerUpInterval;
+    float _currentLaserPowerUpInterval;
+    float _currentTorpedoPowerUpInterval;
     LoopTimer _timer;
     int _numOfLevels;
     AsteroidGenerator _asteroidGenerator = null;
-    LaserPowerUpsGenerator _laserPowerUpsGenerator = null;
+    PowerUpGenerator _laserPowerUpGenerator = null;
+    PowerUpGenerator _torpedoPowerUpGenerator = null;
 
     public LevelManager(
             int numOfLevels,
@@ -27,20 +29,25 @@ public class LevelManager implements IUpdatable
             AsteroidGenerator asteroidGenerator,
             float currentAsteroidInterval,
             float minAsteroidInterval,
-            LaserPowerUpsGenerator laserPowerUpsGenerator,
-            float currentPowerUpInterval,
-            float minLaserPowerUpInterval)
+            PowerUpGenerator laserPowerUpGenerator,
+            float currentLaserPowerUpInterval,
+            float minLaserPowerUpInterval,
+            PowerUpGenerator torpedoPowerUpGenerator,
+            float currentTorpedoPowerUpInterval,
+            float minTorpedoPowerUpInterval)
     {
         _numOfLevels = numOfLevels;
         _levelTimeInterval = levelTimeInterval;
         _asteroidGenerator = asteroidGenerator;
         _currentAsteroidInterval = currentAsteroidInterval;
-        _laserPowerUpsGenerator = laserPowerUpsGenerator;
-        _currentPowerUpInterval = currentPowerUpInterval;
+        _laserPowerUpGenerator = laserPowerUpGenerator;
+        _currentLaserPowerUpInterval = currentLaserPowerUpInterval;
+        _torpedoPowerUpGenerator = torpedoPowerUpGenerator;
+        _currentTorpedoPowerUpInterval = currentTorpedoPowerUpInterval;
 
         // calculate decrease in intervals for each level
         _asteroidIntervalDecrease = (_currentAsteroidInterval - minAsteroidInterval)/(float)_numOfLevels;
-        _laserPowerupIntervalDecrease = (_currentPowerUpInterval - minLaserPowerUpInterval)/(float)_numOfLevels;
+        _laserPowerupIntervalDecrease = (_currentLaserPowerUpInterval - minLaserPowerUpInterval)/(float)_numOfLevels;
 
         // start level manager
         _timer = new LoopTimer();
@@ -53,10 +60,10 @@ public class LevelManager implements IUpdatable
                 _currentAsteroidInterval -= _asteroidIntervalDecrease;
                 _asteroidGenerator.setAsteroidInterval(_currentAsteroidInterval);
 
-                _currentPowerUpInterval -= _laserPowerupIntervalDecrease;
-                _laserPowerUpsGenerator.setPowerupFrequency(_currentPowerUpInterval);
+                _currentLaserPowerUpInterval -= _laserPowerupIntervalDecrease;
+                _laserPowerUpGenerator.setPowerupFrequency(_currentLaserPowerUpInterval);
 
-                Log.i("level", "Asteroid interval: " + _currentAsteroidInterval + " Laser interval: " + _currentPowerUpInterval);
+                Log.i("level", "Asteroid interval: " + _currentAsteroidInterval + " Laser interval: " + _currentLaserPowerUpInterval);
             }
         });
     }

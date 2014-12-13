@@ -2,39 +2,46 @@ package com.studiorur.games.asteroids.GameManagement;
 
 import android.content.Context;
 import android.graphics.PointF;
-import android.util.Log;
 
 import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.Helpers.Utils;
+import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
-import com.studiorur.games.asteroids.Sprites.LaserPowerUp;
+import com.studiorur.games.asteroids.Sprites.PowerUp;
 
 /**
  * Created by zbynek on 11/25/2014.
  */
-public class LaserPowerUpsGenerator implements IUpdatable
+public class PowerUpGenerator implements IUpdatable
 {
     float _screenOffset = 0.4f;
     Rectangle _worldRect;
+    CollidableType _collidableType;
     float _timeInterval = 4000.0f;
     float _passedTime = 2000.0f; // first powerup shows in (4000 - 2000), constructor can change
     boolean _isRunning = false;
     Context _context;
     int _textureIdentifier;
+    int _soundIdentifier;
     float _powerupWidth;
     float _powerupHeight;
     float _powerupVelocityY;
 
-    public LaserPowerUpsGenerator(Context context,
-                                  Rectangle worldRect,
-                                  int textureIdentifier,
-                                  float powerupWidth,
-                                  float powerupHeight,
-                                  float powerupVelocityY,
-                                  float timeInterval,
-                                  float firstPowerupAfter)
+    public PowerUpGenerator(
+            Context context,
+            CollidableType collidableType,
+            Rectangle worldRect,
+            int textureIdentifier,
+            int soundIdentifier,
+            float powerupWidth,
+            float powerupHeight,
+            float powerupVelocityY,
+            float timeInterval,
+            float firstPowerupAfter)
     {
         _context = context;
+        _collidableType = collidableType;
+        _soundIdentifier = soundIdentifier;
         _worldRect = worldRect;
         _textureIdentifier = textureIdentifier;
         _powerupWidth = powerupWidth;
@@ -72,9 +79,11 @@ public class LaserPowerUpsGenerator implements IUpdatable
 
                 //Log.i("powerupX", "powerupX: " + Float.toString(randX));
 
-                LaserPowerUp newLaserPowerUp = new LaserPowerUp(
+                PowerUp newLaserPowerUp = new PowerUp(
                         _context,
+                        _collidableType,
                         _textureIdentifier,
+                        _soundIdentifier,
                         new PointF(randX, _worldRect.getTop() + _screenOffset/3.0f),
                         _worldRect,
                         _screenOffset);

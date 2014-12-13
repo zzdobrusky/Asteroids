@@ -9,40 +9,48 @@ import com.studiorur.games.asteroids.Helpers.Rectangle;
 import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
-import com.studiorur.games.asteroids.R;
 
 /**
  * Created by zbynek on 12/3/2014.
  */
-public class LaserPowerUp extends AnimatedSprite implements ICollidable
+public class PowerUp extends AnimatedSprite implements ICollidable
 {
     PointF _velocity = new PointF(0.0f, 0.0f);
     Boundary _boundary;
     Rectangle _worldRect;
     float _screenOffset;
-    CollidableType _collidableType = CollidableType.POWER_UP;
+    CollidableType _collidableType;
     SoundFX _powerupSound;
 
-    public LaserPowerUp(Context context, int resourceIdentifier, PointF center, Rectangle worldRect, float screenOffset)
+    public PowerUp(
+            Context context,
+            CollidableType collidableType,
+            int textureIdentifier,
+            int soundIdentifier,
+            PointF center,
+            Rectangle worldRect,
+            float screenOffset)
     {
-        _velocity = new PointF(0.0f, 0.0f);
-        _center = new PointF(center.x, center.y); // copy
+        _collidableType = collidableType;
         _worldRect = worldRect;
         _screenOffset = screenOffset;
-        _powerupSound = new SoundFX(context, R.raw.laser_recharge);
+
+        _velocity = new PointF(0.0f, 0.0f);
+        _center = new PointF(center.x, center.y); // copy
+        _powerupSound = new SoundFX(context, soundIdentifier);
 
         // load sprite sheet
-        loadSpritesheet(context.getResources(), resourceIdentifier, 1, 1);
+        loadSpritesheet(context.getResources(), textureIdentifier, 1, 1);
         _worldRect = worldRect;
         _screenOffset = screenOffset;
 
         // create boundary
-        _boundary = new Boundary(false); // make it a rectangle
+        _boundary = new Boundary(false); // power-up is a rectangle
     }
 
     public void setVelocity(PointF velocity)
     {
-        _velocity = velocity;
+        _velocity = new PointF(velocity.x, velocity.y);
     }
 
     public CollidableType getCollidableType()

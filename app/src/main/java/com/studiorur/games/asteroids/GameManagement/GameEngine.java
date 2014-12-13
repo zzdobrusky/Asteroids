@@ -6,7 +6,7 @@ import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 import com.studiorur.games.asteroids.Shapes.Projectile;
 import com.studiorur.games.asteroids.Sprites.AnimatedSprite;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
-import com.studiorur.games.asteroids.Sprites.LaserPowerUp;
+import com.studiorur.games.asteroids.Sprites.PowerUp;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
 import java.util.ArrayList;
@@ -198,17 +198,31 @@ public class GameEngine extends Thread
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.SPACESHIP &&
-                            object2.getCollidableType() == CollidableType.POWER_UP)
+                            object2.getCollidableType() == CollidableType.LASER_POWER_UP)
                     {
                         // Remove power-up add weaponry to spaceship, start a timer, so power-up SFX
-                        powerupPickup((LaserPowerUp) object2, (SpaceShip) object1);
+                        laserPowerupPickup((PowerUp) object2, (SpaceShip) object1);
                         return;
                     }
-                    else if (object1.getCollidableType() == CollidableType.POWER_UP &&
+                    else if (object1.getCollidableType() == CollidableType.LASER_POWER_UP &&
                             object2.getCollidableType() == CollidableType.SPACESHIP)
                     {
                         // Remove power-up add weaponry to spaceship, start a timer, so power-up SFX
-                        powerupPickup((LaserPowerUp) object1, (SpaceShip) object2);
+                        laserPowerupPickup((PowerUp) object1, (SpaceShip) object2);
+                        return;
+                    }
+                    else if (object1.getCollidableType() == CollidableType.SPACESHIP &&
+                            object2.getCollidableType() == CollidableType.TORPEDO_POWER_UP)
+                    {
+                        // Remove power-up add weaponry to spaceship, start a timer, so power-up SFX
+                        torpedoPowerupPickup((PowerUp) object2, (SpaceShip) object1);
+                        return;
+                    }
+                    else if (object1.getCollidableType() == CollidableType.TORPEDO_POWER_UP &&
+                            object2.getCollidableType() == CollidableType.SPACESHIP)
+                    {
+                        // Remove power-up add weaponry to spaceship, start a timer, so power-up SFX
+                        torpedoPowerupPickup((PowerUp) object1, (SpaceShip) object2);
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.PROJECTILE &&
@@ -284,7 +298,7 @@ public class GameEngine extends Thread
         spaceShip.setAnimatedRow(_countSpaceshipCollissions);
     }
 
-    private void powerupPickup(LaserPowerUp laserPowerUp, SpaceShip spaceShip)
+    private void laserPowerupPickup(PowerUp laserPowerUp, SpaceShip spaceShip)
     {
         // Play power up pickup SFX
         laserPowerUp.playPickUpSound();
@@ -296,6 +310,25 @@ public class GameEngine extends Thread
         // Remove from the game engine
         GameEngine.getInstance().removeCollidable(laserPowerUp);
         GameEngine.getInstance().removeUpdateable(laserPowerUp);
+
+        // add extra points
+        _score += 5;
+        // fire up on change score event
+        if(_onScoreChangeListener != null)
+            _onScoreChangeListener.onScoreChange(_score);
+    }
+
+    private void torpedoPowerupPickup(PowerUp torpedoPowerUp, SpaceShip spaceShip)
+    {
+        // Play power up pickup SFX
+        torpedoPowerUp.playPickUpSound();
+
+        // TODO: upgrade weapon
+
+
+        // Remove from the game engine
+        GameEngine.getInstance().removeCollidable(torpedoPowerUp);
+        GameEngine.getInstance().removeUpdateable(torpedoPowerUp);
 
         // add extra points
         _score += 5;

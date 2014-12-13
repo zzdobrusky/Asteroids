@@ -18,10 +18,11 @@ import android.widget.RelativeLayout;
 import com.studiorur.games.asteroids.GameManagement.AsteroidGenerator;
 import com.studiorur.games.asteroids.GameManagement.DataModel;
 import com.studiorur.games.asteroids.GameManagement.GameEngine;
-import com.studiorur.games.asteroids.GameManagement.LaserPowerUpsGenerator;
+import com.studiorur.games.asteroids.GameManagement.PowerUpGenerator;
 import com.studiorur.games.asteroids.GameManagement.LevelManager;
 import com.studiorur.games.asteroids.GameManagement.StarGenerator;
 import com.studiorur.games.asteroids.Helpers.Rectangle;
+import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.R;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
 
@@ -162,19 +163,37 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         GameEngine.getInstance().addUpdateable(spaceShip);
         GameEngine.getInstance().addCollidable(spaceShip);
 
-        // Powerups
-        float currentPowerUpInterval = 12000.0f;
-        final LaserPowerUpsGenerator laserPowerUpsGenerator = new LaserPowerUpsGenerator(
+        // Laser Power-ups
+        float currentLaserPowerUpInterval = 12000.0f;
+        final PowerUpGenerator laserPowerUpGenerator = new PowerUpGenerator(
                 _context,
+                CollidableType.LASER_POWER_UP,
                 worldRect,
-                R.drawable.power_up,
+                R.drawable.laser_power_up,
+                R.raw.laser_recharge,
                 0.1f,
-                0.07f,
+                0.1f,
                 -0.0003f,
-                currentPowerUpInterval,
+                currentLaserPowerUpInterval,
                 2000.0f);
-        GameEngine.getInstance().addUpdateable(laserPowerUpsGenerator);
-        laserPowerUpsGenerator.start();
+        GameEngine.getInstance().addUpdateable(laserPowerUpGenerator);
+        laserPowerUpGenerator.start();
+
+        // Torpedo Power-ups
+        float currentTorpedoPowerUpInterval = 14000.0f;
+        final PowerUpGenerator torpedoPowerUpGenerator = new PowerUpGenerator(
+                _context,
+                CollidableType.TORPEDO_POWER_UP,
+                worldRect,
+                R.drawable.torpedo_power_up,
+                R.raw.torpedo_recharge,
+                0.1f,
+                0.1f,
+                -0.0003f,
+                currentTorpedoPowerUpInterval,
+                6000.0f);
+        GameEngine.getInstance().addUpdateable(torpedoPowerUpGenerator);
+        torpedoPowerUpGenerator.start();
 
         // Asteroids
         float currentAsteroidInterval = 1000.0f;
@@ -202,9 +221,12 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 asteroidGenerator,
                 currentAsteroidInterval,
                 100.0f,
-                laserPowerUpsGenerator,
-                currentPowerUpInterval,
-                5000.0f);
+                laserPowerUpGenerator,
+                currentLaserPowerUpInterval,
+                5000.0f,
+                torpedoPowerUpGenerator,
+                currentTorpedoPowerUpInterval,
+                7000.0f);
         _levelManager.start();
         GameEngine.getInstance().addUpdateable(_levelManager);
 

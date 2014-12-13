@@ -7,6 +7,7 @@ public enum CollidableType
 {
     SPACESHIP,
     ASTEROID,
-    POWER_UP,
+    LASER_POWER_UP,
+    TORPEDO_POWER_UP,
     PROJECTILE
 }
