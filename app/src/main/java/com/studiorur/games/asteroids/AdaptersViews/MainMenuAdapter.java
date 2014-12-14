@@ -30,7 +30,7 @@ public class MainMenuAdapter extends Activity
         _scoreFile = new File(getFilesDir(), "game_score.txt");
 
         // lock screen orientation
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // TODO: set game over to false inside the Data Model
 

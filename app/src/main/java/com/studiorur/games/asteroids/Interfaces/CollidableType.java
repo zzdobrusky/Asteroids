@@ -9,5 +9,6 @@ public enum CollidableType
     ASTEROID,
     LASER_POWER_UP,
     TORPEDO_POWER_UP,
-    PROJECTILE
+    LASER_RAY,
+    TORPEDO
 }

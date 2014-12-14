@@ -49,16 +49,10 @@ public class Asteroid extends AnimatedSprite implements ICollidable
         return _collidableType;
     }
 
-    public Asteroid(
-            Context context,
-            int resourceIdentifier,
-            int numOfRows,
-            int numOfCols,
-            Rectangle worldRect,
-            float screenOffset)
+    public Asteroid(Context context, Rectangle worldRect, float screenOffset)
     {
         // load sprite sheet
-        loadSpritesheet(context.getResources(), resourceIdentifier, numOfRows, numOfCols);
+        loadSpritesheet(context.getResources(), R.drawable.asteroid_spritesheet, 1, 4);
         _worldRect = worldRect;
         _screenOffset = screenOffset;
         _boundary = new Boundary(true); // make it a circle

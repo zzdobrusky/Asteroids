@@ -14,9 +14,6 @@ import com.studiorur.games.asteroids.Sprites.Asteroid;
 public class AsteroidGenerator implements IUpdatable
 {
     Context _context = null;
-    int _textureIdentifier;
-    float _width;
-    float _height;
     float _minSize;
     float _maxSize;
     float _minVelocityY;
@@ -32,9 +29,6 @@ public class AsteroidGenerator implements IUpdatable
     public AsteroidGenerator(
             Context context,
             Rectangle worldRect,
-            int textureIdentifier,
-            float width,
-            float height,
             float minSize,
             float maxSize,
             float minVelocityY,
@@ -45,9 +39,6 @@ public class AsteroidGenerator implements IUpdatable
     {
         _context = context;
         _worldRect = worldRect;
-        _textureIdentifier = textureIdentifier;
-        _width = width;
-        _height = height;
         _minSize = minSize;
         _maxSize = maxSize;
         _minVelocityY = minVelocityY;
@@ -69,8 +60,8 @@ public class AsteroidGenerator implements IUpdatable
 
     private void randomizeAsteroid(Asteroid asteroid)
     {
-        float randX = Utils.randomInRange(-_width / 2.0f, _width / 2.0f);
-        float centerY = _height / 2.0f + _screenOffset; // do it offscreen only
+        float randX = Utils.randomInRange(-_worldRect.getWidth() / 2.0f, _worldRect.getWidth() / 2.0f);
+        float centerY = _worldRect.getHeight() / 2.0f + _screenOffset; // do it offscreen only
         float randSize = Utils.randomInRange(_minSize, _maxSize);
         float randVelocityX = Utils.randomInRange(-_maxVelocityX, _maxVelocityX);
         float randVelocityY = Utils.randomInRange(_minVelocityY, _maxVelocityY);
@@ -86,7 +77,7 @@ public class AsteroidGenerator implements IUpdatable
     public void addRandomAsteroid()
     {
         // randomly throw asteroids with random velocity, rotation, size and shape
-        Asteroid newAsteroid = new Asteroid(_context, _textureIdentifier, 1, 4, _worldRect, _screenOffset);
+        Asteroid newAsteroid = new Asteroid(_context, _worldRect, _screenOffset);
         randomizeAsteroid(newAsteroid);
         GameEngine.getInstance().addDrawable(newAsteroid);
         GameEngine.getInstance().addUpdateable(newAsteroid);

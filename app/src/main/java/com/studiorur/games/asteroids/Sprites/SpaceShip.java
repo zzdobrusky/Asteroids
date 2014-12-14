@@ -1,5 +1,6 @@
 package com.studiorur.games.asteroids.Sprites;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.view.MotionEvent;
@@ -13,7 +14,7 @@ import com.studiorur.games.asteroids.Helpers.SoundFX;
 import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.R;
-import com.studiorur.games.asteroids.Shapes.Projectile;
+import com.studiorur.games.asteroids.Shapes.LaserRay;
 
 /**
  * Created by zbynek on 11/25/2014.
@@ -34,16 +35,21 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     CollidableType _collidableType = CollidableType.SPACESHIP;
     // Weaponry
     float _originalLaserInterval = 500.0f; // in milliseconds
-    float _currentLaserInterval = _originalLaserInterval;
-    float _passedTime = _currentLaserInterval; // shoots first
+    float _upgradedLaserInterval = 130.0f;
+    float _torpedoShootInterval = 1000.0f;
+    float _currentShootInterval = _originalLaserInterval;
+    float _passedTime = _currentShootInterval; // shoots first
     boolean _isShooting = false;
-    LoopTimer _laserUpgradeTimer;
+    LoopTimer _weaponUpgradeTimer;
     // Sounds
-    SoundFX _laserSound;
+    SoundFX _laserShootSound;
+    SoundFX _torpedoShootSound;
     SoundFX _finalExplosionSound;
+    private Weapon _currentWeapon = Weapon.LASER; // default
+    private GameScreenAdapter _gameScreenActivity = null;
 
-    private enum Weapon {LASER, UPGRADED_LASER, TORPEDO};
-    private Weapon _currentWeapon = Weapon.LASER;
+
+    public enum Weapon {LASER, UPGRADED_LASER, TORPEDO};
 
     public PointF getVelocity()
     {
@@ -79,12 +85,25 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
             int numOfCols,
             float animationInterval)
     {
+        _gameScreenActivity = gameScreenActivity;
         _invertedMass = 1.0f/mass;
         _worldRect = worldRect;
-        _laserSound = new SoundFX(gameScreenActivity, R.raw.laser);
+        _laserShootSound = new SoundFX(gameScreenActivity, R.raw.laser);
+        _torpedoShootSound = new SoundFX(gameScreenActivity, R.raw.detonator);
         _finalExplosionSound = new SoundFX(gameScreenActivity, R.raw.spaceship_final);
 
-        _laserUpgradeTimer = new LoopTimer();
+        // set up timer for going back from weapon upgrade to regular laser
+        _weaponUpgradeTimer = new LoopTimer();
+        _weaponUpgradeTimer.setOnTimePassedListener(new LoopTimer.OnTimePassedListener()
+        {
+            @Override
+            public void onTimePassed()
+            {
+                // go back to original laser
+                setWeaponShootInterval(_originalLaserInterval);
+                _currentWeapon = Weapon.LASER;
+            }
+        });
 
         // load sprite sheet
         loadSpritesheet(gameScreenActivity.getResources(), resourceIdentifier, numOfRows, numOfCols);
@@ -99,7 +118,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         resetForces();
 
         // start listening for touch events (will propel the spaceship)
-        gameScreenActivity.setOnTouchScreenListener(new GameScreenAdapter.OnTouchScreenListener()
+        _gameScreenActivity.setOnTouchScreenListener(new GameScreenAdapter.OnTouchScreenListener()
         {
             @Override
             public void onTouchScreen(PointF worldLoc, MotionEvent motionEvent)
@@ -118,50 +137,60 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         });
     }
 
+    public void upgradeWeapon(Weapon upgradedWeapon, float weaponInterval)
+    {
+        switch (upgradedWeapon)
+        {
+            case UPGRADED_LASER:
+                _currentWeapon = Weapon.LASER;
+                // to upgrade laser just change the speed of shooting
+                setWeaponShootInterval(_upgradedLaserInterval);
+                break;
+
+            case TORPEDO:
+                _currentWeapon = Weapon.TORPEDO;
+                setWeaponShootInterval(_torpedoShootInterval);
+        }
+
+        // return to original laser after the timer is done
+        _weaponUpgradeTimer.start(weaponInterval, 1); // do it just once
+    }
+
     public void playFinalExplosionSound()
     {
         _finalExplosionSound.play();
     }
 
-    public float getOriginalLaserInterval()
+    private void setWeaponShootInterval(float shootInterval)
     {
-        return _originalLaserInterval;
-    }
-
-    public void startLaserUpgrade(float laserInterval, float laserUpgradeInterval)
-    {
-        _currentLaserInterval = laserInterval;
-        _passedTime = _currentLaserInterval;
-        // start one time timer and set up listener
-        _laserUpgradeTimer.setOnTimePassedListener(new LoopTimer.OnTimePassedListener()
-        {
-            @Override
-            public void onTimePassed()
-            {
-                // go back to original laser frequency
-                _currentLaserInterval = _originalLaserInterval;
-            }
-        });
-        _laserUpgradeTimer.start(laserUpgradeInterval, 1); // do it just once
+        _currentShootInterval = shootInterval;
+        _passedTime = shootInterval;
     }
 
     private void shootLaser()
     {
-        Projectile newProjectile = new Projectile(new PointF(_center.x, _center.y + _height/1.5f), _worldRect);
-        newProjectile.setVelocity(new PointF(0.0f, 0.001f));
-        newProjectile.setWidth(0.01f);
-        newProjectile.setHeight(0.05f);
-        newProjectile.setColor(Color.GREEN);
-        _laserSound.play();
-        GameEngine.getInstance().addDrawable(newProjectile);
-        GameEngine.getInstance().addUpdateable(newProjectile);
-        GameEngine.getInstance().addCollidable(newProjectile);
+        LaserRay newLaserRay = new LaserRay(new PointF(_center.x, _center.y + _height/1.5f), _worldRect);
+        newLaserRay.setVelocity(new PointF(0.0f, 0.001f));
+        newLaserRay.setWidth(0.008f);
+        newLaserRay.setHeight(0.05f);
+        newLaserRay.setColor(Color.GREEN);
+        _laserShootSound.play();
+        GameEngine.getInstance().addDrawable(newLaserRay);
+        GameEngine.getInstance().addUpdateable(newLaserRay);
+        GameEngine.getInstance().addCollidable(newLaserRay);
     }
 
-    public void setLaserFrequence(float laserInterval)
+    private void shootTorpedo()
     {
-        _currentLaserInterval = laserInterval;
-        _passedTime = laserInterval;
+        Torpedo newTorpedo = new Torpedo(_gameScreenActivity, new PointF(_center.x, _center.y + _height/1.5f),_worldRect);
+        newTorpedo.setVelocity(new PointF(0.0f, 0.001f));
+        newTorpedo.setRotationVelocity(0.01f);
+        newTorpedo.setWidth(0.13f);
+        newTorpedo.setHeight(0.13f);
+        _torpedoShootSound.play();
+        GameEngine.getInstance().addDrawable(newTorpedo);
+        GameEngine.getInstance().addUpdateable(newTorpedo);
+        GameEngine.getInstance().addCollidable(newTorpedo);
     }
 
     public void addExternalForce(PointF force)
@@ -209,7 +238,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         if(_isShooting)
         {
             _passedTime += time;
-            if(_passedTime >= _currentLaserInterval)
+            if(_passedTime >= _currentShootInterval)
             {
                 switch(_currentWeapon)
                 {
@@ -225,12 +254,6 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
             }
         }
 
-
-        _laserUpgradeTimer.update(time);
-    }
-
-    private void shootTorpedo()
-    {
-        // TODO:
+        _weaponUpgradeTimer.update(time);
     }
 }

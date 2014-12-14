@@ -4,11 +4,12 @@ import com.studiorur.games.asteroids.Interfaces.CollidableType;
 import com.studiorur.games.asteroids.Interfaces.ICollidable;
 import com.studiorur.games.asteroids.Interfaces.IDrawable;
 import com.studiorur.games.asteroids.Interfaces.IUpdatable;
-import com.studiorur.games.asteroids.Shapes.Projectile;
+import com.studiorur.games.asteroids.Shapes.LaserRay;
 import com.studiorur.games.asteroids.Sprites.AnimatedSprite;
 import com.studiorur.games.asteroids.Sprites.Asteroid;
 import com.studiorur.games.asteroids.Sprites.PowerUp;
 import com.studiorur.games.asteroids.Sprites.SpaceShip;
+import com.studiorur.games.asteroids.Sprites.Torpedo;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -238,20 +239,36 @@ public class GameEngine extends Thread
                         torpedoPowerupPickup((PowerUp) object1, (SpaceShip) object2);
                         return;
                     }
-                    else if (object1.getCollidableType() == CollidableType.PROJECTILE &&
+                    else if (object1.getCollidableType() == CollidableType.LASER_RAY &&
                             object2.getCollidableType() == CollidableType.ASTEROID)
                     {
                         // Break up asteroid + remove projectile + sound effect
                         asteroidBreakup((Asteroid) object2);
-                        projectileHit((Projectile) object1);
+                        projectileImpact((LaserRay) object1);
                         return;
                     }
                     else if (object1.getCollidableType() == CollidableType.ASTEROID &&
-                            object2.getCollidableType() == CollidableType.PROJECTILE)
+                            object2.getCollidableType() == CollidableType.LASER_RAY)
                     {
                         // Break up asteroid + remove projectile + sound effect
                         asteroidBreakup((Asteroid) object1);
-                        projectileHit((Projectile) object2);
+                        projectileImpact((LaserRay) object2);
+                        return;
+                    }
+                    else if (object1.getCollidableType() == CollidableType.TORPEDO &&
+                            object2.getCollidableType() == CollidableType.ASTEROID)
+                    {
+                        // Break up asteroid + explode and remove torpedo + sound effect
+                        asteroidBreakup((Asteroid) object2);
+                        torpedoImpact((Torpedo) object1);
+                        return;
+                    }
+                    else if (object1.getCollidableType() == CollidableType.ASTEROID &&
+                            object2.getCollidableType() == CollidableType.TORPEDO)
+                    {
+                        // Break up asteroid + explode and remove torpedo + sound effect
+                        asteroidBreakup((Asteroid) object1);
+                        torpedoImpact((Torpedo) object2);
                         return;
                     }
 
@@ -279,6 +296,12 @@ public class GameEngine extends Thread
         });
 
         //Log.i("numOfNew", Integer.toString(numOfNew));
+
+        // add some points
+        _score += 1;
+        // fire up on change score event
+        if(_onScoreChangeListener != null)
+            _onScoreChangeListener.onScoreChange(_score);
     }
 
     private void spaceshipCracked(SpaceShip spaceShip)
@@ -317,9 +340,7 @@ public class GameEngine extends Thread
         // Play power up pickup SFX
         laserPowerUp.playPickUpSound();
 
-        // upgrade weapon
-        float newLaserInterval = spaceShip.getOriginalLaserInterval()/3.0f;
-        spaceShip.startLaserUpgrade(newLaserInterval, 10000.0f); // hold for 10 secs
+        spaceShip.upgradeWeapon(SpaceShip.Weapon.UPGRADED_LASER, 10000.0f);
 
         // Remove from the game engine
         removeDrawable(laserPowerUp);
@@ -338,7 +359,8 @@ public class GameEngine extends Thread
         // Play power up pickup SFX
         torpedoPowerUp.playPickUpSound();
 
-        // TODO: upgrade weapon
+        // Upgrade weapon
+        spaceShip.upgradeWeapon(SpaceShip.Weapon.TORPEDO, 7000.0f);
 
         // Remove from the game engine
         removeDrawable(torpedoPowerUp);
@@ -352,17 +374,31 @@ public class GameEngine extends Thread
             _onScoreChangeListener.onScoreChange(_score);
     }
 
-    private void projectileHit(Projectile projectile)
+    private void projectileImpact(LaserRay laserRay)
     {
         // remove projectile
-        removeDrawable(projectile);
-        removeUpdateable(projectile);
-        removeCollidable(projectile);
-        // add some points
-        _score += 1;
-        // fire up on change score event
-        if(_onScoreChangeListener != null)
-            _onScoreChangeListener.onScoreChange(_score);
+        removeDrawable(laserRay);
+        removeUpdateable(laserRay);
+        removeCollidable(laserRay);
+    }
+
+    private void torpedoImpact(final Torpedo torpedo)
+    {
+        //Log.i("breakup", "asteroid break up");
+        torpedo.playExplosionSound();
+
+        // do explosion animation (means image scale)
+        torpedo.startExplosionAnimation(1000.0f);
+        torpedo.setOnExplosionEndListener(new Torpedo.OnExplosionEndListener()
+        {
+            @Override
+            public void onExplosionEnd()
+            {
+                removeDrawable(torpedo);
+                removeUpdateable(torpedo);
+                removeCollidable(torpedo);
+            }
+        });
     }
 
     public void update(float time)

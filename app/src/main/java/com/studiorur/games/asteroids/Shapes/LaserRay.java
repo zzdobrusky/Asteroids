@@ -12,14 +12,14 @@ import com.studiorur.games.asteroids.Interfaces.IUpdatable;
 /**
  * Created by zbynek on 12/8/2014.
  */
-public class Projectile extends RectangleShape implements IUpdatable, ICollidable
+public class LaserRay extends RectangleShape implements IUpdatable, ICollidable
 {
     PointF _velocity = new PointF(0.0f, 0.0f);
     Boundary _boundary;
-    CollidableType _collidableType = CollidableType.PROJECTILE;
+    CollidableType _collidableType = CollidableType.LASER_RAY;
     Rectangle _worldRect;
 
-    public Projectile(PointF center, Rectangle worldRect)
+    public LaserRay(PointF center, Rectangle worldRect)
     {
         _velocity = new PointF(0.0f, 0.0f);
         _center = new PointF(center.x, center.y);
@@ -53,7 +53,7 @@ public class Projectile extends RectangleShape implements IUpdatable, ICollidabl
         _center.x = _center.x + _velocity.x * time;
         _center.y = _center.y + _velocity.y * time;
 
-        // remove strait projectiles
+        // remove strait laser rays
         if((_center.x - _width/2.0f) < _worldRect.getLeft() ||
            (_center.x + _width/2.0f) > _worldRect.getRight() ||
            (_center.y + _height/2.0f) > _worldRect.getTop()||

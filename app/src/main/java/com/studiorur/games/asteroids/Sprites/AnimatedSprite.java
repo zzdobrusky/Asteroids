@@ -96,7 +96,7 @@ public class AnimatedSprite extends Sprite implements IUpdatable
             _onAnimationStopListener.onAnimationStop();
     }
 
-    private void setFrame(int row, int col)
+    protected void setFrame(int row, int col)
     {
         if((row < 0 && row >= _numOfRows) || (col < 0 && col >= _numOfCols))
             return;

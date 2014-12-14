@@ -70,7 +70,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         _scoreFile = new File(getFilesDir(), "game_score.txt");
 
         // lock screen orientation
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         _rootLayout = new RelativeLayout(this);
 
@@ -123,7 +123,10 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         float topBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).y;
         float bottomBorder = deviceToWorldCoord(new PointF(0.0f, _height)).y;
         float heightInWorld = topBorder - bottomBorder;
-        Rectangle worldRect = new Rectangle(2.0f, heightInWorld, new PointF(0.0f, 0.0f));
+        float leftBorder = deviceToWorldCoord(new PointF(0.0f, 0.0f)).x;
+        float rightBorder = deviceToWorldCoord(new PointF(_width, 0.0f)).x;
+        float widthInWorld = rightBorder - leftBorder;
+        Rectangle worldRect = new Rectangle(widthInWorld, heightInWorld, new PointF(0.0f, 0.0f));
 
         // *********************** GAME SETUP ***********************
 
@@ -139,11 +142,11 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         });
 
         // Background stars - two layers of stars with different speeds will create a parallax effect
-        StarGenerator starGeneratorSlower = new StarGenerator(70, 2.0f, heightInWorld, 0.001f, 0.01f,  -0.00006f);
+        StarGenerator starGeneratorSlower = new StarGenerator(worldRect, 70, 0.001f, 0.01f,  -0.00006f);
         starGeneratorSlower.init();
         GameEngine.getInstance().addDrawable(starGeneratorSlower);
         GameEngine.getInstance().addUpdateable(starGeneratorSlower);
-        StarGenerator starGeneratorFaster = new StarGenerator(30, 2.0f, heightInWorld, 0.001f, 0.011f, -0.0001f);
+        StarGenerator starGeneratorFaster = new StarGenerator(worldRect, 30, 0.001f, 0.011f, -0.0001f);
         starGeneratorFaster.init();
         GameEngine.getInstance().addDrawable(starGeneratorFaster);
         GameEngine.getInstance().addUpdateable(starGeneratorFaster);
@@ -161,7 +164,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         spaceShip.setCenterY(0.0f);
         spaceShip.setWidth(0.15f);
         spaceShip.setHeight(0.25f);
-        spaceShip.setLaserFrequence(600.0f);
         GameEngine.getInstance().addDrawable(spaceShip);
         GameEngine.getInstance().addUpdateable(spaceShip);
         GameEngine.getInstance().addCollidable(spaceShip);
@@ -199,13 +201,10 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         torpedoPowerUpGenerator.start();
 
         // Asteroids
-        float currentAsteroidInterval = 1000.0f;
+        float currentAsteroidInterval = 300.0f;
         final AsteroidGenerator asteroidGenerator = new AsteroidGenerator(
                 _context,
                 worldRect,
-                R.drawable.asteroid_spritesheet,
-                2.0f,
-                heightInWorld,
                 0.08f,
                 0.5f,
                 0.0003f,
