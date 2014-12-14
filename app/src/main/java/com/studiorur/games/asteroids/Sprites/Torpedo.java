@@ -121,7 +121,7 @@ public class Torpedo extends AnimatedSprite implements ICollidable
             if(_passedTime >= _explosionInterval)
             {
                 _isExploding = false;
-                setRotationVelocity(0.0f); // stop rotation
+                //setRotationVelocity(0.0f); // stop rotation
                 _passedTime = 0.0f;
                 // send out event
                 if(_onExplosionEndListener != null)
