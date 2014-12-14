@@ -233,7 +233,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         GameEngine.getInstance().addUpdateable(_levelManager);
 
         // start the game
-        GameEngine.getInstance().startGame();
+        GameEngine.getInstance().startGameEngine();
     }
 
     @Override
@@ -268,12 +268,21 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         if(_pauseMenuView != null)
             _rootLayout.removeView(_pauseMenuView);
 
-        GameEngine.getInstance().resumeGame();
+        GameEngine.getInstance().resumeGameEngine();
+    }
+
+    private void resetGame()
+    {
+        // remove game over pop up menu if any
+        if(_gameOverView != null)
+            _rootLayout.removeView(_gameOverView);
+
+        GameEngine.getInstance().resetGameEngine();
     }
 
     private void pauseGame()
     {
-        GameEngine.getInstance().pauseGame();
+        GameEngine.getInstance().pauseGameEngine();
         DataModel.getInstance(_scoreFile).saveScore();
 
         // create pause popup menu
@@ -325,7 +334,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
 
     private void gameOver()
     {
-        GameEngine.getInstance().pauseGame();
+        GameEngine.getInstance().pauseGameEngine();
         DataModel.getInstance(_scoreFile).saveScore();
 
         runOnUiThread(new Runnable()
@@ -340,15 +349,33 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                     @Override
                     public boolean onTouch(View v, MotionEvent event)
                     {
-                        if(event.getAction() == MotionEvent.ACTION_DOWN)
+                        if (event.getAction() == MotionEvent.ACTION_DOWN)
                         {
                             _gameOverView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_down);
 
-                        }
-                        else if(event.getAction() == MotionEvent.ACTION_UP)
+                        } else if (event.getAction() == MotionEvent.ACTION_UP)
                         {
                             _gameOverView.getMainMenuButton().setBackgroundResource(R.drawable.rounded_button_background_up);
                             openMainMenu();
+                        }
+
+                        return true;
+                    }
+                });
+
+                _gameOverView.getPlayAgainButton().setOnTouchListener(new View.OnTouchListener()
+                {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event)
+                    {
+                        if (event.getAction() == MotionEvent.ACTION_DOWN)
+                        {
+                            _gameOverView.getPlayAgainButton().setBackgroundResource(R.drawable.rounded_button_background_down);
+
+                        } else if (event.getAction() == MotionEvent.ACTION_UP)
+                        {
+                            _gameOverView.getPlayAgainButton().setBackgroundResource(R.drawable.rounded_button_background_up);
+                            resetGame();
                         }
 
                         return true;

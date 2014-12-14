@@ -125,7 +125,7 @@ public class GameEngine extends Thread
         _collidables.remove(collidable);
     }
 
-    public synchronized  void startGame()
+    public synchronized  void startGameEngine()
     {
         if(_gameState == GameState.NEVER_RUN)
         {
@@ -134,12 +134,31 @@ public class GameEngine extends Thread
         }
     }
 
-    public synchronized void pauseGame()
+    public void resetGameEngine()
+    {
+        _isGameOver = false;
+
+        // Reset score and fire up the event
+        _score = 0;
+        if(_onScoreChangeListener != null)
+            _onScoreChangeListener.onScoreChange(_score);
+
+        // Remove all items
+        _drawables.clear();
+        _updatables.clear();
+        _collidables.clear();
+
+        // TODO: reset level
+
+        // TODO: reset gene
+    }
+
+    public synchronized void pauseGameEngine()
     {
         _gameState = GameState.PAUSED;
     }
 
-    public synchronized void resumeGame()
+    public synchronized void resumeGameEngine()
     {
         _gameState = GameState.RUNNING;
     }
@@ -407,7 +426,8 @@ public class GameEngine extends Thread
         if(_collidables.size() >= 2)
             doFilteredCollision();
 
-        for (int i = _updatables.size() - 1; i >= 0; i--)
+        int lastIndex = _updatables.size() - 1;
+        for (int i = lastIndex; i >= 0; i--)
             _updatables.get(i).update(time);
     }
 
@@ -415,7 +435,8 @@ public class GameEngine extends Thread
     {
         synchronized (GameEngine.class)
         {
-            for (int i = _drawables.size() - 1; i >= 0; i--)
+            int lastIndex = _drawables.size() - 1;
+            for (int i = lastIndex; i >= 0; i--)
                 _drawables.get(i).draw();
         }
     }
