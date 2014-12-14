@@ -185,7 +185,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         laserPowerUpGenerator.start();
 
         // Torpedo Power-ups
-        float currentTorpedoPowerUpInterval = 14000.0f;
+        float currentTorpedoPowerUpInterval = 16000.0f;
         final PowerUpGenerator torpedoPowerUpGenerator = new PowerUpGenerator(
                 _context,
                 CollidableType.TORPEDO_POWER_UP,
@@ -196,7 +196,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 0.1f,
                 -0.0003f,
                 currentTorpedoPowerUpInterval,
-                6000.0f);
+                8000.0f);
         GameEngine.getInstance().addUpdateable(torpedoPowerUpGenerator);
         torpedoPowerUpGenerator.start();
 

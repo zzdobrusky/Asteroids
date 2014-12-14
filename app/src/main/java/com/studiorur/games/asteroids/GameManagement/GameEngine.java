@@ -340,7 +340,7 @@ public class GameEngine extends Thread
         // Play power up pickup SFX
         laserPowerUp.playPickUpSound();
 
-        spaceShip.upgradeWeapon(SpaceShip.Weapon.UPGRADED_LASER, 10000.0f);
+        spaceShip.upgradeWeapon(SpaceShip.Weapon.UPGRADED_LASER, 9000.0f);
 
         // Remove from the game engine
         removeDrawable(laserPowerUp);
@@ -360,7 +360,7 @@ public class GameEngine extends Thread
         torpedoPowerUp.playPickUpSound();
 
         // Upgrade weapon
-        spaceShip.upgradeWeapon(SpaceShip.Weapon.TORPEDO, 7000.0f);
+        spaceShip.upgradeWeapon(SpaceShip.Weapon.TORPEDO, 6000.0f);
 
         // Remove from the game engine
         removeDrawable(torpedoPowerUp);
