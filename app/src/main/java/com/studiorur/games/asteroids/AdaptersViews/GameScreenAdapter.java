@@ -46,6 +46,10 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     File _scoreFile = null;
     LevelManager _levelManager = null;
 
+    // game loop related
+    private float _baseFrameTime = 10;
+    private float _sleepTime = _baseFrameTime; // to have something to start with, in milliseconds
+
     // set up touch listener
     private OnTouchScreenListener _onTouchScreenListener = null;
     public interface OnTouchScreenListener
@@ -406,20 +410,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 ((Activity)_context).finish();
             }
         });
-
-//        Handler handler = new Handler();
-//        handler.post( new Runnable()
-//        {
-//            public void run()
-//            {
-//                // Call main menu activity and destroy the current one
-//                Intent mainMenuIntent = new Intent();
-//                mainMenuIntent.setClass(_context, MainMenuAdapter.class);
-//                //mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(mainMenuIntent);
-//                ((Activity)_context).finish();
-//            }
-//        } );
     }
 
     @Override
@@ -456,8 +446,23 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        // draw components
+        // Time before update
+        long beforeTime = System.nanoTime();
+
+        // This is where we update the game engine
+        if(GameEngine.getInstance().getGameState() == GameEngine.GameState.RUNNING && !GameEngine.getInstance().isGameOver())
+        {
+            // update components
+            GameEngine.getInstance().update(_sleepTime);
+            // collide components
+            GameEngine.getInstance().collide();
+        }
+
+        // draw components - opengGl needs to keep redrawing screen
         GameEngine.getInstance().draw();
+
+        //_sleepTime = _baseFrameTime + ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
+        _sleepTime = ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
     }
 
     public PointF deviceToWorldCoord(PointF devLoc)

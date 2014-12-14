@@ -12,18 +12,14 @@ import com.studiorur.games.asteroids.Sprites.SpaceShip;
 import com.studiorur.games.asteroids.Sprites.Torpedo;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by zbynek on 11/24/2014.
  */
-public class GameEngine extends Thread
+public class GameEngine
 {
     // Game loop related - variable loop for consistent rendering
     private long _sleepTime;
-    // Base amount of time to sleep for (in milliseconds)
-    private long _delay = 50;
 
     // Game related
     public enum GameState
@@ -130,7 +126,6 @@ public class GameEngine extends Thread
         if(_gameState == GameState.NEVER_RUN)
         {
             _gameState = GameState.RUNNING;
-            start();
         }
     }
 
@@ -168,44 +163,7 @@ public class GameEngine extends Thread
         return _isGameOver;
     }
 
-    @Override
-    public void run()
-    {
-        //UPDATE - tweaked version of http://blorb.tumblr.com/post/236799414/simple-java-android-game-loop
-        while (true)
-        {
-            // Time before update
-            long beforeTime = System.nanoTime();
-
-            // This is where we update the game engine
-            synchronized (GameEngine.class)
-            {
-                if(_gameState == GameState.RUNNING && !_isGameOver)
-                    update(_sleepTime);
-            }
-
-            // SLEEP
-            // Sleep time. Time required to sleep to keep game consistent
-            _sleepTime = _delay + ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
-
-            try
-            {
-                //actual sleep code
-                if(_sleepTime >0)
-                {
-                    sleep(_sleepTime);
-                }
-            }
-            catch (InterruptedException ex)
-            {
-                Logger.getLogger(GameEngine.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        // otherwise reset time
-    }
-
-    private void doFilteredCollision()
+    private void doFilteredCollisions()
     {
         for (int i = _collidables.size() - 1; i >= 1; i--)
             for (int j = _collidables.size() - 2; j >= 0; j--)
@@ -407,7 +365,7 @@ public class GameEngine extends Thread
         torpedo.playExplosionSound();
 
         // do explosion animation (means image scale)
-        torpedo.startExplosionAnimation(1000.0f);
+        torpedo.startExplosionAnimation(400.0f);
         torpedo.setOnExplosionEndListener(new Torpedo.OnExplosionEndListener()
         {
             @Override
@@ -422,13 +380,16 @@ public class GameEngine extends Thread
 
     public void update(float time)
     {
-        // do filtered collisions - we need at least 2 objects to do collisions
-        if(_collidables.size() >= 2)
-            doFilteredCollision();
-
         int lastIndex = _updatables.size() - 1;
         for (int i = lastIndex; i >= 0; i--)
             _updatables.get(i).update(time);
+    }
+
+    public void collide()
+    {
+        // do filtered collisions - we need at least 2 objects to do collisions
+        if(_collidables.size() >= 2)
+            doFilteredCollisions();
     }
 
     public void draw()

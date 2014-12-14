@@ -24,7 +24,7 @@ public class Torpedo extends AnimatedSprite implements ICollidable
     private SoundFX _torpedoImpactSound;
     private float _explosionInterval;
     private float _passedTime = 0.0f;
-    private float _explosionSpeed = 0.1f;
+    private float _explosionSpeed = 0.003f;
     private boolean _isExploding = false;
 
     // declare on explosion end listener
@@ -114,14 +114,19 @@ public class Torpedo extends AnimatedSprite implements ICollidable
         // explosion animation if any
         if(_isExploding)
         {
-            _width += _explosionSpeed;
-            _height += _explosionSpeed;
+            // stop rotation
+            _rotationVelocity = 0.0f;
+            // freeze movements
+            _velocity = new PointF(0.0f, 0.0f);
+            // start scaling up
+            _width += _explosionSpeed * time;
+            _height += _explosionSpeed * time;
 
             _passedTime += time;
             if(_passedTime >= _explosionInterval)
             {
                 _isExploding = false;
-                //setRotationVelocity(0.0f); // stop rotation
+
                 _passedTime = 0.0f;
                 // send out event
                 if(_onExplosionEndListener != null)
