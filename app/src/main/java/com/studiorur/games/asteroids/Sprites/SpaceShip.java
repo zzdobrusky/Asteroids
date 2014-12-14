@@ -255,5 +255,23 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
         }
 
         _weaponUpgradeTimer.update(time);
+
+        // make sure the spaceship is not out of boundaries
+        if(_center.x < _worldRect.getLeft() - _worldRect.getWidth()/6.0f)
+        {
+            _center.x = _worldRect.getLeft() - _worldRect.getWidth()/6.0f;
+        }
+        else if(_center.x > _worldRect.getRight() + _worldRect.getWidth()/6.0f)
+        {
+            _center.x = _worldRect.getRight() + _worldRect.getWidth()/6.0f;
+        }
+        else if(_center.y > _worldRect.getTop() + _worldRect.getHeight()/6.0f)
+        {
+            _center.y = _worldRect.getTop() + _worldRect.getHeight()/6.0f;
+        }
+        else if(_center.y < _worldRect.getBottom() - _worldRect.getHeight()/6.0f)
+        {
+            _center.y = _worldRect.getBottom() - _worldRect.getHeight()/6.0f;
+        }
     }
 }

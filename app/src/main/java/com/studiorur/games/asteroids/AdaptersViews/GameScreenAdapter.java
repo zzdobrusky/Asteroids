@@ -461,8 +461,8 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         // draw components - opengGl needs to keep redrawing screen
         GameEngine.getInstance().draw();
 
-        //_sleepTime = _baseFrameTime + ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
-        _sleepTime = ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
+        //_sleepTime = ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
+        _sleepTime = _baseFrameTime + ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
     }
 
     public PointF deviceToWorldCoord(PointF devLoc)
