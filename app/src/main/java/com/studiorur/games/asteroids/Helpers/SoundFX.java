@@ -17,7 +17,7 @@ public class SoundFX
 
     public SoundFX(Context context, int soundIdentifier)
     {
-        _soundPool = new SoundPool(40, AudioManager.STREAM_MUSIC, 0);
+        _soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
         _soundIdentifier = soundIdentifier;
         addSound(context);
     }

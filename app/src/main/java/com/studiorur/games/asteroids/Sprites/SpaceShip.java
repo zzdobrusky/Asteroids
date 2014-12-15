@@ -183,7 +183,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     private void shootTorpedo()
     {
         Torpedo newTorpedo = new Torpedo(_gameScreenActivity, new PointF(_center.x, _center.y + _height/1.5f),_worldRect);
-        newTorpedo.setVelocity(new PointF(_velocity.x/10.0f , 0.001f));
+        newTorpedo.setVelocity(new PointF(_velocity.x/10.0f , 0.0006f));
         newTorpedo.setRotationVelocity(0.01f);
         newTorpedo.setWidth(0.13f);
         newTorpedo.setHeight(0.13f);

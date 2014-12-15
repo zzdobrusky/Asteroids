@@ -395,8 +395,8 @@ public class GameEngine
     public void draw()
     {
         int lastIndex = _drawables.size() - 1;
-            for (int i = lastIndex; i >= 0; i--)
-                _drawables.get(i).draw();
+        for (int i = lastIndex; i >= 0; i--)
+            _drawables.get(i).draw();
 
     }
 }

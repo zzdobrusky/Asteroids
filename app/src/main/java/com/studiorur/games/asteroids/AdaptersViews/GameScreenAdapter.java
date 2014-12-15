@@ -88,6 +88,35 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         setContentView(_rootLayout);
     }
 
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig eglConfig)
+    {
+        init();
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl10, int width, int height)
+    {
+        int offsetX;
+        int offsetY;
+        int size;
+
+        if (width < height)
+        {
+            size = height;
+            offsetX = -(height - width) / 2;
+            offsetY = 0;
+        }
+        else
+        {
+            size = width;
+            offsetX = 0;
+            offsetY = -(width - height) / 2;
+        }
+
+        GLES20.glViewport(offsetX, offsetY, size, size);
+    }
+
     private void init()
     {
         // set up on touch listener registered with opengl view (not activity)
@@ -410,35 +439,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 ((Activity)_context).finish();
             }
         });
-    }
-
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig eglConfig)
-    {
-        init();
-    }
-
-    @Override
-    public void onSurfaceChanged(GL10 gl10, int width, int height)
-    {
-        int offsetX;
-        int offsetY;
-        int size;
-
-        if (width < height)
-        {
-            size = height;
-            offsetX = -(height - width) / 2;
-            offsetY = 0;
-        }
-        else
-        {
-            size = width;
-            offsetX = 0;
-            offsetY = -(width - height) / 2;
-        }
-
-        GLES20.glViewport(offsetX, offsetY, size, size);
     }
 
     @Override
