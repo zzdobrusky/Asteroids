@@ -24,7 +24,6 @@ public class GameOverView extends RelativeLayout
     final static float BUTTON_HEIGHT = 40.0f;
     final static float BUTTON_FONT_SIZE = 10.0f;
 
-    Button _playAgainButton;
     Button _mainMenuButton;
     TextView _scoreTextView;
 
@@ -50,16 +49,6 @@ public class GameOverView extends RelativeLayout
         splashImageViewLP.gravity = Gravity.CENTER_HORIZONTAL;
         linearLayout.addView(splashImageView, splashImageViewLP);
 
-        _playAgainButton = new Button(context);
-        _playAgainButton.setBackgroundResource(R.drawable.rounded_button_background_up);
-        LinearLayout.LayoutParams playAgainButtonLP = new LinearLayout.LayoutParams(Math.round(BUTTON_WIDTH * scale), Math.round(BUTTON_HEIGHT * scale));
-        playAgainButtonLP.gravity = Gravity.CENTER_HORIZONTAL;
-        playAgainButtonLP.setMargins(0, Math.round(BUTTON_MARGIN_Y * scale), 0, Math.round(BUTTON_MARGIN_Y * scale));
-        _playAgainButton.setPadding(Math.round(BUTTON_PADDING_WIDTH * scale), 0, Math.round(BUTTON_PADDING_WIDTH * scale), 0);
-        _playAgainButton.setText(R.string.play_again_button_label);
-        //_resumeButton.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
-        linearLayout.addView(_playAgainButton, playAgainButtonLP);
-
         _mainMenuButton = new Button(context);
         _mainMenuButton.setBackgroundResource(R.drawable.rounded_button_background_up);
         LinearLayout.LayoutParams mainMenuButtonLP = new LinearLayout.LayoutParams(Math.round(BUTTON_WIDTH * scale), Math.round(BUTTON_HEIGHT * scale));
@@ -77,11 +66,6 @@ public class GameOverView extends RelativeLayout
         _scoreTextView.setText("testing");
         _scoreTextView.setTextSize(Math.round(BUTTON_FONT_SIZE * scale));
         linearLayout.addView(_scoreTextView, highestScoreTextViewLP);
-    }
-
-    public Button getPlayAgainButton()
-    {
-        return _playAgainButton;
     }
 
     public Button getMainMenuButton()

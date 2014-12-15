@@ -285,7 +285,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     protected void onPause()
     {
         super.onPause();
-        _surfaceView.onPause();
+       _surfaceView.onPause();
     }
 
     @Override
@@ -302,21 +302,18 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
             _rootLayout.removeView(_pauseMenuView);
 
         GameEngine.getInstance().resumeGameEngine();
-    }
 
-    private void resetGame()
-    {
-        // remove game over pop up menu if any
-        if(_gameOverView != null)
-            _rootLayout.removeView(_gameOverView);
-
-        GameEngine.getInstance().resetGameEngine();
+        // resume rendering
+        _surfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
     private void pauseGame()
     {
         GameEngine.getInstance().pauseGameEngine();
         DataModel.getInstance(_scoreFile).saveScore();
+
+        // pause rendering
+        _surfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         // create pause popup menu
         _pauseMenuView = new PauseMenuView(_context);
@@ -396,25 +393,6 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                     }
                 });
 
-                _gameOverView.getPlayAgainButton().setOnTouchListener(new View.OnTouchListener()
-                {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event)
-                    {
-                        if (event.getAction() == MotionEvent.ACTION_DOWN)
-                        {
-                            _gameOverView.getPlayAgainButton().setBackgroundResource(R.drawable.rounded_button_background_down);
-
-                        } else if (event.getAction() == MotionEvent.ACTION_UP)
-                        {
-                            _gameOverView.getPlayAgainButton().setBackgroundResource(R.drawable.rounded_button_background_up);
-                            resetGame();
-                        }
-
-                        return true;
-                    }
-                });
-
                 // update score
                 String currentScore = Integer.toString(DataModel.getInstance(_scoreFile).getCurrentScore());
                 _gameOverView.getScoreTextView().setText("Your score is: " + currentScore);
@@ -436,7 +414,9 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 mainMenuIntent.setClass(_context, MainMenuAdapter.class);
                 mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(mainMenuIntent);
-                ((Activity)_context).finish();
+                // HACK:
+                //((Activity)_context).finish();
+                System.exit(0);
             }
         });
     }

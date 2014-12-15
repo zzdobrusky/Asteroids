@@ -54,6 +54,7 @@ public class DataModel
 
     public int getTheHighestScore()
     {
+        _theHighestScore = Math.max(_theHighestScore, _currentScore);
         return _theHighestScore;
     }
 

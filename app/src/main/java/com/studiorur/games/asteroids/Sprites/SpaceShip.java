@@ -36,7 +36,7 @@ public class SpaceShip extends AnimatedSprite implements ICollidable
     // Weaponry
     float _originalLaserInterval = 500.0f; // in milliseconds
     float _upgradedLaserInterval = 130.0f;
-    float _torpedoShootInterval = 1000.0f;
+    float _torpedoShootInterval = 800.0f;
     float _currentShootInterval = _originalLaserInterval;
     float _passedTime = _currentShootInterval; // shoots first
     boolean _isShooting = false;

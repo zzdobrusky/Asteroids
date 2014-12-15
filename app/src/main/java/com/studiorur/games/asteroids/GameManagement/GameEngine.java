@@ -129,25 +129,6 @@ public class GameEngine
         }
     }
 
-    public void resetGameEngine()
-    {
-        _isGameOver = false;
-
-        // Reset score and fire up the event
-        _score = 0;
-        if(_onScoreChangeListener != null)
-            _onScoreChangeListener.onScoreChange(_score);
-
-        // Remove all items
-        _drawables.clear();
-        _updatables.clear();
-        _collidables.clear();
-
-        // TODO: reset level
-
-        // TODO: reset gene
-    }
-
     public synchronized void pauseGameEngine()
     {
         _gameState = GameState.PAUSED;
