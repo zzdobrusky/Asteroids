@@ -15,6 +15,7 @@ public class LevelManager implements IUpdatable
     float _asteroidIntervalDecrease;
     float _currentAsteroidInterval;
     float _laserPowerupIntervalDecrease;
+    float _torpedoPowerupIntervalDecrease;
     float _currentLaserPowerUpInterval;
     float _currentTorpedoPowerUpInterval;
     LoopTimer _timer;
@@ -48,6 +49,7 @@ public class LevelManager implements IUpdatable
         // calculate decrease in intervals for each level
         _asteroidIntervalDecrease = (_currentAsteroidInterval - minAsteroidInterval)/(float)_numOfLevels;
         _laserPowerupIntervalDecrease = (_currentLaserPowerUpInterval - minLaserPowerUpInterval)/(float)_numOfLevels;
+        _torpedoPowerupIntervalDecrease = (_currentTorpedoPowerUpInterval - minTorpedoPowerUpInterval)/(float)_numOfLevels;
 
         // start level manager
         _timer = new LoopTimer();
@@ -56,14 +58,18 @@ public class LevelManager implements IUpdatable
             @Override
             public void onTimePassed()
             {
-                // increase level difficulty
+                // Increase level difficulty
+                // Increase number of asteroids
                 _currentAsteroidInterval -= _asteroidIntervalDecrease;
                 _asteroidGenerator.setAsteroidInterval(_currentAsteroidInterval);
-
+                // Increase number of laser powerups
                 _currentLaserPowerUpInterval -= _laserPowerupIntervalDecrease;
                 _laserPowerUpGenerator.setPowerupFrequency(_currentLaserPowerUpInterval);
+                // Increase number of torpedo powerups
+                _currentTorpedoPowerUpInterval -= _torpedoPowerupIntervalDecrease;
+                _torpedoPowerUpGenerator.setPowerupFrequency(_currentTorpedoPowerUpInterval);
 
-                Log.i("level", "Asteroid interval: " + _currentAsteroidInterval + " Laser interval: " + _currentLaserPowerUpInterval);
+                //Log.i("level", "Asteroid interval: " + _currentAsteroidInterval + " Laser interval: " + _currentLaserPowerUpInterval);
             }
         });
     }

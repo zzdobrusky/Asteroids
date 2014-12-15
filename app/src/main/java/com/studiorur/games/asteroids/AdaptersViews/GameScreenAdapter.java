@@ -255,7 +255,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
                 15000.0f,
                 asteroidGenerator,
                 currentAsteroidInterval,
-                100.0f,
+                200.0f,
                 laserPowerUpGenerator,
                 currentLaserPowerUpInterval,
                 5000.0f,
@@ -441,6 +441,15 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
         });
     }
 
+    public PointF deviceToWorldCoord(PointF devLoc)
+    {
+        PointF worldLoc = new PointF();
+        worldLoc.x = (2 * devLoc.x / _width - 1.0f) * _displayScaleX;
+        worldLoc.y = (-2 * devLoc.y / _height + 1.0f) * _displayScaleY;
+
+        return worldLoc;
+    }
+
     @Override
     public void onDrawFrame(GL10 gl10)
     {
@@ -463,14 +472,5 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
 
         //_sleepTime = ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
         _sleepTime = _baseFrameTime + ((System.nanoTime()-beforeTime)/1000000L); // converting nano to milliseconds
-    }
-
-    public PointF deviceToWorldCoord(PointF devLoc)
-    {
-        PointF worldLoc = new PointF();
-        worldLoc.x = (2 * devLoc.x / _width - 1.0f) * _displayScaleX;
-        worldLoc.y = (-2 * devLoc.y / _height + 1.0f) * _displayScaleY;
-
-        return worldLoc;
     }
 }
