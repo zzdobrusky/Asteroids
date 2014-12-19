@@ -47,7 +47,7 @@ public class GameScreenAdapter extends Activity implements GLSurfaceView.Rendere
     LevelManager _levelManager = null;
 
     // game loop related
-    private float _baseFrameTime = 10;
+    private float _baseFrameTime = 0; // basically removing it
     private float _sleepTime = _baseFrameTime; // to have something to start with, in milliseconds
 
     // set up touch listener
